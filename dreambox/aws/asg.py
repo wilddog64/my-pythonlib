@@ -66,6 +66,7 @@ def get_only_play_asgs(ec2profile='dreambox',
 
 if __name__ == '__main__':
     from dreambox.aws.lib import *
+    import pprint
 
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
