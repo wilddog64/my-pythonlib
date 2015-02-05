@@ -1,5 +1,5 @@
 import json
-from funcy.strings import *
+from funcy.strings import str_join
 import subprocess
 import os
 import re
