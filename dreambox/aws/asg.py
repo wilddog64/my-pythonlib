@@ -1,5 +1,5 @@
 from dreambox.aws.lib import *
-
+import dreambox.utils
 
 # get_all_asgs is a function that will return all the ASG defined for
 # a given region for AWS.  The function takes the following parameters,
@@ -31,7 +31,9 @@ def get_all_play_asgs(ec2profile='dreambox',
                       ec2region='us-east-1',
                       env='production',
                       **options):
-    hashes = make_hash_of_hashes(get_all_asgs(ec2profile, ec2region, **options))
+    hashes = dreambox.utils.make_hash_of_hashes(get_all_asgs(ec2profile,
+                                                             ec2region,
+                                                             **options))
     result = {}
     regex_pattern = r"{0}-(:?play_*|product_admin)".format(env)
     print "compiling regex pattern: {0}".format(regex_pattern)
@@ -64,6 +66,7 @@ def get_only_play_asgs(ec2profile='dreambox',
 
 if __name__ == '__main__':
     from dreambox.aws.lib import *
+
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print "script executed: %s and current script directory is: %s" % \
