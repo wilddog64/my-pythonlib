@@ -2,7 +2,6 @@ import json
 from funcy.strings import *
 import subprocess
 import os
-import pprint
 import re
 
 
@@ -120,6 +119,7 @@ def make_hash_of_hashes(my_list):
 if __name__ == "__main__":
     from dreambox.aws.asg import *
     from dreambox.aws.ec2 import *
+    import pprint
 
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
