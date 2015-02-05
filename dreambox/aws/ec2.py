@@ -1,4 +1,5 @@
 from dreambox.aws.lib import *
+from funcy.seqs import *
 
 # get_ec2_instances_hostnames_from_asg_groups will get instance hostnames from
 # a given ASG group.  This function takes the following parameters,
@@ -7,8 +8,7 @@ from dreambox.aws.lib import *
 #   ec2region
 def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
                                                 ec2region='us-east-1',
-                                                asg_group={},
-                                                **options):
+                                                asg_group={}):
     info_query='Reservations[].[Instances[].[PublicDnsName,KeyName]][][]'
     results = []
     for k, v in asg_group.items():
