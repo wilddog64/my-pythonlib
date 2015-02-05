@@ -139,6 +139,8 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
     return results
 
 if __name__ == "__main__":
+    from dreambox.asg import *
+
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print "script executed: %s and current script directory is: %s" % \
