@@ -1,4 +1,4 @@
-from dreambox.awslib import *
+from dreambox.aws.lib import *
 
 
 # get_all_asgs is a function that will return all the ASG defined for
@@ -63,7 +63,7 @@ def get_only_play_asgs(ec2profile='dreambox',
     return result
 
 if __name__ == '__main__':
-
+    from dreambox.aws.lib import *
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print "script executed: %s and current script directory is: %s" % \
