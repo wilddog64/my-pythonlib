@@ -21,7 +21,7 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
                                 instance_ids=ids,
                                 query=qry)
             results.append(result)
-    return results
+    return chunks(2, list(chain.from_iterable(results)))
 
 if __name__ == '__main__':
     from dreambox.aws.asg import *
