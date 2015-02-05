@@ -118,7 +118,8 @@ def make_hash_of_hashes(my_list):
 
 
 if __name__ == "__main__":
-    from dreambox.asg import *
+    from dreambox.aws.asg import *
+    from dreambox.aws.ec2 import *
 
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
