@@ -9,7 +9,7 @@ from funcy.seqs import *
 def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
                                                 ec2region='us-east-1',
                                                 asg_group={}):
-    info_query='Reservations[].[Instances[].[PublicDnsName,KeyName]][][]'
+    qry='Reservations[].[Instances[].[PublicDnsName,KeyName]][][][]'
     results = []
     for k, v in asg_group.items():
         if v:
@@ -18,7 +18,7 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
                                 ec2region,
                                 subcmd='describe-instances',
                                 instance_ids=ids,
-                                query=info_query)
+                                query=qry)
             results.append(result)
     return results
 
