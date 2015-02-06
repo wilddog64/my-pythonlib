@@ -1,5 +1,9 @@
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
+from funcy.strings import str_join
+from funcy.seqs import chunks
+from itertools import chain
+import os
 import dreambox.utils
 
 # get_all_asgs is a function that will return all the ASG defined for
@@ -88,7 +92,7 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
 
 
 if __name__ == '__main__':
-    from dreambox.aws.core import *
+    import re
     import pprint
 
     pp = pprint.PrettyPrinter(indent=3)
@@ -113,3 +117,15 @@ if __name__ == '__main__':
     pp.pprint(result)
     print 'end of get_only_play_asgs'
     print
+
+    asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    result = get_only_play_asgs(query=asg_query)
+
+    print 'result from get_ec2_instances_hostnames_from_asg_groups'
+    print '======================================================='
+    results = get_ec2_instances_hostnames_from_asg_groups(asg_group=result)
+    pp.pprint(results)
+    print 'end of get_ec2_instances_hostnames_from_asg_groups'
+    print '=================================================='
+    print
+
