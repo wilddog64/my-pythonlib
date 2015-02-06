@@ -5,7 +5,6 @@ import os
 import re
 
 
-
 # base function for all other aws command line function.  this function
 # accepts 5 parameters,
 #
@@ -95,8 +94,6 @@ def aws_asgcmd(aws_profile='dreambox',
             region=aws_region,
             subcmd=asg_subcmd,
             **asg_options)
-
-
 
 
 if __name__ == "__main__":
