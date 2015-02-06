@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """dreambox-pythonlib setup.py"""
 try:
     from setuptools import setup
