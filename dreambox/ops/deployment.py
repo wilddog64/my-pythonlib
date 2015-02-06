@@ -65,6 +65,28 @@ def get_only_play_asgs(ec2profile='dreambox',
             result[k] = v
     return result
 
+# get_ec2_instances_hostnames_from_asg_groups will get instance hostnames from
+# a given ASG group.  This function takes the following parameters,
+#
+#   ec2profile is profile defines in ~/.aws/config
+#   ec2region
+def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
+                                                ec2region='us-east-1',
+                                                asg_group={}):
+    qry='Reservations[].[Instances[].[PublicDnsName,Tags[?Key==`Name`]]][][][]'
+    results = []
+    for k, v in asg_group.items():
+        if v:
+            ids = str_join(' ', v)
+            result = aws_ec2cmd(ec2profile,
+                                ec2region,
+                                subcmd='describe-instances',
+                                instance_ids=ids,
+                                query=qry)
+            results.append(result)
+    return chunks(2, list(chain.from_iterable(results)))
+
+
 if __name__ == '__main__':
     from dreambox.aws.core import *
     import pprint
