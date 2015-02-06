@@ -1,0 +1,25 @@
+"""dreambox-pythonlib setup.py"""
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+
+
+setup(name='dreambox',
+      version=__import__('dreambox').__version__,
+      description='A general purpose library for dreambox ops team',
+      author='Chengkai Liang',
+      author_email='chengkai.liang@dreambox.com',
+      url='https://bitbucket.org/chengkai/dreambox-pythonlib',
+      install_requires=['funcy'],
+      packages=['dreambox', 'dreambox.aws', 'dreambox.ops'],
+      classifiers=[
+           "Programming Language :: Python",
+           "Development Status :: 1 - alpha",
+           "Environment :: Console",
+           "Intended Audience :: Developers",
+           "License :: OSI Approved :: Apache Software License",
+           "Operating System :: OS Independent",
+           'Topic :: System :: Systems Administration',
+      ]
+      )
