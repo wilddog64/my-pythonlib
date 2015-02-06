@@ -90,4 +90,3 @@ if __name__ == '__main__':
     pp.pprint(result)
     print 'end of get_only_play_asgs'
     print
-
