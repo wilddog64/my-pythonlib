@@ -1,4 +1,4 @@
-from dreambox.aws.lib import *
+from dreambox.aws.core import *
 import dreambox.utils
 
 # get_all_asgs is a function that will return all the ASG defined for
