@@ -15,6 +15,11 @@ import re
 #   subcmd: a sub command for aws command category
 #   **options: is a dict parameters that can pass to this particular
 #              sub-command
+#
+# note: most aws sub-command options has a '-', which cash with python
+#       keyword.  to solve this problem, when specify sub-command options,
+#       use '_' instead of '-'.  this function will replace '_' with '-' for
+#       all the instances it can find.
 def aws_cmd(cmd_cat='',
             profile='dreambox',
             region='us-east-1',
