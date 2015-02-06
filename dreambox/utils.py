@@ -1,3 +1,4 @@
+from funcy.seqs import chunks
 
 
 # make_hash_of_hashes will make an array of hashes from a given list by these
@@ -14,9 +15,10 @@
 #
 # return a list of hashes upon a succesful call
 def make_hash_of_hashes(my_list):
-    turple = zip(my_list[::2], my_list[1::2])
+    # turple = zip(my_list[::2], my_list[1::2])
+    chunks_list = chunks(2, my_list)
     result = {}
-    for item in turple:
+    for item in chunks_list:
         items = list(item)
         result[items[0][0]] = items[1]
     return result
