@@ -65,7 +65,7 @@ def get_only_play_asgs(ec2profile='dreambox',
     return result
 
 if __name__ == '__main__':
-    from dreambox.aws.lib import *
+    from dreambox.aws.core import *
     import pprint
 
     pp = pprint.PrettyPrinter(indent=3)
