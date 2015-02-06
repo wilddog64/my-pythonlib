@@ -72,8 +72,6 @@ if __name__ == '__main__':
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print "script executed: %s and current script directory is: %s" % \
         (__file__, current_directory)
-    # aws_ec2cmd('dreambox', 'us-east-1', 'describe-instances',
-    #         query='Reservations[].Instances[].[PublicDnsName,KeyName]')
     asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     result = get_all_play_asgs(ec2profile='dreambox',
                            ec2region='us-east-1',
