@@ -13,4 +13,7 @@ class ec2:
        self.region = region
 
     def describe_instances(self, **options):
-        self.instances = aws_ec2cmd(self.profile, self.region, **options)
+        self.instances = aws_ec2cmd(self.profile,
+                self.region,
+                'describe-instances',
+                **options)
