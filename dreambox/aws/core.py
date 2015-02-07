@@ -97,7 +97,6 @@ def aws_asgcmd(aws_profile='dreambox',
 
 
 if __name__ == "__main__":
-    from dreambox.aws.asg import *
     from dreambox.aws.ec2 import *
     import pprint
 
