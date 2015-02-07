@@ -5,6 +5,7 @@ from funcy.seqs import chunks
 from itertools import chain
 import os
 import dreambox.utils
+import re
 
 # get_all_asgs is a function that will return all the ASG defined for
 # a given region for AWS.  The function takes the following parameters,
