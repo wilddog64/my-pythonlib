@@ -12,6 +12,11 @@ import re
 #   profile: a profile that aws command will reference
 #   region: which region aws is going to tackle
 #   subcmd: a sub command for aws command category
+#   dry_run: checks whether you have the required permissions for the
+#     action, without actually making the request. Using this option
+#     will result in one of two possible error responses. If you have
+#     the required permissions the error response will be DryRunOperation.
+#     Otherwise it will be UnauthorizedOperation
 #   **options: is a dict parameters that can pass to this particular
 #              sub-command
 #
@@ -23,6 +28,7 @@ def aws_cmd(cmd_cat='',
             profile='dreambox',
             region='us-east-1',
             subcmd='',
+            dry_run=False,
             **options):
 
     cmd_opts = ''
@@ -40,6 +46,8 @@ def aws_cmd(cmd_cat='',
                              for key, val in my_options.items()])
     aws_command = "aws --profile {} --region {} {} {} {}".format(profile,
              region, cmd_cat, subcmd, cmd_opts)
+    if dry_run:
+        aws_command = "{0} --dry-run".format(aws_command)
     print "prepare to execute %s " % aws_command
     cmd = aws_command.split(' ')
     proc = subprocess.Popen(cmd,
