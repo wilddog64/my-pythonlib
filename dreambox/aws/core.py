@@ -97,7 +97,6 @@ def aws_asgcmd(aws_profile='dreambox',
 
 
 if __name__ == "__main__":
-    from dreambox.aws.ec2 import *
     from dreambox.ops.deployment import get_all_asgs
     from dreambox.ops.deployment import get_all_play_asgs
     from dreambox.ops.deployment import get_only_play_asgs
