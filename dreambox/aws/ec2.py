@@ -17,3 +17,14 @@ class ec2:
                 self.region,
                 'describe-instances',
                 **options)
+
+
+if __name__ == '__main__':
+    from dreambox.aws.ec2 import ec2
+    import pprint
+
+    pp = pprint.PrettyPrinter(indent=3)
+    qry='Reservations[].[Instances[].[PublicDnsName,Tags[?Key==`Name`]]][][][]'
+    ec2_obj = ec2()
+    ec2_obj.describe_instances(query=qry)
+    pp.pprint(ec2_obj.instances)
