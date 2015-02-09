@@ -24,7 +24,3 @@ if __name__ == '__main__':
     if args['<command>'] == 'deploy':
         from dreambox.ops.deployment import deploy
         deploy(argv)
-
-    # argv = [args['<command>']] + args['<args>']
-    # print args
-    # print "argv: {0}".format(argv)
