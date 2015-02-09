@@ -18,7 +18,7 @@ from docopt import docopt
 if __name__ == '__main__':
     args = docopt(__doc__,
                 version = 'ops version 0.0.1',
-                options_first = True
+                options_first = True,
             )
     argv = [args['<command>']] + args['<args>']
     if args['<command>'] == 'deploy':
