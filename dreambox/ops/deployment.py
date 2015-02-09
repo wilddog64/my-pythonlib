@@ -8,7 +8,7 @@ import dreambox.utils
 import re
 from docopt import docopt
 
-__doc__ = """ 
+__doc__ = """
 usage: deployment [--profie] [--region] [--help] <command> [<args>...]
 
 options:
@@ -106,16 +106,17 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
 
 def deploy(argv=[]):
     """
-usage: deploy <command> [--all] [--inc-magic-number] [<args>...]
+usage: deploy [--all] [--inc-magic-number] [<args>...]
 
 options:
 
 commonly use operations:
-ops deploy get-all-asgs [options]   # get all auto scaling groups define under AWS
+ops deploy [options]   # get all auto scaling groups define under AWS
+
     """
     print "pass in parameters: {0}".format(argv)
-    print docopt(deploy.__doc__, options_first=True, argv=argv)
-
+    arguments = docopt(deploy.__doc__, argv=argv)
+    print arguments
 
 if __name__ == '__main__':
     import re
