@@ -104,7 +104,7 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
     return chunks(2, list(chain.from_iterable(results)))
 
 
-def deploy(argv=[]):
+def execute(argv=[]):
     """
 usage: deploy [--all] [--inc-magic-number] [<args>...]
 
@@ -115,7 +115,7 @@ ops deploy [options]   # get all auto scaling groups define under AWS
 
     """
     print "pass in parameters: {0}".format(argv)
-    arguments = docopt(deploy.__doc__, argv=argv)
+    arguments = docopt(execute.__doc__, argv=argv)
     print arguments
 
 if __name__ == '__main__':
