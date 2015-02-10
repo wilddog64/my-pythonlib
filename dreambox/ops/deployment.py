@@ -5,7 +5,19 @@ from funcy.seqs import chunks
 from itertools import chain
 import os
 import dreambox.utils
+import re
+from docopt import docopt
 
+__doc__ = """ 
+usage: deployment [--profie] [--region] [--help] <command> [<args>...]
+
+options:
+    --profile  # aws profile
+    --region   # region support by aws
+
+commonly use operation
+deployment get-all-asgs   # get all auto scaling groups define under AWS
+"""
 # get_all_asgs is a function that will return all the ASG defined for
 # a given region for AWS.  The function takes the following parameters,
 #
@@ -36,9 +48,10 @@ def get_all_play_asgs(ec2profile='dreambox',
                       ec2region='us-east-1',
                       env='production',
                       **options):
+    qry='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     hashes = dreambox.utils.make_hash_of_hashes(get_all_asgs(ec2profile,
                                                              ec2region,
-                                                             **options))
+                                                             query=qry))
     result = {}
     regex_pattern = r"{0}-(:?play_*|product_admin)".format(env)
     print "compiling regex pattern: {0}".format(regex_pattern)
@@ -89,6 +102,19 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
                                 query=qry)
             results.append(result)
     return chunks(2, list(chain.from_iterable(results)))
+
+
+def deploy(argv=[]):
+    """
+usage: deploy <command> [--all] [--inc-magic-number] [<args>...]
+
+options:
+
+commonly use operations:
+ops deploy get-all-asgs [options]   # get all auto scaling groups define under AWS
+    """
+    print "pass in parameters: {0}".format(argv)
+    print docopt(deploy.__doc__, options_first=True, argv=argv)
 
 
 if __name__ == '__main__':

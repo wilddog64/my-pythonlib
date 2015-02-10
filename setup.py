@@ -5,6 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
+from setuptools import find_packages
 
 setup(name='dreambox',
       version=__import__('dreambox').__version__,
@@ -12,8 +13,8 @@ setup(name='dreambox',
       author='Chengkai Liang',
       author_email='chengkai.liang@dreambox.com',
       url='https://bitbucket.org/chengkai/dreambox-pythonlib',
-      install_requires=['funcy', 'awscli'],
-      packages=['dreambox', 'dreambox.aws', 'dreambox.ops'],
+      install_requires=['funcy', 'awscli', 'docopt'],
+      packages=find_packages(),
       classifiers=[
            "Programming Language :: Python",
            "Development Status :: 1 - alpha",
