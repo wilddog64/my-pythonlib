@@ -7,15 +7,18 @@ class ec2:
     profile=''
     region=''
     instances=None
+    dry_run=False
 
-    def __init__(self, profile='dreambox', region='us-east-1'):
+    def __init__(self, profile='dreambox', region='us-east-1', dry_run=False):
        self.profile = profile
        self.region = region
+       self.dry_run = dry_run
 
     def describe_instances(self, **options):
         self.instances = aws_ec2cmd(self.profile,
                 self.region,
                 'describe-instances',
+                self.dry_run,
                 **options)
 
 
