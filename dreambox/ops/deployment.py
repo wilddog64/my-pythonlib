@@ -8,7 +8,7 @@ import dreambox.utils
 import re
 from docopt import docopt
 
-__doc__ = """ 
+__doc__ = """
 usage: deployment [--profie] [--region] [--help] <command> [<args>...]
 
 options:
