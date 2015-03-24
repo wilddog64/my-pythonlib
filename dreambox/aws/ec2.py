@@ -18,7 +18,6 @@ class ec2:
         self.instances = aws_ec2cmd(self.profile,
                 self.region,
                 'describe-instances',
-                self.dry_run,
                 **options)
 
 
