@@ -104,6 +104,17 @@ def aws_asgcmd(aws_profile='dreambox',
             **asg_options)
 
 
+def aws_cfn_cmd(aws_profile=None,
+                aws_region='us-east-1',
+                cfn_subcmd='',
+                **cfn_options):
+    return aws_cmd(cmd_cat='cloudformation',
+                   profile=aws_profile,
+                   region=aws_region,
+                   subcmd=cfn_subcmd,
+                   **cfn_options
+                   )
+
 if __name__ == "__main__":
     from dreambox.ops.deployment import get_all_asgs
     from dreambox.ops.deployment import get_all_play_asgs
@@ -143,3 +154,9 @@ if __name__ == "__main__":
     print 'end of get_ec2_instances_hostnames_from_asg_groups'
     print '=================================================='
     print
+
+    results = aws_cfn_cmd(aws_profile='dreambox',
+                          aws_region='us-east-1',
+                          cfn_subcmd='describe-stacks',
+                          query='Stacks[].StackName[]')
+    pp.pprint(results)
