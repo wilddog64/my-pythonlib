@@ -121,6 +121,13 @@ def get_stack_names_from_all_regions(profile = '',
 
     return region_stacks
 
+def get_available_stack_from_all_regions(profile=''):
+    region_stacks = get_stack_names_from_all_regions(profile='mgmt')
+    m = re.compile(r'^stage(\d)', re.IGNORECASE)
+    stack_slots = []
+    for region, stacks in region_stacks.items():
+        print 'region is {0}'.format(region)
+
 def deploy(argv=[]):
     """
 usage: deploy <command> [--all] [--inc-magic-number] [<args>...]
@@ -172,10 +179,16 @@ if __name__ == '__main__':
     print '=================================================='
     print
 
-    print 'result from get_stack_names_from_all_regions'
-    print '==========================================='
-    results = get_stack_names_from_all_regions(profile = 'mgmt')
-    pp.pprint(results)
-    print 'end of get_stack_names_from_all_regions'
-    print '==========================================='
-    print
+    # print 'result from get_stack_names_from_all_regions'
+    # print '==========================================='
+    # results = get_stack_names_from_all_regions(profile = 'mgmt')
+    # pp.pprint(results)
+    # print 'end of get_stack_names_from_all_regions'
+    # print '==========================================='
+    # print
+
+    print 'result from get_available_stack_from_all_regions'
+    print '================================================'
+    get_available_stack_from_all_regions(profile='mgmt')
+    print 'end of get_available_stack_from_all_regions'
+    print '================================================'
