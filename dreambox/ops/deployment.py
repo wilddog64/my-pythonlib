@@ -8,6 +8,7 @@ import os
 import dreambox.utils
 import re
 from docopt import docopt
+import pprint
 
 __doc__ = """
 usage: deployment [--profie] [--region] [--help] <command> [<args>...]
@@ -123,10 +124,17 @@ def get_stack_names_from_all_regions(profile = '',
 
 def get_available_stack_from_all_regions(profile=''):
     region_stacks = get_stack_names_from_all_regions(profile='mgmt')
-    m = re.compile(r'^stage(\d)', re.IGNORECASE)
-    stack_slots = []
+    m = re.compile(r'\w+(\d)', re.IGNORECASE)
+    def get_number(n):
+        found = m.match(n)
+        if found:
+            return found.group(1)
+
+    region_stack_slots = {}
     for region, stacks in region_stacks.items():
-        print 'region is {0}'.format(region)
+        region_stack_slots[region] = sorted(map(get_number, stacks))
+
+    return region_stack_slots
 
 def deploy(argv=[]):
     """
@@ -189,6 +197,7 @@ if __name__ == '__main__':
 
     print 'result from get_available_stack_from_all_regions'
     print '================================================'
-    get_available_stack_from_all_regions(profile='mgmt')
+    result = get_available_stack_from_all_regions(profile='mgmt')
+    pp.pprint(result)
     print 'end of get_available_stack_from_all_regions'
     print '================================================'
