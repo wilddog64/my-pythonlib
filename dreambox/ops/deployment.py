@@ -1,5 +1,6 @@
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
+from dreambox.aws.core import aws_cfn_cmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from itertools import chain
@@ -103,6 +104,22 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
             results.append(result)
     return chunks(2, list(chain.from_iterable(results)))
 
+def get_stack_names_from_all_regions(profile = '',
+                                     regions = [ 'us-east-1', 'us-west-2' ],
+                                     qry = 'Stacks[].StackName'):
+    region_stacks = {}
+    m = re.compile(r'^stage\d$', re.IGNORECASE)
+    for region in regions:
+        region_stack = [r for r in
+                          aws_cfn_cmd(aws_profile = profile,
+                                      aws_region = region,
+                                      cfn_subcmd = 'describe-stacks',
+                                      query = qry)
+                          if m.match(r)
+                        ]
+        region_stacks[region] = region_stack
+
+    return region_stacks
 
 def deploy(argv=[]):
     """
@@ -155,3 +172,10 @@ if __name__ == '__main__':
     print '=================================================='
     print
 
+    print 'result from get_stack_names_from_all_regions'
+    print '==========================================='
+    results = get_stack_names_from_all_regions(profile = 'mgmt')
+    pp.pprint(results)
+    print 'end of get_stack_names_from_all_regions'
+    print '==========================================='
+    print
