@@ -25,6 +25,6 @@ if __name__ == '__main__':
 
     pp = pprint.PrettyPrinter(indent=3)
     qry='Stacks[].StackName[]'
-    cfn_obj = cfn(profile = 'dreambox')
+    cfn_obj = cfn()
     cfn_obj.describe_stacks(query=qry)
     pp.pprint(cfn_obj.stacks)
