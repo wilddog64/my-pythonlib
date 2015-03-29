@@ -123,8 +123,8 @@ def get_stack_names_from_all_regions(profile = '',
 
     return region_stacks
 
-def get_available_stack_from_all_regions(profile=''):
-    region_stacks = get_stack_names_from_all_regions(profile='mgmt')
+def get_available_stack_from_all_regions(aws_profile=''):
+    region_stacks = get_stack_names_from_all_regions(profile=aws_profile)
     m = re.compile(r'\w+(\d)', re.IGNORECASE)
     def get_number(n):
         found = m.match(n)
