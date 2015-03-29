@@ -1,12 +1,15 @@
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
+from dreambox.aws.core import aws_cfn_cmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
+from funcy.seqs import pairwise
 from itertools import chain
 import os
 import dreambox.utils
 import re
 from docopt import docopt
+import pprint
 
 __doc__ = """
 usage: deployment [--profie] [--region] [--help] <command> [<args>...]
@@ -103,6 +106,76 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
             results.append(result)
     return chunks(2, list(chain.from_iterable(results)))
 
+# get_stack_names_from_all_regions will return all stacks from known
+# AWS regions (by default these regions are us-east-1 and us-west-2).  The
+# function accepts 3 parameters,
+#
+#   profile: a profile define in ~/.aws/config
+#   regions: a list of AWS region that this function will retrieve stack names
+#   qry: a json query string
+#
+# get_stack_names_from_all_regions will only return name with stageN (n is a
+# number from 1 - 9)
+def get_stack_names_from_all_regions(profile = '',
+                                     regions = [ 'us-east-1', 'us-west-2' ],
+                                     qry = 'Stacks[].StackName'):
+    region_stacks = {}
+    m = re.compile(r'^stage\d$', re.IGNORECASE)
+    for region in regions:
+        region_stack = [r for r in
+                          aws_cfn_cmd(aws_profile = profile,
+                                      aws_region = region,
+                                      cfn_subcmd = 'describe-stacks',
+                                      query = qry)
+                          if m.match(r)
+                        ]
+        region_stacks[region] = region_stack
+
+    return region_stacks
+
+# get_available_stack_from_all_regions will return first available stack
+# environment from all regions.  The function takes these parameters,
+#
+#   aws_profile is a profile defined in ~/.aws/config
+#
+# This function will search a given set of regions and return the first
+# available stack and return it as a hash of array back to caller
+def get_available_stack_from_all_regions(aws_profile=''):
+
+    # get all the stacks from every region. at this point, we don't want
+    # anything but the number attaches to the stack name
+    region_stacks = get_stack_names_from_all_regions(profile=aws_profile)
+    m = re.compile(r'\w+(\d)', re.IGNORECASE)
+    def get_number(n):  # this is a callback function we filter out number
+        found = m.match(n)
+        if found:
+            return ord(found.group(1)) - 48
+
+    # go through the hash and collect the right pattern we want. we also sort
+    # the list and calculate the first avaiable stack environment by calling
+    # __get_free_stack_from_a_slot private function.  The result is stored at
+    # region_available_slot hash
+    region_available_slot = {}
+    region_stack_slots = {}
+    available_slot = None
+    for region, stacks in region_stacks.items():
+        region_stack_slots[region] = sorted(map(get_number, stacks))
+        available_slot = __get_free_stack_from_a_slot(region_stack_slots[region])
+        region_available_slot[region] = "Stage{0}".format(available_slot)
+        break
+
+    # return result back to caller
+    return region_available_slot
+
+def __get_free_stack_from_a_slot(region=[]):
+    available_slot = None
+
+    paired_list = pairwise(region)
+    for pair in paired_list:
+        if pair[1] - pair[0] > 1:
+            available_slot = pair[0] + 1
+            break
+    return available_slot
 
 def execute(argv=[]):
     """
@@ -156,3 +229,17 @@ if __name__ == '__main__':
     print '=================================================='
     print
 
+    # print 'result from get_stack_names_from_all_regions'
+    # print '==========================================='
+    # results = get_stack_names_from_all_regions(profile = 'mgmt')
+    # pp.pprint(results)
+    # print 'end of get_stack_names_from_all_regions'
+    # print '==========================================='
+    # print
+
+    print 'result from get_available_stack_from_all_regions'
+    print '================================================'
+    result = get_available_stack_from_all_regions(aws_profile='mgmt')
+    pp.pprint(result)
+    print 'end of get_available_stack_from_all_regions'
+    print '================================================'

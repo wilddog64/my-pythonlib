@@ -12,6 +12,11 @@ import re
 #   profile: a profile that aws command will reference
 #   region: which region aws is going to tackle
 #   subcmd: a sub command for aws command category
+#   dry_run: checks whether you have the required permissions for the
+#     action, without actually making the request. Using this option
+#     will result in one of two possible error responses. If you have
+#     the required permissions the error response will be DryRunOperation.
+#     Otherwise it will be UnauthorizedOperation
 #   **options: is a dict parameters that can pass to this particular
 #              sub-command
 #
@@ -23,6 +28,7 @@ def aws_cmd(cmd_cat='',
             profile='dreambox',
             region='us-east-1',
             subcmd='',
+            dry_run=False,
             **options):
 
     cmd_opts = ''
@@ -40,6 +46,8 @@ def aws_cmd(cmd_cat='',
                              for key, val in my_options.items()])
     aws_command = "aws --profile {} --region {} {} {} {}".format(profile,
              region, cmd_cat, subcmd, cmd_opts)
+    if dry_run:
+        aws_command = "{0} --dry-run".format(aws_command)
     print "prepare to execute %s " % aws_command
     cmd = aws_command.split(' ')
     proc = subprocess.Popen(cmd,
@@ -96,6 +104,17 @@ def aws_asgcmd(aws_profile='dreambox',
             **asg_options)
 
 
+def aws_cfn_cmd(aws_profile=None,
+                aws_region='us-east-1',
+                cfn_subcmd='',
+                **cfn_options):
+    return aws_cmd(cmd_cat='cloudformation',
+                   profile=aws_profile,
+                   region=aws_region,
+                   subcmd=cfn_subcmd,
+                   **cfn_options
+                   )
+
 if __name__ == "__main__":
     from dreambox.ops.deployment import get_all_asgs
     from dreambox.ops.deployment import get_all_play_asgs
@@ -135,3 +154,9 @@ if __name__ == "__main__":
     print 'end of get_ec2_instances_hostnames_from_asg_groups'
     print '=================================================='
     print
+
+    results = aws_cfn_cmd(aws_profile='dreambox',
+                          aws_region='us-east-1',
+                          cfn_subcmd='describe-stacks',
+                          query='Stacks[].StackName[]')
+    pp.pprint(results)
