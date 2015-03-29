@@ -100,7 +100,7 @@ def aws_ec2cmd(
 #
 # aws_asgcmd will return a valid json object back to caller upon successful
 # call
-def aws_asgcmd(aws_profile='dreambox',
+def aws_asgcmd(aws_profile=None,
                aws_region='us-east-1',
                asg_subcmd=None,
                **asg_options):
