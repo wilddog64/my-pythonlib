@@ -229,14 +229,6 @@ if __name__ == '__main__':
     print '=================================================='
     print
 
-    # print 'result from get_stack_names_from_all_regions'
-    # print '==========================================='
-    # results = get_stack_names_from_all_regions(profile = 'mgmt')
-    # pp.pprint(results)
-    # print 'end of get_stack_names_from_all_regions'
-    # print '==========================================='
-    # print
-
     print 'result from get_available_stack_from_all_regions'
     print '================================================'
     result = get_available_stack_from_all_regions(aws_profile=None)
