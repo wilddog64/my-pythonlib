@@ -238,7 +238,7 @@ if __name__ == '__main__':
 
     print 'result from get_available_stack_from_all_regions'
     print '================================================'
-    result = get_available_stack_from_all_regions(profile='mgmt')
+    result = get_available_stack_from_all_regions(aws_profile='mgmt')
     pp.pprint(result)
     print 'end of get_available_stack_from_all_regions'
     print '================================================'
