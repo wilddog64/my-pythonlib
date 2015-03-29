@@ -3,6 +3,7 @@ from dreambox.aws.core import aws_asgcmd
 from dreambox.aws.core import aws_cfn_cmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
+from funcy.seqs import pairwise
 from itertools import chain
 import os
 import dreambox.utils
@@ -128,13 +129,30 @@ def get_available_stack_from_all_regions(profile=''):
     def get_number(n):
         found = m.match(n)
         if found:
-            return found.group(1)
+            return ord(found.group(1)) - 48
 
+    region_available_slot = {}
     region_stack_slots = {}
+    available_slot = None
     for region, stacks in region_stacks.items():
         region_stack_slots[region] = sorted(map(get_number, stacks))
+        available_slot = __get_free_stack_from_a_slot(region_stack_slots[region])
+        region_available_slot[region] = "Stage{0}".format(available_slot)
+        break
 
-    return region_stack_slots
+
+    return region_available_slot
+
+def __get_free_stack_from_a_slot(region=[]):
+    avaiable_slot = None
+
+    pp = pprint.PrettyPrinter(indent=3)
+    paired_list = pairwise(region)
+    for pair in paired_list:
+        pp.pprint(pair)
+        if pair[1] - pair[0] > 1:
+            return pair[0] + 1
+
 
 def deploy(argv=[]):
     """
