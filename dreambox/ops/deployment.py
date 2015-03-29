@@ -106,6 +106,16 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
             results.append(result)
     return chunks(2, list(chain.from_iterable(results)))
 
+# get_stack_names_from_all_regions will return all stacks from known
+# AWS regions (by default these regions are us-east-1 and us-west-2).  The
+# function accepts 3 parameters,
+#
+#   profile: a profile define in ~/.aws/config
+#   regions: a list of AWS region that this function will retrieve stack names
+#   qry: a json query string
+#
+# get_stack_names_from_all_regions will only return name with stageN (n is a
+# number from 1 - 9)
 def get_stack_names_from_all_regions(profile = '',
                                      regions = [ 'us-east-1', 'us-west-2' ],
                                      qry = 'Stacks[].StackName'):
