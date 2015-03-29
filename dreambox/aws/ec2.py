@@ -9,7 +9,7 @@ class ec2:
     instances=None
     dry_run=False
 
-    def __init__(self, profile='dreambox', region='us-east-1', dry_run=False):
+    def __init__(self, profile=None, region='us-east-1', dry_run=False):
        self.profile = profile
        self.region = region
        self.dry_run = dry_run

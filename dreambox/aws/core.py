@@ -25,7 +25,7 @@ import re
 #       use '_' instead of '-'.  this function will replace '_' with '-' for
 #       all the instances it can find.
 def aws_cmd(cmd_cat='',
-            profile='dreambox',
+            profile=None,
             region='us-east-1',
             subcmd='',
             dry_run=False,
@@ -44,8 +44,15 @@ def aws_cmd(cmd_cat='',
                 my_options[k] = v
         cmd_opts = ' '.join(["--{} {}".format(key, val)
                              for key, val in my_options.items()])
-    aws_command = "aws --profile {} --region {} {} {} {}".format(profile,
-             region, cmd_cat, subcmd, cmd_opts)
+
+    if profile and profile.strip():
+        aws_command = "aws --profile {} --region {} {} {} {}".format(profile,
+                 region, cmd_cat, subcmd, cmd_opts)
+    else:
+        aws_command = "aws --region {} {} {} {}".format(region,
+                                                        cmd_cat,
+                                                        subcmd,
+                                                        cmd_opts)
     if dry_run:
         aws_command = "{0} --dry-run".format(aws_command)
     print "prepare to execute %s " % aws_command
@@ -72,7 +79,7 @@ def aws_cmd(cmd_cat='',
 #
 # a json object will return upon a successful call
 def aws_ec2cmd(
-               ec2profile='dreambox',
+               ec2profile=None,
                ec2region='us-east-1',
                subcmd='',
                **options):
@@ -93,7 +100,7 @@ def aws_ec2cmd(
 #
 # aws_asgcmd will return a valid json object back to caller upon successful
 # call
-def aws_asgcmd(aws_profile='dreambox',
+def aws_asgcmd(aws_profile=None,
                aws_region='us-east-1',
                asg_subcmd=None,
                **asg_options):
@@ -155,8 +162,7 @@ if __name__ == "__main__":
     print '=================================================='
     print
 
-    results = aws_cfn_cmd(aws_profile='dreambox',
-                          aws_region='us-east-1',
+    results = aws_cfn_cmd(aws_region='us-east-1',
                           cfn_subcmd='describe-stacks',
                           query='Stacks[].StackName[]')
     pp.pprint(results)

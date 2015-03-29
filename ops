@@ -18,9 +18,10 @@ from docopt import docopt
 if __name__ == '__main__':
     args = docopt(__doc__,
                 version = 'ops version 0.0.1',
-                options_first = True
+                options_first = True,
             )
+    print "global arguments: {0}".format(args)
     argv = [args['<command>']] + args['<args>']
     if args['<command>'] == 'deploy':
-        from dreambox.ops.deployment import deploy
-        deploy(argv)
+        from dreambox.ops.deployment import execute
+        execute(argv)
