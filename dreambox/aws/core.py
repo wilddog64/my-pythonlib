@@ -25,7 +25,7 @@ import re
 #       use '_' instead of '-'.  this function will replace '_' with '-' for
 #       all the instances it can find.
 def aws_cmd(cmd_cat='',
-            profile='dreambox',
+            profile=None,
             region='us-east-1',
             subcmd='',
             dry_run=False,
