@@ -144,15 +144,16 @@ def get_available_stack_from_all_regions(profile=''):
     return region_available_slot
 
 def __get_free_stack_from_a_slot(region=[]):
-    avaiable_slot = None
+    available_slot = None
 
     pp = pprint.PrettyPrinter(indent=3)
     paired_list = pairwise(region)
     for pair in paired_list:
         pp.pprint(pair)
         if pair[1] - pair[0] > 1:
-            return pair[0] + 1
-
+            available_slot = pair[0] + 1
+            break
+    return available_slot
 
 def deploy(argv=[]):
     """
