@@ -133,14 +133,28 @@ def get_stack_names_from_all_regions(profile = '',
 
     return region_stacks
 
+# get_available_stack_from_all_regions will return first available stack
+# environment from all regions.  The function takes these parameters,
+#
+#   aws_profile is a profile defined in ~/.aws/config
+#
+# This function will search a given set of regions and return the first
+# available stack and return it as a hash of array back to caller
 def get_available_stack_from_all_regions(aws_profile=''):
+
+    # get all the stacks from every region. at this point, we don't want
+    # anything but the number attaches to the stack name
     region_stacks = get_stack_names_from_all_regions(profile=aws_profile)
     m = re.compile(r'\w+(\d)', re.IGNORECASE)
-    def get_number(n):
+    def get_number(n):  # this is a callback function we filter out number
         found = m.match(n)
         if found:
             return ord(found.group(1)) - 48
 
+    # go through the hash and collect the right pattern we want. we also sort
+    # the list and calculate the first avaiable stack environment by calling
+    # __get_free_stack_from_a_slot private function.  The result is stored at
+    # region_available_slot hash
     region_available_slot = {}
     region_stack_slots = {}
     available_slot = None
@@ -150,7 +164,7 @@ def get_available_stack_from_all_regions(aws_profile=''):
         region_available_slot[region] = "Stage{0}".format(available_slot)
         break
 
-
+    # return result back to caller
     return region_available_slot
 
 def __get_free_stack_from_a_slot(region=[]):
