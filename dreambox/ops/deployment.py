@@ -31,7 +31,7 @@ deployment get-all-asgs   # get all auto scaling groups define under AWS
 #              autoscaling describe-auto-scaling-groups
 #
 # this function will return a list of hashes upon a successful call
-def get_all_asgs(ec2profile='dreambox',
+def get_all_asgs(ec2profile=None,
                  ec2region='us-east-1',
                  **options):
     return aws_asgcmd(aws_profile=ec2profile,
@@ -47,7 +47,7 @@ def get_all_asgs(ec2profile='dreambox',
 #   env: environment we are looking for
 #   **options: a list of options that can be accepted by
 #     autoscaling describe-auto-scaling-groups
-def get_all_play_asgs(ec2profile='dreambox',
+def get_all_play_asgs(ec2profile=None,
                       ec2region='us-east-1',
                       env='production',
                       **options):
@@ -74,7 +74,7 @@ def get_all_play_asgs(ec2profile='dreambox',
 #  env: what environment we are looking for
 #  **options: a list of command line options that are applicable to
 #     autoscaling describe-auto-scaling-groups
-def get_only_play_asgs(ec2profile='dreambox',
+def get_only_play_asgs(ec2profile=None,
                        ec2region='us-east-1',
                        env='production',
                        **options):
@@ -90,7 +90,7 @@ def get_only_play_asgs(ec2profile='dreambox',
 #
 #   ec2profile is profile defines in ~/.aws/config
 #   ec2region
-def get_ec2_instances_hostnames_from_asg_groups(ec2profile='dreambox',
+def get_ec2_instances_hostnames_from_asg_groups(ec2profile=None,
                                                 ec2region='us-east-1',
                                                 asg_group={}):
     qry='Reservations[].[Instances[].[PublicDnsName,Tags[?Key==`Name`]]][][][]'
@@ -200,7 +200,7 @@ if __name__ == '__main__':
     print "script executed: %s and current script directory is: %s" % \
         (__file__, current_directory)
     asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    result = get_all_play_asgs(ec2profile='dreambox',
+    result = get_all_play_asgs(ec2profile=None,
                            ec2region='us-east-1',
                            env='production',
                            query=asg_query)
@@ -239,7 +239,7 @@ if __name__ == '__main__':
 
     print 'result from get_available_stack_from_all_regions'
     print '================================================'
-    result = get_available_stack_from_all_regions(aws_profile='mgmt')
+    result = get_available_stack_from_all_regions(aws_profile=None)
     pp.pprint(result)
     print 'end of get_available_stack_from_all_regions'
     print '================================================'
