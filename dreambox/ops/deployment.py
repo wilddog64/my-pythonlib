@@ -1,3 +1,4 @@
+from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
 from dreambox.aws.core import aws_cfn_cmd
@@ -10,6 +11,7 @@ import dreambox.utils
 import re
 from docopt import docopt
 import pprint
+import sys
 
 __doc__ = """
 usage: deployment [--profie] [--region] [--help] <command> [<args>...]
@@ -57,7 +59,7 @@ def get_all_play_asgs(ec2profile=None,
                                                              query=qry))
     result = {}
     regex_pattern = r"{0}-(:?play_*|product_admin)".format(env)
-    print "compiling regex pattern: {0}".format(regex_pattern)
+    print("compiling regex pattern: {0}".format(regex_pattern), file=sys.stderr)
     re_match = re.compile(regex_pattern, re.I)
     for k, v in hashes.items():
         if re_match.match(k) and '-db-' not in k:
@@ -177,7 +179,7 @@ def get_available_stack_from_all_regions(aws_profile=''):
         break
 
     # return result back to caller
-    print "region slot -> {0}: {1}".format(my_region, my_slot)
+    print("region slot -> {0}:{1}".format(my_region, my_slot))
     return region_available_slot
 
 
@@ -191,9 +193,9 @@ commonly use operations:
 ops deploy [options]   # get all auto scaling groups define under AWS
 
     """
-    print "pass in parameters: {0}".format(argv)
+    print("pass in parameters: {0}".format(argv), file=sys.stderr)
     arguments = docopt(execute.__doc__, argv=argv)
-    print "argument receive: {}".format(arguments)
+    print("argument receive: {}".format(arguments), file=sys.stderr)
 
 if __name__ == '__main__':
     import re
@@ -201,41 +203,41 @@ if __name__ == '__main__':
 
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
-    print "script executed: %s and current script directory is: %s" % \
-        (__file__, current_directory)
+    print("script executed: %s and current script directory is: %s" % \
+        (__file__, current_directory), file=sys.stderr)
     asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     result = get_all_play_asgs(ec2profile=None,
                            ec2region='us-east-1',
                            env='production',
                            query=asg_query)
-    print 'result from get_all_play_asgs'
-    print '============================'
+    print('result from get_all_play_asgs', file=sys.stderr)
+    print('============================', file=sys.stderr)
     pp.pprint(result)
-    print 'end of get_all_play_asgs'
-    print '============================'
-    print
+    print('end of get_all_play_asgs', file=sys.stderr)
+    print('============================', file=sys.stderr)
+    print("\n", file=sys.stderr)
 
-    print 'result from get_only_play_asgs'
-    print '=============================='
+    print('result from get_only_play_asgs', file=sys.stderr)
+    print('==============================', file=sys.stderr)
     result = get_only_play_asgs(query=asg_query)
     pp.pprint(result)
-    print 'end of get_only_play_asgs'
-    print
+    print('end of get_only_play_asgs', file=sys.stderr)
+    print("\", file=sys.stderr")
 
     asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     result = get_only_play_asgs(query=asg_query)
 
-    print 'result from get_ec2_instances_hostnames_from_asg_groups'
-    print '======================================================='
+    print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
+    print('=======================================================', file=sys.stderr)
     results = get_ec2_instances_hostnames_from_asg_groups(asg_group=result)
     pp.pprint(results)
-    print 'end of get_ec2_instances_hostnames_from_asg_groups'
-    print '=================================================='
-    print
+    print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
+    print('==================================================', file=sys.stderr)
+    print("\n", file=sys.stderr)
 
-    print 'result from get_available_stack_from_all_regions'
-    print '================================================'
+    print('result from get_available_stack_from_all_regions', file=sys.stderr)
+    print('================================================', file=sys.stderr)
     result = get_available_stack_from_all_regions()
     pp.pprint(result)
-    print 'end of get_available_stack_from_all_regions'
-    print '================================================'
+    print('end of get_available_stack_from_all_regions', file=sys.stderr)
+    print('===========================================', file=sys.stderr)
