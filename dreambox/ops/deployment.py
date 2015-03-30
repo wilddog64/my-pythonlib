@@ -168,13 +168,16 @@ def get_available_stack_from_all_regions(aws_profile=''):
     region_available_slot = {}
     region_stack_slots = {}
     available_slot = None
+    my_region, my_slot = None, None
     for region, stacks in region_stacks.items():
         region_stack_slots[region] = sorted(map(get_number, stacks))
         available_slot = get_free_stack_from_a_slot(region_stack_slots[region])
         region_available_slot[region] = "Stage{0}".format(available_slot)
+        my_region, my_slot = region, region_available_slot[region]
         break
 
     # return result back to caller
+    print "{0}: {1}".format(my_region, my_slot)
     return region_available_slot
 
 
