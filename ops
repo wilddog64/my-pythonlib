@@ -16,6 +16,7 @@ The most commonly used ops commands are:
 from docopt import docopt
 
 if __name__ == '__main__':
+    import dreambox.ops.deployment
     args = docopt(__doc__,
                 version = 'ops version 0.0.1',
                 options_first = True,
@@ -25,3 +26,8 @@ if __name__ == '__main__':
     if args['<command>'] == 'deploy':
         from dreambox.ops.deployment import execute
         execute(argv)
+    if args['<command>'] in dir(dreambox.ops.deployment):
+        func_name = args['<command>']
+        print 'found {0} from dreambox.ops.deployment, loading it now'.format(func_name)
+        func_obj = getattr(dreambox.ops.deployment, func_name )
+        func_obj()
