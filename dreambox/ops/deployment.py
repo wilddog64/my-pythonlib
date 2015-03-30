@@ -151,31 +151,32 @@ def get_available_stack_from_all_regions(aws_profile=''):
         if found:
             return ord(found.group(1)) - 48
 
+    def get_free_stack_from_a_slot(region=[]):
+        available_slot = None
+
+        paired_list = pairwise(region)
+        for pair in paired_list:
+            if pair[1] - pair[0] > 1:
+                available_slot = pair[0] + 1
+                break
+        return available_slot
+
     # go through the hash and collect the right pattern we want. we also sort
     # the list and calculate the first avaiable stack environment by calling
-    # __get_free_stack_from_a_slot private function.  The result is stored at
+    # get_free_stack_from_a_slot private function.  The result is stored at
     # region_available_slot hash
     region_available_slot = {}
     region_stack_slots = {}
     available_slot = None
     for region, stacks in region_stacks.items():
         region_stack_slots[region] = sorted(map(get_number, stacks))
-        available_slot = __get_free_stack_from_a_slot(region_stack_slots[region])
+        available_slot = get_free_stack_from_a_slot(region_stack_slots[region])
         region_available_slot[region] = "Stage{0}".format(available_slot)
         break
 
     # return result back to caller
     return region_available_slot
 
-def __get_free_stack_from_a_slot(region=[]):
-    available_slot = None
-
-    paired_list = pairwise(region)
-    for pair in paired_list:
-        if pair[1] - pair[0] > 1:
-            available_slot = pair[0] + 1
-            break
-    return available_slot
 
 def execute(argv=[]):
     """
