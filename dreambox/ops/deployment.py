@@ -177,7 +177,7 @@ def get_available_stack_from_all_regions(aws_profile=''):
         break
 
     # return result back to caller
-    print "{0}: {1}".format(my_region, my_slot)
+    print "region slot -> {0}: {1}".format(my_region, my_slot)
     return region_available_slot
 
 
