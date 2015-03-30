@@ -190,7 +190,7 @@ ops deploy [options]   # get all auto scaling groups define under AWS
     """
     print "pass in parameters: {0}".format(argv)
     arguments = docopt(execute.__doc__, argv=argv)
-    print arguments
+    print "argument receive: {}".format(arguments)
 
 if __name__ == '__main__':
     import re
