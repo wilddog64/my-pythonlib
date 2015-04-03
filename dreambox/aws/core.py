@@ -1,8 +1,10 @@
+from __future__ import print_function
 import json
 from funcy.strings import str_join
 import subprocess
 import os
 import re
+import sys
 
 
 # base function for all other aws command line function.  this function
@@ -38,7 +40,7 @@ def aws_cmd(cmd_cat='',
         for k, v in options.items():
             if '_' in k:
                 k = re.sub('_', '-', k)
-                print 'option key {}'.format(k)
+                print('option key {}'.format(k), file=sys.stderr)
                 my_options[k] = v
             else:
                 my_options[k] = v
@@ -55,7 +57,7 @@ def aws_cmd(cmd_cat='',
                                                         cmd_opts)
     if dry_run:
         aws_command = "{0} --dry-run".format(aws_command)
-    print "prepare to execute %s " % aws_command
+    print("prepare to execute %s " % aws_command)
     cmd = aws_command.split(' ')
     proc = subprocess.Popen(cmd,
                             stdout=subprocess.PIPE,
@@ -131,8 +133,7 @@ if __name__ == "__main__":
 
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
-    print "script executed: %s and current script directory is: %s" % \
-        (__file__, current_directory)
+    print("script executed: {0} and current script directory is: {1}".format(__file__, current_directory), file=sys.stderr)
     # aws_ec2cmd('dreambox', 'us-east-1', 'describe-instances',
     #         query='Reservations[].Instances[].[PublicDnsName,KeyName]')
     asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
@@ -140,27 +141,26 @@ if __name__ == "__main__":
                            ec2region='us-east-1',
                            env='production',
                            query=asg_query)
-    print 'result from get_all_play_asgs'
-    print '============================'
+    print('result from get_all_play_asgs', file=sys.stderr)
+    print('============================', file=sys.stderr)
     pp.pprint(result)
-    print 'end of get_all_play_asgs'
-    print '============================'
-    print
+    print('end of get_all_play_asgs', file=sys.stderr)
+    print('============================', file=sys.stderr)
 
-    print 'result from get_only_play_asgs'
-    print '=============================='
+    print('result from get_only_play_asgs', file=sys.stderr)
+    print('==============================', file=sys.stderr)
     result = get_only_play_asgs(query=asg_query)
     pp.pprint(result)
-    print 'end of get_only_play_asgs'
-    print
+    print('end of get_only_play_asgs', file=sys.stderr)
+    print()
 
-    print 'result from get_ec2_instances_hostnames_from_asg_groups'
-    print '======================================================='
+    print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
+    print('=======================================================', file=sys.stderr)
     results = get_ec2_instances_hostnames_from_asg_groups(asg_group=result)
     pp.pprint(results)
-    print 'end of get_ec2_instances_hostnames_from_asg_groups'
-    print '=================================================='
-    print
+    print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
+    print('==================================================', file=sys.stderr)
+    print()
 
     results = aws_cfn_cmd(aws_region='us-east-1',
                           cfn_subcmd='describe-stacks',
