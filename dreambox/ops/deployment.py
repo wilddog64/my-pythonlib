@@ -178,6 +178,10 @@ def get_available_stack_from_all_regions(aws_profile=''):
         my_region, my_slot = region, region_available_slot[region]
         break
 
+    with open('build.properties', 'w') as fh:
+        fh.write("region={0}\nchef_environment={1}".format(my_region, my_slot))
+    fh.closed
+
     # return result back to caller
     sys.stdout.write("region slot -> {0}:{1}".format(my_region, my_slot))
     return region_available_slot
