@@ -178,7 +178,13 @@ def get_available_stack_from_all_regions(aws_profile=''):
         my_region, my_slot = region, region_available_slot[region]
         break
 
-    with open('build.properties', 'w') as fh:
+    build_properties_path = ''
+    workspace = os.getcwd()
+    if os.environ.has_key('WORKSPACE'):
+        workspace = os.environ.get('WORKSPACE')
+    build_properties_path = os.path.join(workspace, 'build.properties')
+
+    with open(build_properties_path, 'w') as fh:
         fh.write("region={0}\nchef_environment={1}".format(my_region, my_slot))
     fh.closed
 
