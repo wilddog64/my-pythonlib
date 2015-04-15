@@ -175,7 +175,7 @@ def get_available_stack_from_all_regions(aws_profile=''):
         region_stack_slots[region] = sorted(map(get_number, stacks))
         available_slot = get_free_stack_from_a_slot(region_stack_slots[region])
         region_available_slot[region] = "Stage{0}".format(available_slot)
-        my_region, my_slot = region, region_available_slot[region]
+        my_region, my_slot = region, region_available_slot[region].lower()
         break
 
     build_properties_path = ''
