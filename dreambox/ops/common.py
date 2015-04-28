@@ -412,7 +412,8 @@ def set_json_value(document, value_location, desired_val, base='default_attribut
         raise Exception('Could not replace value in json doc %s' % (str(value_location)))
     return document
 
-
+def throwaway():
+    return 'nada'
 def get_instance_hostnames(autoscaling_group_obj):
     try:
         ec2_instances = autoscaling_group_obj.instances
@@ -433,7 +434,7 @@ def get_autoscaling_group_object(as_conn, environment_name, app_name):
         get_autoscaling_group_obj(as_conn, environment_name, app_name)
 
 
-def get_app_dict():
+def get_all_apps_metadata(): # I'm struggling to import from this file but I can from cfn_common so for now it lives in both
     app_dict = {
         'account': {
             'version_locations': {
