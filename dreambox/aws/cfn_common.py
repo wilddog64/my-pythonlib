@@ -224,56 +224,6 @@ def yes_or_no_question(question, logger):
         exit(1)
 
 
-def get_all_apps_metadata():
-    app_dict = {
-        'account': {
-            'version_locations': {
-                '/opt/account': ('account', 'version', 'number'), },  # ideally we could check ['magneto']['version']['type'] also
-            'service': 'tomcat7',
-            'roles': ['account'],
-            },
-        'api': {
-            'version_locations': {
-                '/home/mongrel/Api/': ('api', 'subversion', 'revision'), },  # also here it would be nice to test branch (if not move to s3)
-            'service': 'api',
-            'roles': ['PRODUCTION_api_cron_server', 'api_app', 'PRODUCTION_api_server', 'PRODUCTION_product_admin_server'],
-        },
-        'dreamboxcom': {
-            'version_locations': {
-                '/home/mongrel/DreamBoxCom/current': ('api', 'subversion', 'revision'), },
-            'service': 'dreamboxcom',
-            'roles': ['dreamboxcom_app', 'PRODUCTION_dreamboxcom_server'],
-        },
-        'galactus': {
-            'version_locations': {
-                '/opt/galactus': ('galactus', 'version', 'number'), },
-            'service': 'tomcat7',
-            'roles': ['galactus'],
-        },
-        'magneto': {
-            'version_locations': {
-                '/opt/provision': ('magneto', 'version', 'number'), },
-            'service': 'tomcat7',
-            'roles': ['magneto'],
-        },
-        'product': {
-            'version_locations': {
-                '/home/mongrel/Product/current': ('product', 'build_key'),
-                '/home/mongrel/assets/lessons/current': ('lessons', 'key'),
-            },
-            'service': 'product',
-            'roles': ['PRODUCTION_product_app_server', 'PRODUCTION_product_rpc_server', 'PRODUCTION_product_reports_server', 'play-admin', 'cron_worker', 'play_app', 'cron_standalone'],
-        },
-        'product_admin': {
-            'version_locations': {
-                '/home/mongrel/Product/current': ('product', 'build_key'), },  # lessons are unimportant on admin nodes
-            'service': 'product_admin',
-            'roles': ['PRODUCTION_product_app_server', 'PRODUCTION_product_rpc_server', 'PRODUCTION_product_reports_server', 'play-admin', 'cron_worker', 'play_app', 'cron_standalone'],
-        },
-    }
-    return app_dict
-
-
 def get_cfn_parameter_val(stack, key_name_or_list):
     if any(p.key in key_name_or_list for p in stack.parameters):
         if len([p.value for p in stack.parameters if p.key in key_name_or_list]) == 1:
