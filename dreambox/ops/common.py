@@ -482,3 +482,50 @@ def get_all_apps_metadata(): # I'm struggling to import from this file but I can
         },
     }
     return app_dict
+
+
+def find_ami_by_filters(ec2_conn, virtualization_type, full_repo_releasever, chef_package_url=None, chef_environment=None, chef_role=None, app_versions=None, core_service_startup_md5=None):
+    filters = {
+        'image_type': 'machine',
+        'architecture': 'x86_64',
+        'state': 'available',
+        'root_device_type': 'ebs',
+        'hypervisor': 'xen',
+        'image_type': 'machine',
+        'virtualization_type': virtualization_type,
+    }
+
+    if app_versions:
+        filters['tag:app_versions'] = app_versions
+    if chef_role:
+        filters['tag:chef_role'] = chef_role
+    if chef_environment:
+        filters['tag:chef_environment'] = chef_environment
+    if chef_package_url:
+        filters['tag:chef_package_url'] = chef_package_url
+    if full_repo_releasever:
+        filters['tag:full_repo_releasever'] = full_repo_releasever
+    if core_service_startup_md5:
+        filters['tag:core_service_startup_md5'] = core_service_startup_md5
+
+    images = ec2_conn.get_all_images(filters=filters)
+
+    owner = '642622324794'
+    # print(filters)
+    images = ec2_conn.get_all_images(owners=owner, filters=filters)
+    return images
+
+
+def get_app_versions(chef_environment, chef_role, json_doc=None):
+    app_dict = get_all_apps_metadata()
+    env_file_app_locations_list = [list(app_dict[k]['version_locations'].values()) for k in app_dict.keys() if chef_role in app_dict[k]['roles']]
+    app_version_dict = {}
+    for app in env_file_app_locations_list:
+        for location in app:
+            if json_doc:
+                json_container = json.loads('{"default_attributes": {}}')
+                json_container['default_attributes'] = json_doc
+                app_version_dict['-'.join(location)] = get_json_value(json_container, location)
+            else:
+                app_version_dict['-'.join(location)] = get_json_value(get_chef_environment_document(chef_environment), location)
+    return app_version_dict

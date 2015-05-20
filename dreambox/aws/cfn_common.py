@@ -272,3 +272,23 @@ def get_all_apps_metadata():
         },
     }
     return app_dict
+
+
+def get_cfn_parameter_val(stack, key_name_or_list):
+    if any(p.key in key_name_or_list for p in stack.parameters):
+        if len([p.value for p in stack.parameters if p.key in key_name_or_list]) == 1:
+            return [p.value for p in stack.parameters if p.key in key_name_or_list][0]
+    else:
+        return False
+
+
+def get_cfn_resource_val(stack, resource_type):
+    if any(s.resource_type == resource_type for s in stack.describe_resources()):
+        if len([r.physical_resource_id for r in stack.describe_resources() if r.resource_type == resource_type]) == 1:
+            return [r.physical_resource_id for r in stack.describe_resources() if r.resource_type == resource_type][0]
+        else:
+            print('too many vals found')
+    else:
+        return False
+
+
