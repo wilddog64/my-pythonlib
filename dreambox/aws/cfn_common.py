@@ -238,6 +238,7 @@ def get_cfn_resource_val(stack, resource_type):
             return [r.physical_resource_id for r in stack.describe_resources() if r.resource_type == resource_type][0]
         else:
             print('too many vals found')
+            return False
     else:
         return False
 
