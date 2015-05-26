@@ -529,3 +529,7 @@ def get_all_apps_metadata():
     }
     return app_dict
 
+
+def get_instance_hostnames_from_asg(asg):
+   return get_hostnames_from_instance_ids([i.instance_id for i in asg.instances])
+

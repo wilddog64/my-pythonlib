@@ -232,7 +232,7 @@ def get_cfn_parameter_val(stack, key_name_or_list):
         return False
 
 
-def get_cfn_resource_val(stack, resource_type):
+def get_cfn_resource_val_by_type(stack, resource_type):
     if any(s.resource_type == resource_type for s in stack.describe_resources()):
         if len([r.physical_resource_id for r in stack.describe_resources() if r.resource_type == resource_type]) == 1:
             return [r.physical_resource_id for r in stack.describe_resources() if r.resource_type == resource_type][0]
@@ -243,3 +243,10 @@ def get_cfn_resource_val(stack, resource_type):
         return False
 
 
+def get_cfn_resource_physical_id_by_logical_id(stack, logical_id):
+    try:
+        response = stack.describe_resource(logical_id)
+        return response['DescribeStackResourceResponse']['DescribeStackResourceResult']['StackResourceDetail']['PhysicalResourceId']
+    except Exception as e:
+        print(e)
+        return False
