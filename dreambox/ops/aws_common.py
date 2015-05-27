@@ -32,6 +32,26 @@ def set_up_logging():
     return logger
 
 
+def set_mgmt_load_sensu_stash(chef_environment, timeout_val):
+    try:
+        prod_sensu_url = 'https://production-sensu-service.dreambox.com:4567'
+        resp = requests.get("%s/clients" % prod_sensu_url)
+        # west mgmt node is not in sensu but needs to be for this to work in the west
+        mgmt_host = str([ e["name"] for e in resp.json() if e["name"].startswith("mgmt") and e["chef"]["environment"] == "production" ][0])
+        # need to detect region if used in stage as well as mod the homepage target
+        try:
+            for check in [ 'check_load']:
+                payload = '{"path": "silence/%s/%s", "expire":%d, "content":{"reason":"Silencing for %s deployment.","timestamp":%d}}' % (mgmt_host, check, timeout_val, chef_environment, int(time.time()))
+                resp = requests.post("%s/stashes" % prod_sensu_url, data=payload)
+                logger.info('Downtime response for %s received: %s' % (check, resp))
+        except Exception as e:
+            logger.info('Downtime response for %s failed: %s' % (check, resp))
+    except Exception as e:
+        logger.info('Request to delete sensu checks on mgmt failed: %s' % e)
+        resp = True
+    return resp
+
+
 def set_mgmt_sensu_stashes(chef_environment, timeout_val):
     try:
         prod_sensu_url = 'https://production-sensu-service.dreambox.com:4567'
