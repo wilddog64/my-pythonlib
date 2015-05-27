@@ -104,7 +104,7 @@ def get_hostnames_from_reservations(reservations):
 def get_hostnames_from_instance_ids(instance_ids):
     if not instance_ids:
         return []
-    region = boto.utils.get_instance_metadata()['placement']['availability-zone'][:-1]
+    region = get_region()
     ec2_conn = boto.ec2.connect_to_region(region)
     reservations = ec2_conn.get_all_instances(instance_ids)
     hostnames = get_hostnames_from_reservations(reservations)
@@ -122,11 +122,18 @@ def get_app_server_hosts(play_app_groups, env):
 def get_name_tag_value_from_id(instance_ids):
     if not instance_ids:
         return []
-    region = boto.utils.get_instance_metadata()['placement']['availability-zone'][:-1]
+    region = get_region()
     ec2_conn = boto.ec2.connect_to_region(region)
     reservations = ec2_conn.get_all_instances(instance_ids)
     return [ r.instances[0].tags['Name'] for r in reservations ]
 
+
+def get_region():
+    try:
+        region = boto.utils.get_instance_metadata(timeout=1, num_retries=2)['placement']['availability-zone'][:-1]
+    except:
+        region = 'us-east-1'
+    return region
 
 def get_api_script_host_from_asgs(asg_list):
     # try to grab a cron host first
@@ -298,7 +305,7 @@ def get_autoscaling_group_object_dict(group_names_dict):
     Given a mapping of logical names to AWS group names, return a mapping of logical
     names to autoscaling group objects.
     '''
-    region = boto.utils.get_instance_metadata()['placement']['availability-zone'][:-1]
+    region = get_region()
     as_conn = boto.ec2.autoscale.connect_to_region(region)
     all_groups = as_conn.get_all_groups([g for g in group_names_dict.values()])
     group_object_dict = {}
