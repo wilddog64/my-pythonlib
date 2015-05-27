@@ -69,8 +69,8 @@ def monitor_stack_status_to_completion(stack, desired_status, logger, max_wait=3
                 stack.delete()
                 raise Exception(
                     'Stack creation failed! Final deletion has started.')
-        if (tries * wait_time + wait_time) < max_wait:
-            wait_time = tries * wait_time + wait_time
+        if int(tries * 1.5 * wait_time) < max_wait:
+            wait_time = int(tries * 1.5 *  wait_time)
         else:
             wait_time = max_wait
         logger.info("Stack status is currently %s. Waiting %s seconds and checking again..." % (
