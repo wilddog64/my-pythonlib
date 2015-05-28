@@ -42,7 +42,7 @@ def check_timeout(timeout):
 def monitor_stack_status_to_completion(stack, desired_status, logger, max_wait=300):
     timeout = 10800 + int(time.time())
     wait_time = 3
-    tries = 0
+    tries = 1
     time.sleep(wait_time)
     stack.update()
     while stack.stack_status != desired_status and check_timeout(timeout):
@@ -69,8 +69,8 @@ def monitor_stack_status_to_completion(stack, desired_status, logger, max_wait=3
                 stack.delete()
                 raise Exception(
                     'Stack creation failed! Final deletion has started.')
-        if (tries * 2 * wait_time) < max_wait:
-            wait_time = tries * 2 *  wait_time
+        if int(tries * 1.5 * wait_time) < max_wait:
+            wait_time = int(tries * 1.5 *  wait_time)
         else:
             wait_time = max_wait
         logger.info("Stack status is currently %s. Waiting %s seconds and checking again..." % (
