@@ -39,7 +39,7 @@ def check_timeout(timeout):
         return True
 
 
-def monitor_stack_status_to_completion(stack, desired_status, logger, max_wait=300):
+def monitor_stack_status_to_completion(stack, desired_status, logger, max_wait=60):
     timeout = 10800 + int(time.time())
     wait_time = 2
     tries = 1

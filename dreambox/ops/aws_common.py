@@ -255,7 +255,7 @@ def get_lessons_revision(chef_environment):
 def throttle_response(e):
     if e.error_code == 'Throttling':
         print('Pausing for AWS throttling...')
-        sleep(1)
+        time.sleep(1)
     else:
         print(str(e))
         sys.exit(1)
