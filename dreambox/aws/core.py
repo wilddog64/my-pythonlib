@@ -112,6 +112,26 @@ def aws_asgcmd(aws_profile=None,
             subcmd=asg_subcmd,
             **asg_options)
 
+# aws_ecachecmd is a function that execute aws elasticache command.  this
+# function takes 5 parameters,
+#
+#  aws_profile: profile define under ~/.aws/config
+#  aws_region: an aws region to work with
+#  asg_sugcmd: a sub-command applicable to autoscaling
+#  **ecache_options: a list of acceptable options to elasticache sub-command
+#
+# aws_ecachecmd will return a valid json object back to caller upon successful
+# call
+def aws_ecachecmd(aws_profile=None,
+                  aws_region='us-west-2',
+                  ecache_subcmd=None,
+                  **ecache_options):
+    return aws_cmd(
+            cmd_cat='elasticache',
+            profile=aws_profile,
+            region=aws_region,
+            subcmd=ecache_subcmd,
+            **ecache_options)
 
 def aws_cfn_cmd(aws_profile=None,
                 aws_region='us-east-1',

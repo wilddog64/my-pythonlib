@@ -2,6 +2,7 @@ from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
 from dreambox.aws.core import aws_cfn_cmd
+from dreambox.aws.core import aws_ecachecmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
@@ -213,6 +214,27 @@ def get_all_ec2_security_groups(ec2profile=None,
     return filter_results
 
 
+def get_all_elasticcache_security_groups(ec2profile=None,
+                                         regions=['us-east-1', 'us-west-2'],
+                                         filterby=None):
+
+    results        = []
+    filter_results = []
+    for region in regions:
+        result = aws_ecachecmd(
+         ec2profile,
+         region,
+         ecache_subcmd='describe-cache-security-groups',
+         query='CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        results.extend(result)
+
+    if not filterby is None:
+        filter_results = [p for p in results
+                          if p.capitalize().startswith(filterby.capitalize())]
+    else:
+        filter_results = results
+    return filter_results
+
 def execute(argv=[]):
     """
 usage: deploy [--all] [--inc-magic-number] [<args>...]
@@ -282,4 +304,14 @@ if __name__ == '__main__':
     filter_result = get_all_ec2_security_groups(filterby='Stage2')
     pp.pprint(filter_result)
     print( 'end of get_all_ec2_security_groups' )
+    print('================================================', file=sys.stderr)
+
+    print( 'result from get_all_elasticcache_security_groups' )
+    print('================================================', file=sys.stderr)
+    result = get_all_elasticcache_security_groups()
+    pp.pprint(result)
+    print( 'filter by stage2' )
+    result = get_all_elasticcache_security_groups(filterby='stage3')
+    pp.pprint(result)
+    print( 'end of get_all_elasticcache_security_groups' )
     print('================================================', file=sys.stderr)
