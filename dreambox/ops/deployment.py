@@ -3,6 +3,7 @@ from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
 from dreambox.aws.core import aws_cfn_cmd
 from dreambox.aws.core import aws_ecachecmd
+from dreambox.aws.core import aws_rdscmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
@@ -223,6 +224,22 @@ def get_all_elasticcache_security_groups(ec2profile=None,
 
     return __filter_list_by(result, myfilter=filterby)
 
+
+def get_all_rds_security_groups(ec2profile=None,
+                                regions=['us-east-1', 'us-west-2'],
+                                filterby=None):
+
+    results        = []
+    for region in regions:
+        result = aws_rdscmd(
+         ec2profile,
+         region,
+         rds_subcmd='describe-db-security-groups',
+         query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        results.extend(result)
+
+    return __filter_list_by(result, myfilter=filterby)
+
 def __filter_list_by(my_list=[], myfilter=None):
     result = []
     if not myfilter is None:
@@ -311,4 +328,14 @@ if __name__ == '__main__':
     result = get_all_elasticcache_security_groups(filterby='stage3')
     pp.pprint(result)
     print( 'end of get_all_elasticcache_security_groups' )
+    print('================================================', file=sys.stderr)
+
+    print( 'result from get_all_rds_security_groups' )
+    print('================================================', file=sys.stderr)
+    result = get_all_rds_security_groups()
+    pp.pprint(result)
+    print( 'filter by stage2' )
+    result = get_all_rds_security_groups(filterby='stage3')
+    pp.pprint(result)
+    print( 'end of get_all_rds_security_groups' )
     print('================================================', file=sys.stderr)
