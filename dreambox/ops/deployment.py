@@ -198,7 +198,6 @@ def get_all_ec2_security_groups(ec2profile=None,
                                 filterby=None):
 
     results        = []
-    filter_results = []
     for region in regions:
         result = aws_ec2cmd(ec2profile,
                             region,
@@ -206,12 +205,7 @@ def get_all_ec2_security_groups(ec2profile=None,
                             query='SecurityGroups[].GroupName')
         results.extend(result)
 
-    if not filterby is None:
-        filter_results = [p for p in results
-                          if p.startswith(filterby.capitalize())]
-    else:
-        filter_results = results
-    return filter_results
+    return __filter_list_by(result, myfilter=filterby)
 
 
 def get_all_elasticcache_security_groups(ec2profile=None,
@@ -219,7 +213,6 @@ def get_all_elasticcache_security_groups(ec2profile=None,
                                          filterby=None):
 
     results        = []
-    filter_results = []
     for region in regions:
         result = aws_ecachecmd(
          ec2profile,
@@ -228,12 +221,16 @@ def get_all_elasticcache_security_groups(ec2profile=None,
          query='CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         results.extend(result)
 
-    if not filterby is None:
-        filter_results = [p for p in results
-                          if p.capitalize().startswith(filterby.capitalize())]
+    return __filter_list_by(result, myfilter=filterby)
+
+def __filter_list_by(my_list=[], myfilter=None):
+    result = []
+    if not myfilter is None:
+        result = [p for p in my_list
+            if p.capitalize().startswith(myfilter.capitalize())]
     else:
-        filter_results = results
-    return filter_results
+        result = my_list
+    return result
 
 def execute(argv=[]):
     """
