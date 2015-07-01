@@ -192,6 +192,26 @@ def get_available_stack_from_all_regions(aws_profile=''):
     sys.stdout.write("region slot -> {0}:{1}".format(my_region, my_slot))
     return region_available_slot
 
+def get_all_ec2_security_groups(ec2profile=None,
+                                regions=['us-east-1', 'us-west-2'],
+                                filterby=None):
+
+    results        = []
+    filter_results = []
+    for region in regions:
+        result = aws_ec2cmd(ec2profile,
+                            region,
+                            subcmd='describe-security-groups',
+                            query='SecurityGroups[].GroupName')
+        results.extend(result)
+
+    if not filterby is None:
+        filter_results = [p for p in results
+                          if p.startswith(filterby.capitalize())]
+    else:
+        filter_results = results
+    return filter_results
+
 
 def execute(argv=[]):
     """
@@ -251,3 +271,15 @@ if __name__ == '__main__':
     pp.pprint(result)
     print('end of get_available_stack_from_all_regions', file=sys.stderr)
     print('===========================================', file=sys.stderr)
+
+    print( 'result from get_all_ec2_security_groups' )
+    print('================================================', file=sys.stderr)
+    result = get_all_ec2_security_groups()
+    pp.pprint(result)
+
+    print('filter by stage2')
+    print('================================================', file=sys.stderr)
+    filter_result = get_all_ec2_security_groups(filterby='Stage2')
+    pp.pprint(filter_result)
+    print( 'end of get_all_ec2_security_groups' )
+    print('================================================', file=sys.stderr)
