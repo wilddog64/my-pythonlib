@@ -57,7 +57,7 @@ def aws_cmd(cmd_cat='',
                                                         cmd_opts)
     if dry_run:
         aws_command = "{0} --dry-run".format(aws_command)
-    print("prepare to execute %s " % aws_command)
+    print("prepare to execute %s " % aws_command, file=sys.stderr)
     cmd = aws_command.split(' ')
     proc = subprocess.Popen(cmd,
                             stdout=subprocess.PIPE,
@@ -112,6 +112,26 @@ def aws_asgcmd(aws_profile=None,
             subcmd=asg_subcmd,
             **asg_options)
 
+# aws_ecachecmd is a function that execute aws elasticache command.  this
+# function takes 5 parameters,
+#
+#  aws_profile: profile define under ~/.aws/config
+#  aws_region: an aws region to work with
+#  asg_sugcmd: a sub-command applicable to autoscaling
+#  **ecache_options: a list of acceptable options to elasticache sub-command
+#
+# aws_ecachecmd will return a valid json object back to caller upon successful
+# call
+def aws_ecachecmd(aws_profile=None,
+                  aws_region='us-west-2',
+                  ecache_subcmd=None,
+                  **ecache_options):
+    return aws_cmd(
+            cmd_cat='elasticache',
+            profile=aws_profile,
+            region=aws_region,
+            subcmd=ecache_subcmd,
+            **ecache_options)
 
 def aws_cfn_cmd(aws_profile=None,
                 aws_region='us-east-1',
@@ -123,6 +143,49 @@ def aws_cfn_cmd(aws_profile=None,
                    subcmd=cfn_subcmd,
                    **cfn_options
                    )
+
+# aws_rdscmd is a function that execute aws elasticache command.  this
+# function takes 5 parameters,
+#
+#  aws_profile: profile define under ~/.aws/config
+#  aws_region: an aws region to work with
+#  asg_sugcmd: a sub-command applicable to autoscaling
+#  **ecache_options: a list of acceptable options to elasticache sub-command
+#
+# aws_rdscmd will return a valid json object back to caller upon successful
+# call
+def aws_rdscmd(aws_profile=None,
+                  aws_region='us-west-2',
+                  rds_subcmd=None,
+                  **ecache_options):
+    return aws_cmd(
+            cmd_cat='rds',
+            profile=aws_profile,
+            region=aws_region,
+            subcmd=rds_subcmd,
+            **ecache_options)
+
+
+# aws_redshiftcmd is a function that execute aws elasticache command.  this
+# function takes 5 parameters,
+#
+#  aws_profile: profile define under ~/.aws/config
+#  aws_region: an aws region to work with
+#  asg_subcmd: a sub-command applicable to autoscaling
+#  **ecache_options: a list of acceptable options to elasticache sub-command
+#
+# aws_redshiftcmd will return a valid json object back to caller upon successful
+# call
+def aws_redshiftcmd(aws_profile=None,
+                  aws_region='us-west-2',
+                  redshift_subcmd=None,
+                  **ecache_options):
+    return aws_cmd(
+            cmd_cat='redshift',
+            profile=aws_profile,
+            region=aws_region,
+            subcmd=redshift_subcmd,
+            **ecache_options)
 
 if __name__ == "__main__":
     from dreambox.ops.deployment import get_all_asgs
