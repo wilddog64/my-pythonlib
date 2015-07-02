@@ -57,7 +57,7 @@ def aws_cmd(cmd_cat='',
                                                         cmd_opts)
     if dry_run:
         aws_command = "{0} --dry-run".format(aws_command)
-    print("prepare to execute %s " % aws_command)
+    print("prepare to execute %s " % aws_command, file=sys.stderr)
     cmd = aws_command.split(' ')
     proc = subprocess.Popen(cmd,
                             stdout=subprocess.PIPE,
