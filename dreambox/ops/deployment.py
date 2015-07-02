@@ -393,7 +393,7 @@ if __name__ == '__main__':
     my_result = get_all_security_groups()
     pp.pprint(my_result)
     print('result from get_all_security_groups filtered by stage3')
-    result = get_all_security_groups(my_filterby='stage3')
+    my_result = get_all_security_groups(my_filterby='stage3')
     pp.pprint(my_result)
     print('end of get_all_security_groups')
     print('================================================', file=sys.stderr)
