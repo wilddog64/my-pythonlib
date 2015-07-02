@@ -200,11 +200,12 @@ def get_all_ec2_security_groups(ec2profile=None,
                                 filterby=None):
 
     results        = []
+    result = {}
     for region in regions:
-        result = aws_ec2cmd(ec2profile,
-                            region,
-                            subcmd='describe-security-groups',
-                            query='SecurityGroups[].GroupName')
+        result[region] = aws_ec2cmd(ec2profile,
+                                    region,
+                                    subcmd='describe-security-groups',
+                                    query='SecurityGroups[].GroupName')
         results.extend(result)
 
     return __filter_list_by(result, myfilter=filterby)
@@ -215,8 +216,9 @@ def get_all_elasticcache_security_groups(ec2profile=None,
                                          filterby=None):
 
     results        = []
+    result = {}
     for region in regions:
-        result = aws_ecachecmd(
+        result[region] = aws_ecachecmd(
          ec2profile,
          region,
          ecache_subcmd='describe-cache-security-groups',
@@ -231,8 +233,9 @@ def get_all_rds_security_groups(ec2profile=None,
                                 filterby=None):
 
     results        = []
+    result = {}
     for region in regions:
-        result = aws_rdscmd(
+        result[region] = aws_rdscmd(
          ec2profile,
          region,
          rds_subcmd='describe-db-security-groups',
@@ -247,8 +250,9 @@ def get_all_redshift_security_groups(ec2profile=None,
                                 filterby=None):
 
     results        = []
+    result = {}
     for region in regions:
-        result = aws_redshiftcmd(
+        result[region] = aws_redshiftcmd(
          ec2profile,
          region,
          redshift_subcmd='describe-cluster-security-groups',
@@ -278,14 +282,14 @@ def get_all_security_groups(my_ec2profile=None,
                                       filterby=my_filterby)
     return results
 
-def __filter_list_by(my_list=[], myfilter=None):
-    result = []
+def __filter_list_by(my_dict={}, myfilter=None):
+    results = {}
     if not myfilter is None:
-        result = [p for p in my_list
-            if p.capitalize().startswith(myfilter.capitalize())]
+        for region, lists in my_dict.items():
+            results[region] = [p for p in lists if p.capitalize().startswith(myfilter.capitalize())]
     else:
-        result = my_list
-    return result
+        results = my_dict
+    return results
 
 def execute(argv=[]):
     """
