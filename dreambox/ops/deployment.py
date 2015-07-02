@@ -258,6 +258,28 @@ def get_all_redshift_security_groups(ec2profile=None,
     return __filter_list_by(result, myfilter=filterby)
 
 
+def get_all_security_groups(my_ec2profile=None,
+                            my_regions=['us-east-1', 'us-west-2'],
+                            my_filterby=None):
+    results = []
+    result = get_all_ec2_security_groups(ec2profile=my_ec2profile,
+                                         regions=my_regions,
+                                         filterby=my_filterby)
+    results.extend(result)
+    result = get_all_elasticcache_security_groups(ec2profile=my_ec2profile,
+                                                  regions=my_regions,
+                                                  filterby=my_filterby)
+    results.extend(result)
+    result = get_all_rds_security_groups(ec2profile=my_ec2profile,
+                                         regions=my_regions,
+                                         filterby=my_filterby)
+    results.extend(result)
+    result = get_all_redshift_security_groups(ec2profile=my_ec2profile,
+                                              regions=my_regions,
+                                              filterby=my_filterby)
+    results.extend(result)
+    return results
+
 def __filter_list_by(my_list=[], myfilter=None):
     result = []
     if not myfilter is None:
@@ -366,4 +388,14 @@ if __name__ == '__main__':
     result = get_all_redshift_security_groups(filterby='stage3')
     pp.pprint(result)
     print( 'end of get_all_redshift_security_groups' )
+    print('================================================', file=sys.stderr)
+
+    print( 'result from get_all_security_groups' )
+    print('================================================', file=sys.stderr)
+    result = get_all_security_groups()
+    pp.pprint(result)
+    print( 'result from get_all_security_groups filtered by stage2' )
+    result = get_all_security_groups(my_filterby='stage2')
+    pp.pprint(result)
+    print( 'end of get_all_security_groups' )
     print('================================================', file=sys.stderr)
