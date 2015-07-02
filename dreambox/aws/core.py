@@ -31,6 +31,7 @@ def aws_cmd(cmd_cat='',
             region='us-east-1',
             subcmd='',
             dry_run=False,
+            verbose=False,
             **options):
 
     cmd_opts = ''
@@ -57,7 +58,9 @@ def aws_cmd(cmd_cat='',
                                                         cmd_opts)
     if dry_run:
         aws_command = "{0} --dry-run".format(aws_command)
-    print("prepare to execute %s " % aws_command, file=sys.stderr)
+
+    if verbose:
+        print("prepare to execute %s " % aws_command, file=sys.stderr)
     cmd = aws_command.split(' ')
     proc = subprocess.Popen(cmd,
                             stdout=subprocess.PIPE,
@@ -84,11 +87,13 @@ def aws_ec2cmd(
                ec2profile=None,
                ec2region='us-east-1',
                subcmd='',
+               verbose=False,
                **options):
     return aws_cmd('ec2',
             ec2profile,
             ec2region,
             subcmd,
+            verbose,
             **options)
 
 
@@ -105,11 +110,13 @@ def aws_ec2cmd(
 def aws_asgcmd(aws_profile=None,
                aws_region='us-east-1',
                asg_subcmd=None,
+               verbose=False,
                **asg_options):
     return aws_cmd(cmd_cat='autoscaling',
             profile=aws_profile,
             region=aws_region,
             subcmd=asg_subcmd,
+            verbose=verbose,
             **asg_options)
 
 # aws_ecachecmd is a function that execute aws elasticache command.  this
@@ -125,12 +132,14 @@ def aws_asgcmd(aws_profile=None,
 def aws_ecachecmd(aws_profile=None,
                   aws_region='us-west-2',
                   ecache_subcmd=None,
+                  verbose=False,
                   **ecache_options):
     return aws_cmd(
             cmd_cat='elasticache',
             profile=aws_profile,
             region=aws_region,
             subcmd=ecache_subcmd,
+            verbose=verbose,
             **ecache_options)
 
 def aws_cfn_cmd(aws_profile=None,
@@ -157,12 +166,14 @@ def aws_cfn_cmd(aws_profile=None,
 def aws_rdscmd(aws_profile=None,
                   aws_region='us-west-2',
                   rds_subcmd=None,
+                  verbose=False,
                   **ecache_options):
     return aws_cmd(
             cmd_cat='rds',
             profile=aws_profile,
             region=aws_region,
             subcmd=rds_subcmd,
+            verbose=verbose,
             **ecache_options)
 
 
@@ -179,12 +190,14 @@ def aws_rdscmd(aws_profile=None,
 def aws_redshiftcmd(aws_profile=None,
                   aws_region='us-west-2',
                   redshift_subcmd=None,
+                  verbose=False,
                   **ecache_options):
     return aws_cmd(
             cmd_cat='redshift',
             profile=aws_profile,
             region=aws_region,
             subcmd=redshift_subcmd,
+            verbose=verbose,
             **ecache_options)
 
 if __name__ == "__main__":
