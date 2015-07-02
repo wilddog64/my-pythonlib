@@ -5,6 +5,7 @@ from dreambox.aws.core import aws_cfn_cmd
 from dreambox.aws.core import aws_ecachecmd
 from dreambox.aws.core import aws_rdscmd
 from dreambox.aws.core import aws_redshiftcmd
+from dreambox.aws.core import aws_cmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
@@ -282,6 +283,24 @@ def get_all_security_groups(my_ec2profile=None,
                                       filterby=my_filterby)
     return results
 
+def delete_security_groups(ec2profile=None,
+                           regions=['us-east-1', 'us-west-2'],
+                           my_filterby='stage3',
+                           commit_deletion=False):
+    security_groups_to_delete = get_all_security_groups(ec2profile,
+                                                        regions,
+                                                        my_filterby)
+    for cmdcat, regions in security_groups_to_delete.items():
+        print("command: {}, regions {}".format(cmdcat, regions))
+        for region, security_groups in regions.items():
+            print('region {}: {}'.format(region, security_groups))
+            for security_group in security_groups:
+                if not commit_deletion:
+                    print('{}: delete security group {} from region {}'.format(
+                        cmdcat, region, security_group
+                    ))
+
+
 def __filter_list_by(my_dict={}, myfilter=None):
     results = {}
     if not myfilter is None:
@@ -401,3 +420,6 @@ if __name__ == '__main__':
     pp.pprint(my_result)
     print('end of get_all_security_groups')
     print('================================================', file=sys.stderr)
+
+
+
