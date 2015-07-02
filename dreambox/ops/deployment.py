@@ -261,23 +261,21 @@ def get_all_redshift_security_groups(ec2profile=None,
 def get_all_security_groups(my_ec2profile=None,
                             my_regions=['us-east-1', 'us-west-2'],
                             my_filterby=None):
-    results = []
-    result = get_all_ec2_security_groups(ec2profile=my_ec2profile,
-                                         regions=my_regions,
-                                         filterby=my_filterby)
-    results.extend(result)
-    result = get_all_elasticcache_security_groups(ec2profile=my_ec2profile,
-                                                  regions=my_regions,
-                                                  filterby=my_filterby)
-    results.extend(result)
-    result = get_all_rds_security_groups(ec2profile=my_ec2profile,
-                                         regions=my_regions,
-                                         filterby=my_filterby)
-    results.extend(result)
-    result = get_all_redshift_security_groups(ec2profile=my_ec2profile,
-                                              regions=my_regions,
-                                              filterby=my_filterby)
-    results.extend(result)
+    results = {}
+    results['ec2'] = get_all_ec2_security_groups(ec2profile=my_ec2profile,
+                                                 regions=my_regions,
+                                                 filterby=my_filterby)
+    results['elasticcache'] = get_all_elasticcache_security_groups(
+                                      ec2profile=my_ec2profile,
+                                      regions=my_regions,
+                                      filterby=my_filterby)
+    results['rds'] = get_all_rds_security_groups(ec2profile=my_ec2profile,
+                                                 regions=my_regions,
+                                                 filterby=my_filterby)
+    results['redshift'] = get_all_redshift_security_groups(
+                                      ec2profile=my_ec2profile,
+                                      regions=my_regions,
+                                      filterby=my_filterby)
     return results
 
 def __filter_list_by(my_list=[], myfilter=None):
