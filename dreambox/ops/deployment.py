@@ -346,7 +346,7 @@ if __name__ == '__main__':
     print('end of get_available_stack_from_all_regions', file=sys.stderr)
     print('===========================================', file=sys.stderr)
 
-    print( 'result from get_all_ec2_security_groups' )
+    print('result from get_all_ec2_security_groups')
     print('================================================', file=sys.stderr)
     my_result = get_all_ec2_security_groups()
     pp.pprint(my_result)
