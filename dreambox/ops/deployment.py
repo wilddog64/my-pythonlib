@@ -287,6 +287,7 @@ def delete_security_groups(ec2profile=None,
                            regions=['us-east-1', 'us-west-2'],
                            my_filterby='stage3',
                            commit_deletion=False):
+
     security_groups_to_delete = get_all_security_groups(ec2profile,
                                                         regions,
                                                         my_filterby)
@@ -299,6 +300,19 @@ def delete_security_groups(ec2profile=None,
                     print('{}: delete security group {} from region {}'.format(
                         cmdcat, region, security_group
                     ))
+
+def delete_all_security_groups(argv=[]):
+    """
+usage: ops delete_all_security_groups [--commit] [<args>...]
+
+options:
+ops delete_all_security_groups [options] # delete all security group for a given
+environment
+    """
+    print('pass in parameters: {}'.format(argv), file=sys.stderr)
+    arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
+    arg = arguments['<args>'][0]
+    delete_security_groups(my_filterby=arg)
 
 
 def __filter_list_by(my_dict={}, myfilter=None):
