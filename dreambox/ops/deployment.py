@@ -309,9 +309,15 @@ def delete_security_groups(ec2profile=None,
             print('region {}: {}'.format(region, security_groups))
             for security_group in security_groups:
                 if not commit_deletion:
-                    print('{}: delete security group {} from region {}'.format(
-                        cmdcat, security_group, region
-                    ))
+                    if cmdcat == 'ec2':
+                        print('aws --region {} ec2 delete-security-group --group-name {}'.format(region, security_group))
+                    elif cmdcat == 'elasticcache':
+                        print('aws --region {} elasticache delete-cache-security-group --cache-security-group-name {}'.format(region, security_group))
+                    elif cmdcat == 'rds':
+                        print('aws --region {} rds delete-db-security-group --db-security-group-name {}'.format(region, security_group))
+                    elif cmdcat == 'redshift':
+                        print('aws --region {} redshift delete-cluster-security-group --cluster-security-group-name {}'.format(region, security_group))
+
 
 def delete_all_security_groups(argv=None):
     """
