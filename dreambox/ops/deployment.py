@@ -301,7 +301,7 @@ def delete_security_groups(ec2profile=None,
                         cmdcat, security_group, region
                     ))
 
-def delete_all_security_groups(argv=[]):
+def delete_all_security_groups(argv=None):
     """
 usage: ops delete_all_security_groups [--commit] [<args>...]
 
