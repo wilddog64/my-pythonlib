@@ -22,7 +22,7 @@ import sys
 #   **options: is a dict parameters that can pass to this particular
 #              sub-command
 #
-# note: most aws sub-command options has a '-', which cash with python
+# note: most aws sub-command options has a '-', which crash with python
 #       keyword.  to solve this problem, when specify sub-command options,
 #       use '_' instead of '-'.  this function will replace '_' with '-' for
 #       all the instances it can find.
