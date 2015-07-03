@@ -298,7 +298,7 @@ def delete_security_groups(ec2profile=None,
             for security_group in security_groups:
                 if not commit_deletion:
                     print('{}: delete security group {} from region {}'.format(
-                        cmdcat, region, security_group
+                        cmdcat, security_group, region
                     ))
 
 def delete_all_security_groups(argv=[]):
