@@ -123,8 +123,12 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile=None,
 # get_stack_names_from_all_regions will only return name with stageN (n is a
 # number from 1 - 9)
 def get_stack_names_from_all_regions(profile='',
-                                     regions=['us-east-1', 'us-west-2'],
+                                     regions=None,
                                      qry='Stacks[].StackName'):
+
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
     region_stacks = {}
     m = re.compile(r'^stage\d$', re.IGNORECASE)
     for region in regions:
@@ -197,8 +201,11 @@ def get_available_stack_from_all_regions(aws_profile=''):
     return region_available_slot
 
 def get_all_ec2_security_groups(ec2profile=None,
-                                regions=['us-east-1', 'us-west-2'],
+                                regions=None,
                                 filterby=None):
+
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
 
     results = []
     result = {}
@@ -213,8 +220,11 @@ def get_all_ec2_security_groups(ec2profile=None,
 
 
 def get_all_elasticcache_security_groups(ec2profile=None,
-                                         regions=['us-east-1', 'us-west-2'],
+                                         regions=None,
                                          filterby=None):
+
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
 
     results = []
     result = {}
@@ -230,9 +240,11 @@ def get_all_elasticcache_security_groups(ec2profile=None,
 
 
 def get_all_rds_security_groups(ec2profile=None,
-                                regions=['us-east-1', 'us-west-2'],
+                                regions=None,
                                 filterby=None):
 
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
     results = []
     result = {}
     for region in regions:
