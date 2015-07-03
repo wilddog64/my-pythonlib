@@ -216,8 +216,8 @@ def get_all_elasticcache_security_groups(ec2profile=None,
                                          regions=['us-east-1', 'us-west-2'],
                                          filterby=None):
 
-    results        = []
-    result = {}
+    results = []
+    result  = {}
     for region in regions:
         result[region] = aws_ecachecmd(
          ec2profile,
@@ -233,8 +233,8 @@ def get_all_rds_security_groups(ec2profile=None,
                                 regions=['us-east-1', 'us-west-2'],
                                 filterby=None):
 
-    results        = []
-    result = {}
+    results = []
+    result  = {}
     for region in regions:
         result[region] = aws_rdscmd(
          ec2profile,
@@ -250,8 +250,8 @@ def get_all_redshift_security_groups(ec2profile=None,
                                 regions=['us-east-1', 'us-west-2'],
                                 filterby=None):
 
-    results        = []
-    result = {}
+    results = []
+    result  = {}
     for region in regions:
         result[region] = aws_redshiftcmd(
          ec2profile,
