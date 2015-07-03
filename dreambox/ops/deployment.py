@@ -57,7 +57,7 @@ def get_all_play_asgs(ec2profile=None,
                       ec2region='us-east-1',
                       env='production',
                       **options):
-    qry='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    qry = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     hashes = dreambox.utils.make_hash_of_hashes(get_all_asgs(ec2profile,
                                                              ec2region,
                                                              query=qry))
@@ -122,17 +122,17 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile=None,
 #
 # get_stack_names_from_all_regions will only return name with stageN (n is a
 # number from 1 - 9)
-def get_stack_names_from_all_regions(profile = '',
-                                     regions = [ 'us-east-1', 'us-west-2' ],
-                                     qry = 'Stacks[].StackName'):
+def get_stack_names_from_all_regions(profile='',
+                                     regions=['us-east-1', 'us-west-2'],
+                                     qry='Stacks[].StackName'):
     region_stacks = {}
     m = re.compile(r'^stage\d$', re.IGNORECASE)
     for region in regions:
         region_stack = [r for r in
-                          aws_cfn_cmd(aws_profile = profile,
-                                      aws_region = region,
-                                      cfn_subcmd = 'describe-stacks',
-                                      query = qry)
+                          aws_cfn_cmd(aws_profile=profile,
+                                      aws_region=region,
+                                      cfn_subcmd='describe-stacks',
+                                      query=qry)
                           if m.match(r)
                         ]
         region_stacks[region] = region_stack
@@ -200,7 +200,7 @@ def get_all_ec2_security_groups(ec2profile=None,
                                 regions=['us-east-1', 'us-west-2'],
                                 filterby=None):
 
-    results        = []
+    results = []
     result = {}
     for region in regions:
         result[region] = aws_ec2cmd(ec2profile,
@@ -217,7 +217,7 @@ def get_all_elasticcache_security_groups(ec2profile=None,
                                          filterby=None):
 
     results = []
-    result  = {}
+    result = {}
     for region in regions:
         result[region] = aws_ecachecmd(
          ec2profile,
@@ -234,7 +234,7 @@ def get_all_rds_security_groups(ec2profile=None,
                                 filterby=None):
 
     results = []
-    result  = {}
+    result = {}
     for region in regions:
         result[region] = aws_rdscmd(
          ec2profile,
@@ -251,7 +251,7 @@ def get_all_redshift_security_groups(ec2profile=None,
                                 filterby=None):
 
     results = []
-    result  = {}
+    result = {}
     for region in regions:
         result[region] = aws_redshiftcmd(
          ec2profile,
