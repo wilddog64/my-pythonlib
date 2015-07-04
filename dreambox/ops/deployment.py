@@ -296,9 +296,12 @@ def get_all_security_groups(my_ec2profile=None,
     return results
 
 def delete_security_groups(ec2profile=None,
-                           regions=['us-east-1', 'us-west-2'],
+                           regions=None,
                            my_filterby='stage3',
                            commit_deletion=False):
+
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
 
     security_groups_to_delete = get_all_security_groups(ec2profile,
                                                         regions,
