@@ -59,7 +59,7 @@ def aws_cmd(cmd_cat='',
     if dry_run:
         print('dry run flag set, executing {}'.format(aws_command),
               file=sys.stderr)
-        exit(0)
+        return
 
     if verbose:
         print("prepare to execute %s " % aws_command, file=sys.stderr)
@@ -89,14 +89,16 @@ def aws_ec2cmd(
                ec2profile=None,
                ec2region='us-east-1',
                subcmd='',
+               dry_run=False,
                verbose=False,
                **options):
     return aws_cmd('ec2',
-            ec2profile,
-            ec2region,
-            subcmd,
-            verbose,
-            **options)
+                   ec2profile,
+                   ec2region,
+                   subcmd,
+                   dry_run,
+                   verbose,
+                   **options)
 
 
 # aws_asgcmd is a function that execute aws autoscaling command.  this
@@ -112,14 +114,16 @@ def aws_ec2cmd(
 def aws_asgcmd(aws_profile=None,
                aws_region='us-east-1',
                asg_subcmd=None,
+               dry_run=False,
                verbose=False,
                **asg_options):
     return aws_cmd(cmd_cat='autoscaling',
-            profile=aws_profile,
-            region=aws_region,
-            subcmd=asg_subcmd,
-            verbose=verbose,
-            **asg_options)
+                   profile=aws_profile,
+                   region=aws_region,
+                   subcmd=asg_subcmd,
+                   dry_run=dry_run,
+                   verbose=verbose,
+                   **asg_options)
 
 # aws_ecachecmd is a function that execute aws elasticache command.  this
 # function takes 5 parameters,
@@ -134,6 +138,7 @@ def aws_asgcmd(aws_profile=None,
 def aws_ecachecmd(aws_profile=None,
                   aws_region='us-west-2',
                   ecache_subcmd=None,
+                  dry_run=False,
                   verbose=False,
                   **ecache_options):
     return aws_cmd(
@@ -141,6 +146,7 @@ def aws_ecachecmd(aws_profile=None,
             profile=aws_profile,
             region=aws_region,
             subcmd=ecache_subcmd,
+            dry_run=dry_run,
             verbose=verbose,
             **ecache_options)
 
@@ -168,6 +174,7 @@ def aws_cfn_cmd(aws_profile=None,
 def aws_rdscmd(aws_profile=None,
                   aws_region='us-west-2',
                   rds_subcmd=None,
+                  dry_run=False,
                   verbose=False,
                   **ecache_options):
     return aws_cmd(
@@ -175,6 +182,7 @@ def aws_rdscmd(aws_profile=None,
             profile=aws_profile,
             region=aws_region,
             subcmd=rds_subcmd,
+            dry_run=dry_run,
             verbose=verbose,
             **ecache_options)
 
@@ -190,17 +198,18 @@ def aws_rdscmd(aws_profile=None,
 # aws_redshiftcmd will return a valid json object back to caller upon successful
 # call
 def aws_redshiftcmd(aws_profile=None,
-                  aws_region='us-west-2',
-                  redshift_subcmd=None,
-                  verbose=False,
-                  **ecache_options):
-    return aws_cmd(
-            cmd_cat='redshift',
-            profile=aws_profile,
-            region=aws_region,
-            subcmd=redshift_subcmd,
-            verbose=verbose,
-            **ecache_options)
+                    aws_region='us-west-2',
+                    redshift_subcmd=None,
+                    dry_run=False,
+                    verbose=False,
+                    **ecache_options):
+    return aws_cmd(cmd_cat='redshift',
+                   profile=aws_profile,
+                   region=aws_region,
+                   subcmd=redshift_subcmd,
+                   dry_run=dry_run,
+                   verbose=verbose,
+                   **ecache_options)
 
 if __name__ == "__main__":
     from dreambox.ops.deployment import get_all_asgs
