@@ -324,7 +324,7 @@ def delete_security_groups(ec2profile=None,
 
 def delete_all_security_groups(argv=None):
     """
-usage: ops delete_all_security_groups [--commit] [<args>...]
+usage: ops delete_all_security_groups [--dry-run] [<args>...]
 
 options:
 ops delete_all_security_groups [options] # delete all security group for a given
