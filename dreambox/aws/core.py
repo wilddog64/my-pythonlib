@@ -212,7 +212,6 @@ def aws_redshiftcmd(aws_profile=None,
                    **ecache_options)
 
 if __name__ == "__main__":
-    from dreambox.ops.deployment import get_all_asgs
     from dreambox.ops.deployment import get_all_play_asgs
     from dreambox.ops.deployment import get_only_play_asgs
     from dreambox.ops.deployment import get_ec2_instances_hostnames_from_asg_groups
@@ -221,13 +220,11 @@ if __name__ == "__main__":
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print("script executed: {0} and current script directory is: {1}".format(__file__, current_directory), file=sys.stderr)
-    # aws_ec2cmd('dreambox', 'us-east-1', 'describe-instances',
-    #         query='Reservations[].Instances[].[PublicDnsName,KeyName]')
-    asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     result = get_all_play_asgs(ec2profile='dreambox',
-                           ec2region='us-east-1',
-                           env='production',
-                           query=asg_query)
+                               ec2region='us-east-1',
+                               env='production',
+                               query=asg_query)
     print('result from get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
     pp.pprint(result)

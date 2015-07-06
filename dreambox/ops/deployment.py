@@ -308,7 +308,6 @@ def delete_security_groups(ec2profile=None,
                                                         regions,
                                                         my_filterby)
     for cmdcat, regions in security_groups_to_delete.items():
-        print("command: {}, regions {}".format(cmdcat, regions))
         for region, security_groups in regions.items():
             for security_group in security_groups:
                 if dry_run:
@@ -382,11 +381,11 @@ if __name__ == '__main__':
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print("script executed: %s and current script directory is: %s" % \
         (__file__, current_directory), file=sys.stderr)
-    asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     my_result = get_all_play_asgs(ec2profile=None,
-                           ec2region='us-east-1',
-                           env='production',
-                           query=asg_query)
+                                  ec2region='us-east-1',
+                                  env='production',
+                                  query=asg_query)
     print('result from get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
     pp.pprint(my_result)
@@ -401,7 +400,7 @@ if __name__ == '__main__':
     print('end of get_only_play_asgs', file=sys.stderr)
     print("\", file=sys.stderr")
 
-    asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     my_result = get_only_play_asgs(query=asg_query)
 
     print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
