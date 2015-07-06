@@ -298,6 +298,7 @@ def get_all_security_groups(my_ec2profile=None,
 def delete_security_groups(ec2profile=None,
                            regions=None,
                            my_filterby='stage3',
+                           dry_run=False,
                            **options):
 
     if regions is None:
@@ -311,7 +312,7 @@ def delete_security_groups(ec2profile=None,
         for region, security_groups in regions.items():
             print('region {}: {}'.format(region, security_groups))
             for security_group in security_groups:
-                if not commit_deletion:
+                if dry_run:
                     if cmdcat == 'ec2':
                         print('aws --region {} ec2 delete-security-group --group-name {}'.format(region, security_group))
                     elif cmdcat == 'elasticcache':
@@ -333,7 +334,7 @@ environment
     print('pass in parameters: {}'.format(argv), file=sys.stderr)
     arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
     arg = arguments['<args>'][0]
-    delete_security_groups(my_filterby=arg)
+    delete_security_groups(my_filterby=arg, dry_run=True)
 
 
 def __filter_list_by(my_dict={}, myfilter=None):

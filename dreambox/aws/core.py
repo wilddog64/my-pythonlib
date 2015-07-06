@@ -57,7 +57,8 @@ def aws_cmd(cmd_cat='',
                                                         subcmd,
                                                         cmd_opts)
     if dry_run:
-        aws_command = "{0} --dry-run".format(aws_command)
+        print('dry run flag set, executing {}'.format(aws_command),
+              file=sys.stderr)
         exit(0)
 
     if verbose:
