@@ -5,7 +5,6 @@ from dreambox.aws.core import aws_cfn_cmd
 from dreambox.aws.core import aws_ecachecmd
 from dreambox.aws.core import aws_rdscmd
 from dreambox.aws.core import aws_redshiftcmd
-from dreambox.aws.core import aws_cmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
@@ -248,11 +247,10 @@ def get_all_rds_security_groups(ec2profile=None,
     results = []
     result = {}
     for region in regions:
-        result[region] = aws_rdscmd(
-         ec2profile,
-         region,
-         rds_subcmd='describe-db-security-groups',
-         query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        result[region] = aws_rdscmd(ec2profile,
+                                    region,
+                                    rds_subcmd='describe-db-security-groups',
+                                    query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         results.extend(result)
 
     return __filter_list_by(result, myfilter=filterby)
