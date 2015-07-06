@@ -348,7 +348,10 @@ environment
     delete_security_groups(my_filterby=arg, dry_run=True)
 
 
-def __filter_list_by(my_dict={}, myfilter=None):
+def __filter_list_by(my_dict=None, myfilter=None):
+
+    if my_dict is None:
+        my_dict = {}
     results = {}
     if not myfilter is None:
         for region, lists in my_dict.items():
