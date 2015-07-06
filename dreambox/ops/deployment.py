@@ -298,7 +298,7 @@ def get_all_security_groups(my_ec2profile=None,
 def delete_security_groups(ec2profile=None,
                            regions=None,
                            my_filterby='stage3',
-                           commit_deletion=False):
+                           **options):
 
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
