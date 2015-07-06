@@ -14,6 +14,7 @@ The most commonly used ops commands are:
 """
 
 from docopt import docopt
+from dreambox.utils import get_deployment_function_object
 
 if __name__ == '__main__':
     import dreambox.ops.deployment
@@ -29,5 +30,5 @@ if __name__ == '__main__':
     if args['<command>'] in dir(dreambox.ops.deployment):
         func_name = args['<command>']
         print 'found {0} from dreambox.ops.deployment, loading it now'.format(func_name)
-        func_obj = getattr(dreambox.ops.deployment, func_name )
-        func_obj()
+        func_obj = get_deployment_function_object(func_name)
+        func_obj(argv)

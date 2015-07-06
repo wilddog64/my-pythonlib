@@ -22,7 +22,7 @@ import sys
 #   **options: is a dict parameters that can pass to this particular
 #              sub-command
 #
-# note: most aws sub-command options has a '-', which cash with python
+# note: most aws sub-command options has a '-', which crash with python
 #       keyword.  to solve this problem, when specify sub-command options,
 #       use '_' instead of '-'.  this function will replace '_' with '-' for
 #       all the instances it can find.
@@ -31,6 +31,7 @@ def aws_cmd(cmd_cat='',
             region='us-east-1',
             subcmd='',
             dry_run=False,
+            verbose=False,
             **options):
 
     cmd_opts = ''
@@ -56,8 +57,12 @@ def aws_cmd(cmd_cat='',
                                                         subcmd,
                                                         cmd_opts)
     if dry_run:
-        aws_command = "{0} --dry-run".format(aws_command)
-    print("prepare to execute %s " % aws_command, file=sys.stderr)
+        print('dry run flag set, executing {}'.format(aws_command),
+              file=sys.stderr)
+        return
+
+    if verbose:
+        print("prepare to execute %s " % aws_command, file=sys.stderr)
     cmd = aws_command.split(' ')
     proc = subprocess.Popen(cmd,
                             stdout=subprocess.PIPE,
@@ -84,12 +89,16 @@ def aws_ec2cmd(
                ec2profile=None,
                ec2region='us-east-1',
                subcmd='',
+               dry_run=False,
+               verbose=False,
                **options):
     return aws_cmd('ec2',
-            ec2profile,
-            ec2region,
-            subcmd,
-            **options)
+                   ec2profile,
+                   ec2region,
+                   subcmd,
+                   dry_run,
+                   verbose,
+                   **options)
 
 
 # aws_asgcmd is a function that execute aws autoscaling command.  this
@@ -105,12 +114,16 @@ def aws_ec2cmd(
 def aws_asgcmd(aws_profile=None,
                aws_region='us-east-1',
                asg_subcmd=None,
+               dry_run=False,
+               verbose=False,
                **asg_options):
     return aws_cmd(cmd_cat='autoscaling',
-            profile=aws_profile,
-            region=aws_region,
-            subcmd=asg_subcmd,
-            **asg_options)
+                   profile=aws_profile,
+                   region=aws_region,
+                   subcmd=asg_subcmd,
+                   dry_run=dry_run,
+                   verbose=verbose,
+                   **asg_options)
 
 # aws_ecachecmd is a function that execute aws elasticache command.  this
 # function takes 5 parameters,
@@ -125,12 +138,16 @@ def aws_asgcmd(aws_profile=None,
 def aws_ecachecmd(aws_profile=None,
                   aws_region='us-west-2',
                   ecache_subcmd=None,
+                  dry_run=False,
+                  verbose=False,
                   **ecache_options):
     return aws_cmd(
             cmd_cat='elasticache',
             profile=aws_profile,
             region=aws_region,
             subcmd=ecache_subcmd,
+            dry_run=dry_run,
+            verbose=verbose,
             **ecache_options)
 
 def aws_cfn_cmd(aws_profile=None,
@@ -157,12 +174,16 @@ def aws_cfn_cmd(aws_profile=None,
 def aws_rdscmd(aws_profile=None,
                   aws_region='us-west-2',
                   rds_subcmd=None,
+                  dry_run=False,
+                  verbose=False,
                   **ecache_options):
     return aws_cmd(
             cmd_cat='rds',
             profile=aws_profile,
             region=aws_region,
             subcmd=rds_subcmd,
+            dry_run=dry_run,
+            verbose=verbose,
             **ecache_options)
 
 
@@ -177,18 +198,20 @@ def aws_rdscmd(aws_profile=None,
 # aws_redshiftcmd will return a valid json object back to caller upon successful
 # call
 def aws_redshiftcmd(aws_profile=None,
-                  aws_region='us-west-2',
-                  redshift_subcmd=None,
-                  **ecache_options):
-    return aws_cmd(
-            cmd_cat='redshift',
-            profile=aws_profile,
-            region=aws_region,
-            subcmd=redshift_subcmd,
-            **ecache_options)
+                    aws_region='us-west-2',
+                    redshift_subcmd=None,
+                    dry_run=False,
+                    verbose=False,
+                    **ecache_options):
+    return aws_cmd(cmd_cat='redshift',
+                   profile=aws_profile,
+                   region=aws_region,
+                   subcmd=redshift_subcmd,
+                   dry_run=dry_run,
+                   verbose=verbose,
+                   **ecache_options)
 
 if __name__ == "__main__":
-    from dreambox.ops.deployment import get_all_asgs
     from dreambox.ops.deployment import get_all_play_asgs
     from dreambox.ops.deployment import get_only_play_asgs
     from dreambox.ops.deployment import get_ec2_instances_hostnames_from_asg_groups
@@ -197,13 +220,11 @@ if __name__ == "__main__":
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print("script executed: {0} and current script directory is: {1}".format(__file__, current_directory), file=sys.stderr)
-    # aws_ec2cmd('dreambox', 'us-east-1', 'describe-instances',
-    #         query='Reservations[].Instances[].[PublicDnsName,KeyName]')
-    asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     result = get_all_play_asgs(ec2profile='dreambox',
-                           ec2region='us-east-1',
-                           env='production',
-                           query=asg_query)
+                               ec2region='us-east-1',
+                               env='production',
+                               query=asg_query)
     print('result from get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
     pp.pprint(result)

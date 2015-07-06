@@ -1,5 +1,5 @@
 from funcy.seqs import chunks
-
+import dreambox.ops.deployment
 
 # make_hash_of_hashes will make an array of hashes from a given list by these
 # steps,
@@ -22,3 +22,9 @@ def make_hash_of_hashes(my_list):
         items = list(item)
         result[items[0][0]] = items[1]
     return result
+
+
+def get_deployment_function_object(func_name):
+    func_obj = getattr(dreambox.ops.deployment, func_name)
+
+    return func_obj

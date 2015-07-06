@@ -56,7 +56,7 @@ def get_all_play_asgs(ec2profile=None,
                       ec2region='us-east-1',
                       env='production',
                       **options):
-    qry='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    qry = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
     hashes = dreambox.utils.make_hash_of_hashes(get_all_asgs(ec2profile,
                                                              ec2region,
                                                              query=qry))
@@ -121,17 +121,21 @@ def get_ec2_instances_hostnames_from_asg_groups(ec2profile=None,
 #
 # get_stack_names_from_all_regions will only return name with stageN (n is a
 # number from 1 - 9)
-def get_stack_names_from_all_regions(profile = '',
-                                     regions = [ 'us-east-1', 'us-west-2' ],
-                                     qry = 'Stacks[].StackName'):
+def get_stack_names_from_all_regions(profile='',
+                                     regions=None,
+                                     qry='Stacks[].StackName'):
+
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
     region_stacks = {}
     m = re.compile(r'^stage\d$', re.IGNORECASE)
     for region in regions:
         region_stack = [r for r in
-                          aws_cfn_cmd(aws_profile = profile,
-                                      aws_region = region,
-                                      cfn_subcmd = 'describe-stacks',
-                                      query = qry)
+                          aws_cfn_cmd(aws_profile=profile,
+                                      aws_region=region,
+                                      cfn_subcmd='describe-stacks',
+                                      query=qry)
                           if m.match(r)
                         ]
         region_stacks[region] = region_stack
@@ -196,27 +200,35 @@ def get_available_stack_from_all_regions(aws_profile=''):
     return region_available_slot
 
 def get_all_ec2_security_groups(ec2profile=None,
-                                regions=['us-east-1', 'us-west-2'],
+                                regions=None,
                                 filterby=None):
 
-    results        = []
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
+    results = []
+    result = {}
     for region in regions:
-        result = aws_ec2cmd(ec2profile,
-                            region,
-                            subcmd='describe-security-groups',
-                            query='SecurityGroups[].GroupName')
+        result[region] = aws_ec2cmd(ec2profile,
+                                    region,
+                                    subcmd='describe-security-groups',
+                                    query='SecurityGroups[].GroupName')
         results.extend(result)
 
     return __filter_list_by(result, myfilter=filterby)
 
 
 def get_all_elasticcache_security_groups(ec2profile=None,
-                                         regions=['us-east-1', 'us-west-2'],
+                                         regions=None,
                                          filterby=None):
 
-    results        = []
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
+    results = []
+    result = {}
     for region in regions:
-        result = aws_ecachecmd(
+        result[region] = aws_ecachecmd(
          ec2profile,
          region,
          ecache_subcmd='describe-cache-security-groups',
@@ -227,28 +239,31 @@ def get_all_elasticcache_security_groups(ec2profile=None,
 
 
 def get_all_rds_security_groups(ec2profile=None,
-                                regions=['us-east-1', 'us-west-2'],
+                                regions=None,
                                 filterby=None):
 
-    results        = []
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+    results = []
+    result = {}
     for region in regions:
-        result = aws_rdscmd(
-         ec2profile,
-         region,
-         rds_subcmd='describe-db-security-groups',
-         query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        result[region] = aws_rdscmd(ec2profile,
+                                    region,
+                                    rds_subcmd='describe-db-security-groups',
+                                    query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         results.extend(result)
 
     return __filter_list_by(result, myfilter=filterby)
 
 
 def get_all_redshift_security_groups(ec2profile=None,
-                                regions=['us-east-1', 'us-west-2'],
-                                filterby=None):
+                                     regions=['us-east-1', 'us-west-2'],
+                                     filterby=None):
 
-    results        = []
+    results = []
+    result = {}
     for region in regions:
-        result = aws_redshiftcmd(
+        result[region] = aws_redshiftcmd(
          ec2profile,
          region,
          redshift_subcmd='describe-cluster-security-groups',
@@ -261,33 +276,89 @@ def get_all_redshift_security_groups(ec2profile=None,
 def get_all_security_groups(my_ec2profile=None,
                             my_regions=['us-east-1', 'us-west-2'],
                             my_filterby=None):
-    results = []
-    result = get_all_ec2_security_groups(ec2profile=my_ec2profile,
-                                         regions=my_regions,
-                                         filterby=my_filterby)
-    results.extend(result)
-    result = get_all_elasticcache_security_groups(ec2profile=my_ec2profile,
-                                                  regions=my_regions,
-                                                  filterby=my_filterby)
-    results.extend(result)
-    result = get_all_rds_security_groups(ec2profile=my_ec2profile,
-                                         regions=my_regions,
-                                         filterby=my_filterby)
-    results.extend(result)
-    result = get_all_redshift_security_groups(ec2profile=my_ec2profile,
-                                              regions=my_regions,
-                                              filterby=my_filterby)
-    results.extend(result)
+    results = {}
+    results['ec2'] = get_all_ec2_security_groups(ec2profile=my_ec2profile,
+                                                 regions=my_regions,
+                                                 filterby=my_filterby)
+    results['elasticcache'] = get_all_elasticcache_security_groups(
+                                      ec2profile=my_ec2profile,
+                                      regions=my_regions,
+                                      filterby=my_filterby)
+    results['rds'] = get_all_rds_security_groups(ec2profile=my_ec2profile,
+                                                 regions=my_regions,
+                                                 filterby=my_filterby)
+    results['redshift'] = get_all_redshift_security_groups(
+                                      ec2profile=my_ec2profile,
+                                      regions=my_regions,
+                                      filterby=my_filterby)
     return results
 
-def __filter_list_by(my_list=[], myfilter=None):
-    result = []
+def delete_security_groups(ec2profile=None,
+                           regions=None,
+                           my_filterby='stage3',
+                           dry_run=False,
+                           **options):
+
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
+    security_groups_to_delete = get_all_security_groups(ec2profile,
+                                                        regions,
+                                                        my_filterby)
+    for cmdcat, regions in security_groups_to_delete.items():
+        for region, security_groups in regions.items():
+            for security_group in security_groups:
+                if dry_run:
+                    if cmdcat == 'ec2':
+                        aws_ec2cmd(ec2profile=ec2profile,
+                                   ec2region=region,
+                                   subcmd='delete-security-group',
+                                   dry_run=dry_run,
+                                   group_name=security_group)
+                    elif cmdcat == 'elasticcache':
+                        aws_ecachecmd(aws_profile=ec2profile,
+                                      aws_region=region,
+                                      ecache_subcmd='delete-cache-security-group',
+                                      cache_security_group_name=security_group)
+                    elif cmdcat == 'rds':
+                        aws_rdscmd(aws_profile=ec2profile,
+                                   aws_region=region,
+                                   rds_subcmd='delete-db-security-group',
+                                   dry_run=dry_run,
+                                   db_security_group_name=security_group)
+                    elif cmdcat == 'redshift':
+                        aws_redshiftcmd(aws_profile=ec2profile,
+                                        aws_region=region,
+                                        subcmd='delete-cluster-security-group',
+                                        dry_run=dry_run,
+                                        cluster_security_group_name=security_group)
+
+
+def delete_all_security_groups(argv=None):
+    """
+usage: ops delete_all_security_groups [--dry-run] [<args>...]
+
+options:
+ops delete_all_security_groups [options] # delete all security group for a given
+environment
+    """
+    print('pass in parameters: {}'.format(argv), file=sys.stderr)
+    arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
+    arg = arguments['<args>'][0]
+    delete_security_groups(my_filterby=arg, dry_run=True)
+
+
+def __filter_list_by(my_dict=None, myfilter=None):
+
+    if my_dict is None:
+        my_dict = {}
+    results = {}
     if not myfilter is None:
-        result = [p for p in my_list
-            if p.capitalize().startswith(myfilter.capitalize())]
+        for region, lists in my_dict.items():
+            results[region] = [p for p in lists if p.capitalize().startswith(myfilter.capitalize())]
     else:
-        result = my_list
-    return result
+        results = my_dict
+    return results
 
 def execute(argv=[]):
     """
@@ -311,31 +382,31 @@ if __name__ == '__main__':
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print("script executed: %s and current script directory is: %s" % \
         (__file__, current_directory), file=sys.stderr)
-    asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    result = get_all_play_asgs(ec2profile=None,
-                           ec2region='us-east-1',
-                           env='production',
-                           query=asg_query)
+    asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    my_result = get_all_play_asgs(ec2profile=None,
+                                  ec2region='us-east-1',
+                                  env='production',
+                                  query=asg_query)
     print('result from get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
-    pp.pprint(result)
+    pp.pprint(my_result)
     print('end of get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
     print("\n", file=sys.stderr)
 
     print('result from get_only_play_asgs', file=sys.stderr)
     print('==============================', file=sys.stderr)
-    result = get_only_play_asgs(query=asg_query)
-    pp.pprint(result)
+    my_result = get_only_play_asgs(query=asg_query)
+    pp.pprint(my_result)
     print('end of get_only_play_asgs', file=sys.stderr)
     print("\", file=sys.stderr")
 
-    asg_query='AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    result = get_only_play_asgs(query=asg_query)
+    asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
+    my_result = get_only_play_asgs(query=asg_query)
 
     print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('=======================================================', file=sys.stderr)
-    results = get_ec2_instances_hostnames_from_asg_groups(asg_group=result)
+    results = get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
     pp.pprint(results)
     print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('==================================================', file=sys.stderr)
@@ -343,59 +414,62 @@ if __name__ == '__main__':
 
     print('result from get_available_stack_from_all_regions', file=sys.stderr)
     print('================================================', file=sys.stderr)
-    result = get_available_stack_from_all_regions()
-    pp.pprint(result)
+    my_result = get_available_stack_from_all_regions()
+    pp.pprint(my_result)
     print('end of get_available_stack_from_all_regions', file=sys.stderr)
     print('===========================================', file=sys.stderr)
 
-    print( 'result from get_all_ec2_security_groups' )
+    print('result from get_all_ec2_security_groups')
     print('================================================', file=sys.stderr)
-    result = get_all_ec2_security_groups()
-    pp.pprint(result)
+    my_result = get_all_ec2_security_groups()
+    pp.pprint(my_result)
 
     print('filter by stage2')
     print('================================================', file=sys.stderr)
     filter_result = get_all_ec2_security_groups(filterby='Stage2')
     pp.pprint(filter_result)
-    print( 'end of get_all_ec2_security_groups' )
+    print('end of get_all_ec2_security_groups')
     print('================================================', file=sys.stderr)
 
-    print( 'result from get_all_elasticcache_security_groups' )
+    print('result from get_all_elasticcache_security_groups')
     print('================================================', file=sys.stderr)
-    result = get_all_elasticcache_security_groups()
-    pp.pprint(result)
-    print( 'filter by stage2' )
-    result = get_all_elasticcache_security_groups(filterby='stage3')
-    pp.pprint(result)
-    print( 'end of get_all_elasticcache_security_groups' )
-    print('================================================', file=sys.stderr)
-
-    print( 'result from get_all_rds_security_groups' )
-    print('================================================', file=sys.stderr)
-    result = get_all_rds_security_groups()
-    pp.pprint(result)
-    print( 'filter by stage2' )
-    result = get_all_rds_security_groups(filterby='stage3')
-    pp.pprint(result)
-    print( 'end of get_all_rds_security_groups' )
+    my_result = get_all_elasticcache_security_groups()
+    pp.pprint(my_result)
+    print('filter by stage2')
+    my_result = get_all_elasticcache_security_groups(filterby='stage3')
+    pp.pprint(my_result)
+    print('end of get_all_elasticcache_security_groups')
     print('================================================', file=sys.stderr)
 
-    print( 'result from get_all_redshift_security_groups' )
+    print('result from get_all_rds_security_groups')
     print('================================================', file=sys.stderr)
-    result = get_all_redshift_security_groups()
-    pp.pprint(result)
-    print( 'filter by stage3' )
+    my_result = get_all_rds_security_groups()
+    pp.pprint(my_result)
+    print('filter by stage2')
+    my_result = get_all_rds_security_groups(filterby='stage3')
+    pp.pprint(my_result)
+    print('end of get_all_rds_security_groups')
+    print('================================================', file=sys.stderr)
+
+    print('result from get_all_redshift_security_groups')
+    print('================================================', file=sys.stderr)
+    my_result = get_all_redshift_security_groups()
+    pp.pprint(my_result)
+    print('filter by stage3')
     result = get_all_redshift_security_groups(filterby='stage3')
-    pp.pprint(result)
-    print( 'end of get_all_redshift_security_groups' )
+    pp.pprint(my_result)
+    print('end of get_all_redshift_security_groups')
     print('================================================', file=sys.stderr)
 
-    print( 'result from get_all_security_groups' )
+    print('result from get_all_security_groups')
     print('================================================', file=sys.stderr)
-    result = get_all_security_groups()
-    pp.pprint(result)
-    print( 'result from get_all_security_groups filtered by stage2' )
-    result = get_all_security_groups(my_filterby='stage2')
-    pp.pprint(result)
-    print( 'end of get_all_security_groups' )
+    my_result = get_all_security_groups()
+    pp.pprint(my_result)
+    print('result from get_all_security_groups filtered by stage3')
+    my_result = get_all_security_groups(my_filterby='stage3')
+    pp.pprint(my_result)
+    print('end of get_all_security_groups')
     print('================================================', file=sys.stderr)
+
+
+
