@@ -336,16 +336,21 @@ def delete_security_groups(ec2profile=None,
 
 def delete_all_security_groups(argv=None):
     """
-usage: ops delete_all_security_groups [--dry-run] [<args>...]
+usage:
+    ops delete_all_security_groups <stage>...
+    ops delete_all_security_groups <stage> [--dry-run=<no|yes>]
 
 options:
 ops delete_all_security_groups [options] # delete all security group for a given
 environment
     """
-    print('pass in parameters: {}'.format(argv), file=sys.stderr)
+    # print('pass in parameters: {}'.format(argv), file=sys.stderr)
     arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
-    arg = arguments['<args>'][0]
-    delete_security_groups(my_filterby=arg, dry_run=True)
+    stage = arguments['<stage>'][0]
+    dry_run = arguments['--dry-run']
+    print('stage to work on is {}'.format(stage), file=sys.stderr)
+    print('--dry-run: {}'.format(dry_run), file=sys.stdout)
+    delete_security_groups(my_filterby=stage, dry_run=dry_run)
 
 
 def __filter_list_by(my_dict=None, myfilter=None):
@@ -359,6 +364,7 @@ def __filter_list_by(my_dict=None, myfilter=None):
     else:
         results = my_dict
     return results
+
 
 def execute(argv=[]):
     """
