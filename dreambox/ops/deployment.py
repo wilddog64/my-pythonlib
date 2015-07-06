@@ -375,8 +375,6 @@ ops deploy [options]   # get all auto scaling groups define under AWS
     print("argument receive: {}".format(arguments), file=sys.stderr)
 
 if __name__ == '__main__':
-    import re
-    import pprint
 
     pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
