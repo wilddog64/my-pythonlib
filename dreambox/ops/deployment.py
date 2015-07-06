@@ -257,8 +257,8 @@ def get_all_rds_security_groups(ec2profile=None,
 
 
 def get_all_redshift_security_groups(ec2profile=None,
-                                regions=['us-east-1', 'us-west-2'],
-                                filterby=None):
+                                     regions=['us-east-1', 'us-west-2'],
+                                     filterby=None):
 
     results = []
     result = {}
