@@ -275,6 +275,26 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None,
     return __create_hash_table_from_list(hashtable, filterby)
 
 
+def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
+                                             regions=None,
+                                             filterby=None,
+                                             dry_run=False):
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
+    redshift_qry = 'ClusterSecurityGroups[].[ClusterSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName]'
+
+    hashtable = {}
+    for region in regions:
+        hashtable[region] = aws_redshiftcmd(aws_profile=ec2profile,
+                                            aws_region=region,
+                                            rds_subcmd='describe-db-security-groups',
+                                            dry_run=dry_run,
+                                            query=redshift_qry)
+
+    return __create_hash_table_from_list(hashtable, filterby)
+
+
 def get_all_redshift_security_groups(ec2profile=None,
                                      regions=['us-east-1', 'us-west-2'],
                                      filterby=None):
@@ -517,4 +537,12 @@ if __name__ == '__main__':
                                                  filterby='stage3')
     pp.pprint(result)
     print('end of get_all_rds_ingress_rules_for_stage', file=sys.stderr)
+    print('================================================', file=sys.stderr)
+
+    print('result from get_all_redshift_ingress_rules_for_stage', file=sys.stderr)
+    print('================================================', file=sys.stderr)
+    result = get_all_redshift_ingress_rules_for_stage(ec2profile='mgmt',
+                                                      filterby='stage3')
+    pp.pprint(result)
+    print('end of get_all_redshift_ingress_rules_for_stage', file=sys.stderr)
     print('================================================', file=sys.stderr)
