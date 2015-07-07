@@ -381,13 +381,6 @@ def __filter_list_by(my_dict=None, myfilter=None):
         results = my_dict
     return results
 
-def __filter_hashtable_by(hash_table={}, filterby=None):
-    if filterby is None:
-        return
-
-    for key in hash_table.keys():
-        if key.lower().startswith(filterby.lower()):
-            return hash_table[key]
 
 def __create_hash_table_from_list(ahash=None, filterby=None):
     chunk_table = {}
