@@ -256,7 +256,9 @@ def get_all_rds_security_groups(ec2profile=None,
     return __filter_list_by(result, myfilter=filterby)
 
 
-def query_ingress_rules_for_environment(ec2profile=None, regions=None, filterby=None):
+def query_ingress_rules_for_environment(ec2profile=None,
+                                        regions=None,
+                                        filterby=None):
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
@@ -264,9 +266,9 @@ def query_ingress_rules_for_environment(ec2profile=None, regions=None, filterby=
     hashtable = {}
     for region in regions:
         hashtable[region] = aws_rdscmd(aws_profile=ec2profile,
-                                      aws_region=region,
-                                      rds_subcmd='describe-db-security-groups',
-                                      query=rds_qry)
+                                       aws_region=region,
+                                       rds_subcmd='describe-db-security-groups',
+                                       query=rds_qry)
         # hash_elements = dreambox.utils.make_hash_of_hashes(elements)
 
     return __create_hash_table_from_list(hashtable, filterby)
