@@ -48,7 +48,7 @@ def aws_cmd(cmd_cat='',
         cmd_opts = ' '.join(["--{} {}".format(key, val)
                              for key, val in my_options.items()])
 
-    if profile and profile.strip():
+    if profile:
         aws_command = "aws --profile {} --region {} {} {} {}".format(profile,
                  region, cmd_cat, subcmd, cmd_opts)
     else:
