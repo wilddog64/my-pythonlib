@@ -258,7 +258,8 @@ def get_all_rds_security_groups(ec2profile=None,
 
 def get_all_rds_ingress_rules_for_stage(ec2profile=None,
                                         regions=None,
-                                        filterby=None):
+                                        filterby=None,
+                                        dry_run=False):
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
@@ -268,6 +269,7 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None,
         hashtable[region] = aws_rdscmd(aws_profile=ec2profile,
                                        aws_region=region,
                                        rds_subcmd='describe-db-security-groups',
+                                       dry_run=dry_run,
                                        query=rds_qry)
 
     return __create_hash_table_from_list(hashtable, filterby)
