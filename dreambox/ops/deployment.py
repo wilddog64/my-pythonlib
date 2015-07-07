@@ -282,11 +282,10 @@ def get_all_redshift_security_groups(ec2profile=None,
     results = []
     result = {}
     for region in regions:
-        result[region] = aws_redshiftcmd(
-         ec2profile,
-         region,
-         redshift_subcmd='describe-cluster-security-groups',
-         query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        result[region] = aws_redshiftcmd(ec2profile,
+                                         region,
+                                         redshift_subcmd='describe-cluster-security-groups',
+                                         query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         results.extend(result)
 
     return __filter_list_by(result, myfilter=filterby)
