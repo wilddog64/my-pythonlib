@@ -261,16 +261,16 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None, regions=None, filterby=
         regions = ['us-east-1', 'us-west-2']
 
     rds_qry = 'DBSecurityGroups[].[DBSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName][]'
-    my_results = []
+    hashtable = {}
     for region in regions:
-        elements = aws_rdscmd(aws_profile=ec2profile,
-                              aws_region=region,
-                              rds_subcmd='describe-db-security-groups',
-                              query=rds_qry)
+        hashtable[region] = aws_rdscmd(aws_profile=ec2profile,
+                                      aws_region=region,
+                                      rds_subcmd='describe-db-security-groups',
+                                      query=rds_qry)
         # hash_elements = dreambox.utils.make_hash_of_hashes(elements)
-        my_results.append(elements)
 
-    return __create_hash_table_from_list(my_results, filterby)
+    return __create_hash_table_from_list(hashtable, filterby)
+    # return hashtable
 
 def get_all_redshift_security_groups(ec2profile=None,
                                      regions=['us-east-1', 'us-west-2'],
@@ -389,17 +389,23 @@ def __filter_hashtable_by(hash_table={}, filterby=None):
         if key.lower().startswith(filterby.lower()):
             return hash_table[key]
 
-def __create_hash_table_from_list(aList=None, filterby=None):
-    chunk_list = []
-    for elem in aList:
-        chunk_list.extend(chunks(2, elem))
-    print()
+def __create_hash_table_from_list(ahash=None, filterby=None):
+    chunk_table = {}
+    hash_tables = {}
     hash_table = {}
-    for chunk in chunk_list:
-        items = list(chunk)
-        hash_table[items[0].lower()] = items[1]
+    for region, ingresses in ahash.items():
+        chunk_table[region] = chunks(2, ingresses)
 
-    return __filter_hashtable_by(hash_table, filterby)
+    for region, ingresses in chunk_table.items():
+        for ingress in ingresses:
+            items = list(chunks(2, ingress))
+            if items[0][0].lower().startswith(filterby.lower()):
+                hash_table[items[0][0]] = items[0][1]
+                hash_tables[region] = hash_table
+
+    return hash_tables
+
+
 
 def execute(argv=[]):
     """
