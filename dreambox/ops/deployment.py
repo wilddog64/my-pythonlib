@@ -256,7 +256,7 @@ def get_all_rds_security_groups(ec2profile=None,
     return __filter_list_by(result, myfilter=filterby)
 
 
-def get_all_rds_ingress_rules_for_stage(ec2profile=None, regions=None, filterby=None):
+def query_ingress_rules_for_environment(ec2profile=None, regions=None, filterby=None):
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
@@ -509,10 +509,10 @@ if __name__ == '__main__':
     print('end of get_all_security_groups')
     print('================================================', file=sys.stderr)
 
-    print('result from get_all_rds_ingress_rules_for_stage', file=sys.stderr)
+    print('result from query_ingress_rules_for_environment', file=sys.stderr)
     print('================================================', file=sys.stderr)
-    result = get_all_rds_ingress_rules_for_stage(ec2profile='mgmt',
+    result = query_ingress_rules_for_environment(ec2profile='mgmt',
                                                  filterby='stage3')
     pp.pprint(result)
-    print('end of get_all_rds_ingress_rules_for_stage', file=sys.stderr)
+    print('end of query_ingress_rules_for_environment', file=sys.stderr)
     print('================================================', file=sys.stderr)
