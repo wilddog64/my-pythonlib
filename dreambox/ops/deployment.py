@@ -256,7 +256,9 @@ def get_all_rds_security_groups(ec2profile=None,
     return __filter_list_by(result, myfilter=filterby)
 
 
-def get_all_rds_ingress_rules_for_stage(ec2profile=None, regions=None, filterby=None):
+def get_all_rds_ingress_rules_for_stage(ec2profile=None,
+                                        regions=None,
+                                        filterby=None):
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
