@@ -267,10 +267,9 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None, regions=None, filterby=
                                        aws_region=region,
                                        rds_subcmd='describe-db-security-groups',
                                        query=rds_qry)
-        # hash_elements = dreambox.utils.make_hash_of_hashes(elements)
 
     return __create_hash_table_from_list(hashtable, filterby)
-    # return hashtable
+
 
 def get_all_redshift_security_groups(ec2profile=None,
                                      regions=['us-east-1', 'us-west-2'],
