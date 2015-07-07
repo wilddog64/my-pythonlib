@@ -270,7 +270,7 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None, regions=None, filterby=
         # hash_elements = dreambox.utils.make_hash_of_hashes(elements)
         my_results.append(elements)
 
-    return __create_hash_table_from_list(my_results)
+    return __create_hash_table_from_list(my_results, filterby)
 
 def get_all_redshift_security_groups(ec2profile=None,
                                      regions=['us-east-1', 'us-west-2'],
@@ -381,8 +381,15 @@ def __filter_list_by(my_dict=None, myfilter=None):
         results = my_dict
     return results
 
+def __filter_hashtable_by(hash_table={}, filterby=None):
+    if filterby is None:
+        return
 
-def __create_hash_table_from_list(aList=None, filterBy=None):
+    for key in hash_table.keys():
+        if key.lower().startswith(filterby.lower()):
+            return hash_table[key]
+
+def __create_hash_table_from_list(aList=None, filterby=None):
     chunk_list = []
     for elem in aList:
         chunk_list.extend(chunks(2, elem))
@@ -392,7 +399,7 @@ def __create_hash_table_from_list(aList=None, filterBy=None):
         items = list(chunk)
         hash_table[items[0].lower()] = items[1]
 
-    return hash_table
+    return __filter_hashtable_by(hash_table, filterby)
 
 def execute(argv=[]):
     """
@@ -505,7 +512,8 @@ if __name__ == '__main__':
 
     print('result from get_all_rds_ingress_rules_for_stage', file=sys.stderr)
     print('================================================', file=sys.stderr)
-    result = get_all_rds_ingress_rules_for_stage(ec2profile='mgmt')
+    result = get_all_rds_ingress_rules_for_stage(ec2profile='mgmt',
+                                                 filterby='stage3')
     pp.pprint(result)
     print('end of get_all_rds_ingress_rules_for_stage', file=sys.stderr)
     print('================================================', file=sys.stderr)
