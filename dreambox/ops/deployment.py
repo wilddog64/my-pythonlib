@@ -256,6 +256,22 @@ def get_all_rds_security_groups(ec2profile=None,
     return __filter_list_by(result, myfilter=filterby)
 
 
+def get_all_rds_ingress_rules_for_stage(ec2profile=None, regions=None, filterby=None):
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
+    rds_qry = 'DBSecurityGroups[].[DBSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName][]'
+    my_results = []
+    for region in regions:
+        elements = aws_rdscmd(aws_profile=ec2profile,
+                              aws_region=region,
+                              rds_subcmd='describe-db-security-groups',
+                              query=rds_qry)
+        # hash_elements = dreambox.utils.make_hash_of_hashes(elements)
+        my_results.append(elements)
+
+    return __create_hash_table_from_list(my_results)
+
 def get_all_redshift_security_groups(ec2profile=None,
                                      regions=['us-east-1', 'us-west-2'],
                                      filterby=None):
@@ -366,6 +382,18 @@ def __filter_list_by(my_dict=None, myfilter=None):
     return results
 
 
+def __create_hash_table_from_list(aList=None, filterBy=None):
+    chunk_list = []
+    for elem in aList:
+        chunk_list.extend(chunks(2, elem))
+    print()
+    hash_table = {}
+    for chunk in chunk_list:
+        items = list(chunk)
+        hash_table[items[0].lower()] = items[1]
+
+    return hash_table
+
 def execute(argv=[]):
     """
 usage: deploy [--all] [--inc-magic-number] [<args>...]
@@ -475,5 +503,9 @@ if __name__ == '__main__':
     print('end of get_all_security_groups')
     print('================================================', file=sys.stderr)
 
-
-
+    print('result from get_all_rds_ingress_rules_for_stage', file=sys.stderr)
+    print('================================================', file=sys.stderr)
+    result = get_all_rds_ingress_rules_for_stage(ec2profile='mgmt')
+    pp.pprint(result)
+    print('end of get_all_rds_ingress_rules_for_stage', file=sys.stderr)
+    print('================================================', file=sys.stderr)
