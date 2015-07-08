@@ -410,15 +410,27 @@ def __create_hash_table_from_list(ahash=None, filterby=None):
     hash_table = {}
     for region, ingresses in ahash.items():
         chunk_table[region] = chunks(2, ingresses)
+    __print_structure(chunk_table)
+    print('filter by %s' % filterby)
 
     for region, ingresses in chunk_table.items():
         for ingress in ingresses:
             items = list(chunks(2, ingress))
+            print('key is %s' % items[0][0])
+            key, value = None, None
             if items[0][0].lower().startswith(filterby.lower()):
-                hash_table[items[0][0]] = items[0][1]
-                hash_tables[region] = hash_table
+                key = items[0][0]
+                value = items[0][1]
+            # else:
+            #     my_items = select(print(_), items[0][1])
+            #     if my_items:
+            #         key = my_items[0][0]
+            #         value = my_items[0][1]
+            hash_table[key] = value
+            hash_tables[region] = hash_table
 
     return hash_tables
+
 
 
 def __print_structure(object=None):
