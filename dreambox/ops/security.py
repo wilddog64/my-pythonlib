@@ -206,6 +206,25 @@ def get_all_redshift_security_groups(ec2profile=None,
     return dreambox.utils.filter_list_by(result, myfilter=filterby)
 
 
+def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
+                                                   regions=None,
+                                                   filterby=None,
+                                                   dry_run=False):
+    ingress_rules_to_delete = get_all_elasticache_ingress_rules_for_stage(ec2profile,
+                                                                          regions,
+                                                                          filterby)
+    for region, security_groups in ingress_rules_to_delete.items():
+        for security_group_name, ingress_rules in security_groups.items():
+            for ingress_rule in ingress_rules:
+                aws_ecachecmd(aws_profile=ec2profile,
+                              aws_region=region,
+                              redshift_subcmd='revoke-cache-security-group-ingress',
+                              dry_run=dry_run,
+                              verbose=True,
+                              ec2_security_group_name=security_group_name,
+                              cache_security_group_name=ingress_rule)
+
+
 def get_all_security_groups(my_ec2profile=None,
                             my_regions=['us-east-1', 'us-west-2'],
                             my_filterby=None):
