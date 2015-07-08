@@ -410,6 +410,22 @@ environment
     print('--dry-run: {}'.format(dry_run), file=sys.stdout)
     delete_security_groups(my_filterby=stage, dry_run=dry_run)
 
+def revoke_all_ingress_rules_for_stage(argv=None):
+    """
+usage:
+    ops revoke_all_ingress_rules_for_stage <stage>...
+    ops revoke_all_ingress_rules_for_stage <stage> [--dry-run=<no|yes>]
+    """
+    arguments = docopt(revoke_all_ingress_rules_for_stage.__doc__, argv=argv)
+    stage = arguments['<stage>'][0]
+    dry_run = arguments['--dry-run']
+    if dry_run is None:
+        dry_run = False
+
+    print('stage to work on is {}'.format(stage), file=sys.stderr)
+    print('--dry-run: {}'.format(dry_run), file=sys.stdout)
+
+
 def execute(argv=[]):
     """
 usage: deploy [--all] [--inc-magic-number] [<args>...]
