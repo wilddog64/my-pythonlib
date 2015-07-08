@@ -431,7 +431,7 @@ def __create_hash_table_from_list(ahash=None, filterby=None):
     hash_table = {}
     for region, ingresses in ahash.items():
         chunk_table[region] = chunks(2, ingresses)
-    print('filter by %s' % filterby)
+    print('filter by %s' % filterby, file=sys.stderr)
 
     key, value = None, None
     for region, ingresses in chunk_table.items():
