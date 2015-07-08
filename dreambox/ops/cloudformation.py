@@ -1,17 +1,5 @@
 from __future__ import print_function
-from dreambox.aws.core import aws_ec2cmd
-from dreambox.aws.core import aws_asgcmd
 from dreambox.aws.core import aws_cfn_cmd
-from funcy.strings import str_join
-from funcy.seqs import chunks
-from funcy.seqs import pairwise
-from itertools import chain
-import dreambox.ops.security
-import os
-import dreambox.utils
-import re
-from docopt import docopt
-import sys
 
 
 # get_stack_names_from_all_regions will return all stacks from known
