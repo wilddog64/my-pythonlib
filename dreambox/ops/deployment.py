@@ -2,22 +2,11 @@ from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
 from dreambox.aws.core import aws_cfn_cmd
-
-# from dreambox.ops.security import get_all_ec2_security_groups
-# from dreambox.ops.security import get_all_elasticcache_security_groups
-# from dreambox.ops.security import get_all_rds_security_groups
-# from dreambox.ops.security import get_all_redshift_security_groups
-import dreambox.ops.security
-
-# from dreambox.ops.security import get_all_ec2_ingress_rules_for_stage
-# from dreambox.ops.security import get_all_rds_ingress_rules_for_stage
-# from dreambox.ops.security import get_all_redshift_ingress_rules_for_stage
-
-
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
 from itertools import chain
+import dreambox.ops.security
 import os
 import dreambox.utils
 import re
