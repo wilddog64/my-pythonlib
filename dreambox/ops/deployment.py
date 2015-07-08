@@ -442,11 +442,6 @@ def __create_hash_table_from_list(ahash=None, filterby=None):
                 value = items[0][1]
                 hash_table[key] = value
                 hash_tables[region] = hash_table
-            # else:
-            #     my_items = select(print(_), items[0][1])
-            #     if my_items:
-            #         key = my_items[0][0]
-            #         value = my_items[0][1]
 
     return hash_tables
 
