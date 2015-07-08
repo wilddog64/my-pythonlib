@@ -130,6 +130,25 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
 
     return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
+def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
+                                                regions=None,
+                                                filterby=None,
+                                                dry_run=None):
+    ingress_rules_to_delete = get_all_redshift_ingress_rules_for_stage(ec2profile,
+                                                                       regions,
+                                                                       filterby)
+    for region, security_groups in ingress_rules_to_delete.items():
+        for security_group_name, ingress_rules in security_groups.items():
+            for ingress_rule in ingress_rules:
+                aws_redshiftcmd(aws_profile=ec2profile,
+                                aws_region=region,
+                                redshift_subcmd='revoke_all_ingress_rules',
+                                dry_run=dry_run,
+                                verbose=True,
+                                ec2_security_group_name=security_group_name,
+                                cluster_security_group_name=ingress_rule)
+
+
 
 def get_all_ec2_ingress_rules_for_stage(ec2profile=None,
                                         regions=None,
@@ -254,6 +273,10 @@ def revoke_all_ingress_rules(ec2profile=None,
                                            ec2regions,
                                            filterby,
                                            dry_run)
+    revoke_all_redshift_ingress_rules_for_stage(ec2profile,
+                                                ec2regions,
+                                                filterby,
+                                                dry_run)
 
 if __name__ == '__main__':
     print('result from get_all_ec2_security_groups')
