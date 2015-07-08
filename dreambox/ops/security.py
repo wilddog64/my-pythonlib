@@ -175,17 +175,15 @@ def get_all_security_groups(my_ec2profile=None,
     results['ec2'] = get_all_ec2_security_groups(ec2profile=my_ec2profile,
                                                  regions=my_regions,
                                                  filterby=my_filterby)
-    results['elasticcache'] = get_all_elasticcache_security_groups(
-                                      ec2profile=my_ec2profile,
-                                      regions=my_regions,
-                                      filterby=my_filterby)
+    results['elasticcache'] = get_all_elasticcache_security_groups(ec2profile=my_ec2profile,
+                                                                   regions=my_regions,
+                                                                   filterby=my_filterby)
     results['rds'] = get_all_rds_security_groups(ec2profile=my_ec2profile,
                                                  regions=my_regions,
                                                  filterby=my_filterby)
-    results['redshift'] = get_all_redshift_security_groups(
-                                      ec2profile=my_ec2profile,
-                                      regions=my_regions,
-                                      filterby=my_filterby)
+    results['redshift'] = get_all_redshift_security_groups(ec2profile=my_ec2profile,
+                                                           regions=my_regions,
+                                                           filterby=my_filterby)
     return results
 
 def delete_security_groups(ec2profile=None,
