@@ -13,7 +13,6 @@ import os
 import dreambox.utils
 import re
 from docopt import docopt
-import pprint
 import sys
 
 __doc__ = """
@@ -215,7 +214,7 @@ def get_all_ec2_security_groups(ec2profile=None,
                                     query='SecurityGroups[].GroupName')
         results.extend(result)
 
-    return __filter_list_by(result, myfilter=filterby)
+    return filter_list_by(result, myfilter=filterby)
 
 
 def get_all_elasticcache_security_groups(ec2profile=None,
@@ -235,7 +234,7 @@ def get_all_elasticcache_security_groups(ec2profile=None,
          query='CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         results.extend(result)
 
-    return __filter_list_by(result, myfilter=filterby)
+    return filter_list_by(result, myfilter=filterby)
 
 
 def get_all_rds_security_groups(ec2profile=None,
@@ -253,7 +252,7 @@ def get_all_rds_security_groups(ec2profile=None,
                                     query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         results.extend(result)
 
-    return __filter_list_by(result, myfilter=filterby)
+    return filter_list_by(result, myfilter=filterby)
 
 
 def get_all_rds_ingress_rules_for_stage(ec2profile=None,
@@ -329,7 +328,7 @@ def get_all_redshift_security_groups(ec2profile=None,
                                          query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         results.extend(result)
 
-    return __filter_list_by(result, myfilter=filterby)
+    return filter_list_by(result, myfilter=filterby)
 
 
 def get_all_security_groups(my_ec2profile=None,
@@ -412,7 +411,7 @@ environment
     delete_security_groups(my_filterby=stage, dry_run=dry_run)
 
 
-def __filter_list_by(my_dict=None, myfilter=None):
+def filter_list_by(my_dict=None, myfilter=None):
 
     if my_dict is None:
         my_dict = {}
