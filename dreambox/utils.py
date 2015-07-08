@@ -1,5 +1,6 @@
 from funcy.seqs import chunks
 import dreambox.ops.deployment
+import pprint
 
 # make_hash_of_hashes will make an array of hashes from a given list by these
 # steps,
@@ -28,3 +29,44 @@ def get_deployment_function_object(func_name):
     func_obj = getattr(dreambox.ops.deployment, func_name)
 
     return func_obj
+
+
+def print_structure(object=None, debug=True):
+    pp = pprint.PrettyPrinter(indent=3)
+
+    if debug:
+        pp.pprint(object)
+
+
+def filter_list_by(my_dict=None, myfilter=None):
+
+    if my_dict is None:
+        my_dict = {}
+    results = {}
+    if not myfilter is None:
+        for region, lists in my_dict.items():
+            results[region] = [p for p in lists if p.capitalize().startswith(myfilter.capitalize())]
+    else:
+        results = my_dict
+    return results
+
+
+def create_hashtable_from_hashes(ahash=None, filterby=None):
+    chunk_table = {}
+    hash_tables = {}
+    hash_table = {}
+    for region, ingresses in ahash.items():
+        chunk_table[region] = chunks(2, ingresses)
+
+    key, value = None, None
+    for region, ingresses in chunk_table.items():
+        for ingress in ingresses:
+            items = list(chunks(2, ingress))
+            if items[0][0].lower().startswith(filterby.lower()):
+                key = items[0][0]
+                value = items[0][1]
+                hash_table[key] = value
+                hash_tables[region] = hash_table
+
+    return hash_tables
+

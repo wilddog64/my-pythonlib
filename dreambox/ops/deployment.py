@@ -2,9 +2,18 @@ from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
 from dreambox.aws.core import aws_cfn_cmd
-from dreambox.aws.core import aws_ecachecmd
-from dreambox.aws.core import aws_rdscmd
-from dreambox.aws.core import aws_redshiftcmd
+
+# from dreambox.ops.security import get_all_ec2_security_groups
+# from dreambox.ops.security import get_all_elasticcache_security_groups
+# from dreambox.ops.security import get_all_rds_security_groups
+# from dreambox.ops.security import get_all_redshift_security_groups
+import dreambox.ops.security
+
+# from dreambox.ops.security import get_all_ec2_ingress_rules_for_stage
+# from dreambox.ops.security import get_all_rds_ingress_rules_for_stage
+# from dreambox.ops.security import get_all_redshift_ingress_rules_for_stage
+
+
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
@@ -13,7 +22,6 @@ import os
 import dreambox.utils
 import re
 from docopt import docopt
-import pprint
 import sys
 
 __doc__ = """
@@ -199,141 +207,6 @@ def get_available_stack_from_all_regions(aws_profile=''):
     sys.stdout.write("region slot -> {0}:{1}".format(my_region, my_slot))
     return region_available_slot
 
-def get_all_ec2_security_groups(ec2profile=None,
-                                regions=None,
-                                filterby=None):
-
-    if regions is None:
-        regions = ['us-east-1', 'us-west-2']
-
-    results = []
-    result = {}
-    for region in regions:
-        result[region] = aws_ec2cmd(ec2profile,
-                                    region,
-                                    subcmd='describe-security-groups',
-                                    query='SecurityGroups[].GroupName')
-        results.extend(result)
-
-    return __filter_list_by(result, myfilter=filterby)
-
-
-def get_all_elasticcache_security_groups(ec2profile=None,
-                                         regions=None,
-                                         filterby=None):
-
-    if regions is None:
-        regions = ['us-east-1', 'us-west-2']
-
-    results = []
-    result = {}
-    for region in regions:
-        result[region] = aws_ecachecmd(
-         ec2profile,
-         region,
-         ecache_subcmd='describe-cache-security-groups',
-         query='CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
-        results.extend(result)
-
-    return __filter_list_by(result, myfilter=filterby)
-
-
-def get_all_rds_security_groups(ec2profile=None,
-                                regions=None,
-                                filterby=None):
-
-    if regions is None:
-        regions = ['us-east-1', 'us-west-2']
-    results = []
-    result = {}
-    for region in regions:
-        result[region] = aws_rdscmd(ec2profile,
-                                    region,
-                                    rds_subcmd='describe-db-security-groups',
-                                    query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
-        results.extend(result)
-
-    return __filter_list_by(result, myfilter=filterby)
-
-
-def get_all_redshift_security_groups(ec2profile=None,
-                                     regions=['us-east-1', 'us-west-2'],
-                                     filterby=None):
-
-    results = []
-    result = {}
-    for region in regions:
-        result[region] = aws_redshiftcmd(
-         ec2profile,
-         region,
-         redshift_subcmd='describe-cluster-security-groups',
-         query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
-        results.extend(result)
-
-    return __filter_list_by(result, myfilter=filterby)
-
-
-def get_all_security_groups(my_ec2profile=None,
-                            my_regions=['us-east-1', 'us-west-2'],
-                            my_filterby=None):
-    results = {}
-    results['ec2'] = get_all_ec2_security_groups(ec2profile=my_ec2profile,
-                                                 regions=my_regions,
-                                                 filterby=my_filterby)
-    results['elasticcache'] = get_all_elasticcache_security_groups(
-                                      ec2profile=my_ec2profile,
-                                      regions=my_regions,
-                                      filterby=my_filterby)
-    results['rds'] = get_all_rds_security_groups(ec2profile=my_ec2profile,
-                                                 regions=my_regions,
-                                                 filterby=my_filterby)
-    results['redshift'] = get_all_redshift_security_groups(
-                                      ec2profile=my_ec2profile,
-                                      regions=my_regions,
-                                      filterby=my_filterby)
-    return results
-
-def delete_security_groups(ec2profile=None,
-                           regions=None,
-                           my_filterby='stage3',
-                           dry_run=False,
-                           **options):
-
-    if regions is None:
-        regions = ['us-east-1', 'us-west-2']
-
-    security_groups_to_delete = get_all_security_groups(ec2profile,
-                                                        regions,
-                                                        my_filterby)
-    for cmdcat, regions in security_groups_to_delete.items():
-        for region, security_groups in regions.items():
-            for security_group in security_groups:
-                if dry_run:
-                    if cmdcat == 'ec2':
-                        aws_ec2cmd(ec2profile=ec2profile,
-                                   ec2region=region,
-                                   subcmd='delete-security-group',
-                                   dry_run=dry_run,
-                                   group_name=security_group)
-                    elif cmdcat == 'elasticcache':
-                        aws_ecachecmd(aws_profile=ec2profile,
-                                      aws_region=region,
-                                      ecache_subcmd='delete-cache-security-group',
-                                      cache_security_group_name=security_group)
-                    elif cmdcat == 'rds':
-                        aws_rdscmd(aws_profile=ec2profile,
-                                   aws_region=region,
-                                   rds_subcmd='delete-db-security-group',
-                                   dry_run=dry_run,
-                                   db_security_group_name=security_group)
-                    elif cmdcat == 'redshift':
-                        aws_redshiftcmd(aws_profile=ec2profile,
-                                        aws_region=region,
-                                        subcmd='delete-cluster-security-group',
-                                        dry_run=dry_run,
-                                        cluster_security_group_name=security_group)
-
-
 def delete_all_security_groups(argv=None):
     """
 usage:
@@ -345,6 +218,7 @@ ops delete_all_security_groups [options] # delete all security group for a given
 environment
     """
     # print('pass in parameters: {}'.format(argv), file=sys.stderr)
+    from dreambox.ops.security import delete_security_groups
     arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
     stage = arguments['<stage>'][0]
     dry_run = arguments['--dry-run']
@@ -353,17 +227,23 @@ environment
     delete_security_groups(my_filterby=stage, dry_run=dry_run)
 
 
-def __filter_list_by(my_dict=None, myfilter=None):
+def revoke_all_ingress_rules_for_stage(argv=None):
+    """
+usage:
+    ops revoke_all_ingress_rules_for_stage <stage>...
+    ops revoke_all_ingress_rules_for_stage <stage> [--dry-run=<no|yes>]
+    """
+    from dreambox.ops.security import revoke_all_ingress_rules
 
-    if my_dict is None:
-        my_dict = {}
-    results = {}
-    if not myfilter is None:
-        for region, lists in my_dict.items():
-            results[region] = [p for p in lists if p.capitalize().startswith(myfilter.capitalize())]
-    else:
-        results = my_dict
-    return results
+    arguments = docopt(revoke_all_ingress_rules_for_stage.__doc__, argv=argv)
+    stage = arguments['<stage>'][0]
+    dry_run = arguments['--dry-run']
+    if dry_run is None:
+        dry_run = False
+
+    print('stage to work on is {}'.format(stage), file=sys.stderr)
+    print('--dry-run: {}'.format(dry_run), file=sys.stdout)
+    revoke_all_ingress_rules(filterby=stage, dry_run=dry_run)
 
 
 def execute(argv=[]):
@@ -382,7 +262,6 @@ ops deploy [options]   # get all auto scaling groups define under AWS
 
 if __name__ == '__main__':
 
-    pp = pprint.PrettyPrinter(indent=3)
     current_directory = os.path.dirname(os.path.realpath(__file__))
     print("script executed: %s and current script directory is: %s" % \
         (__file__, current_directory), file=sys.stderr)
@@ -393,7 +272,7 @@ if __name__ == '__main__':
                                   query=asg_query)
     print('result from get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
-    pp.pprint(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
     print("\n", file=sys.stderr)
@@ -401,7 +280,7 @@ if __name__ == '__main__':
     print('result from get_only_play_asgs', file=sys.stderr)
     print('==============================', file=sys.stderr)
     my_result = get_only_play_asgs(query=asg_query)
-    pp.pprint(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_only_play_asgs', file=sys.stderr)
     print("\", file=sys.stderr")
 
@@ -411,7 +290,7 @@ if __name__ == '__main__':
     print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('=======================================================', file=sys.stderr)
     results = get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
-    pp.pprint(results)
+    dreambox.utils.print_structure(results)
     print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('==================================================', file=sys.stderr)
     print("\n", file=sys.stderr)
@@ -419,61 +298,7 @@ if __name__ == '__main__':
     print('result from get_available_stack_from_all_regions', file=sys.stderr)
     print('================================================', file=sys.stderr)
     my_result = get_available_stack_from_all_regions()
-    pp.pprint(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_available_stack_from_all_regions', file=sys.stderr)
     print('===========================================', file=sys.stderr)
-
-    print('result from get_all_ec2_security_groups')
-    print('================================================', file=sys.stderr)
-    my_result = get_all_ec2_security_groups()
-    pp.pprint(my_result)
-
-    print('filter by stage2')
-    print('================================================', file=sys.stderr)
-    filter_result = get_all_ec2_security_groups(filterby='Stage2')
-    pp.pprint(filter_result)
-    print('end of get_all_ec2_security_groups')
-    print('================================================', file=sys.stderr)
-
-    print('result from get_all_elasticcache_security_groups')
-    print('================================================', file=sys.stderr)
-    my_result = get_all_elasticcache_security_groups()
-    pp.pprint(my_result)
-    print('filter by stage2')
-    my_result = get_all_elasticcache_security_groups(filterby='stage3')
-    pp.pprint(my_result)
-    print('end of get_all_elasticcache_security_groups')
-    print('================================================', file=sys.stderr)
-
-    print('result from get_all_rds_security_groups')
-    print('================================================', file=sys.stderr)
-    my_result = get_all_rds_security_groups()
-    pp.pprint(my_result)
-    print('filter by stage2')
-    my_result = get_all_rds_security_groups(filterby='stage3')
-    pp.pprint(my_result)
-    print('end of get_all_rds_security_groups')
-    print('================================================', file=sys.stderr)
-
-    print('result from get_all_redshift_security_groups')
-    print('================================================', file=sys.stderr)
-    my_result = get_all_redshift_security_groups()
-    pp.pprint(my_result)
-    print('filter by stage3')
-    result = get_all_redshift_security_groups(filterby='stage3')
-    pp.pprint(my_result)
-    print('end of get_all_redshift_security_groups')
-    print('================================================', file=sys.stderr)
-
-    print('result from get_all_security_groups')
-    print('================================================', file=sys.stderr)
-    my_result = get_all_security_groups()
-    pp.pprint(my_result)
-    print('result from get_all_security_groups filtered by stage3')
-    my_result = get_all_security_groups(my_filterby='stage3')
-    pp.pprint(my_result)
-    print('end of get_all_security_groups')
-    print('================================================', file=sys.stderr)
-
-
 
