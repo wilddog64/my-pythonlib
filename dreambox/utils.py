@@ -1,5 +1,6 @@
 from funcy.seqs import chunks
 import dreambox.ops.deployment
+import pprint
 
 # make_hash_of_hashes will make an array of hashes from a given list by these
 # steps,
@@ -28,3 +29,11 @@ def get_deployment_function_object(func_name):
     func_obj = getattr(dreambox.ops.deployment, func_name)
 
     return func_obj
+
+
+def print_structure(object=None, debug=True):
+    pp = pprint.PrettyPrinter(indent=3)
+
+    if debug:
+        pp.pprint(object)
+

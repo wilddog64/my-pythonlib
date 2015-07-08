@@ -445,12 +445,6 @@ def __create_hash_table_from_list(ahash=None, filterby=None):
 
     return hash_tables
 
-
-def __print_structure(object=None):
-    pp = pprint.PrettyPrinter(indent=3)
-    pp.pprint(object)
-
-
 def execute(argv=[]):
     """
 usage: deploy [--all] [--inc-magic-number] [<args>...]
@@ -477,7 +471,7 @@ if __name__ == '__main__':
                                   query=asg_query)
     print('result from get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_all_play_asgs', file=sys.stderr)
     print('============================', file=sys.stderr)
     print("\n", file=sys.stderr)
@@ -485,7 +479,7 @@ if __name__ == '__main__':
     print('result from get_only_play_asgs', file=sys.stderr)
     print('==============================', file=sys.stderr)
     my_result = get_only_play_asgs(query=asg_query)
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_only_play_asgs', file=sys.stderr)
     print("\", file=sys.stderr")
 
@@ -495,7 +489,7 @@ if __name__ == '__main__':
     print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('=======================================================', file=sys.stderr)
     results = get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
-    __print_structure(results)
+    dreambox.utils.print_structure(results)
     print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('==================================================', file=sys.stderr)
     print("\n", file=sys.stderr)
@@ -503,59 +497,59 @@ if __name__ == '__main__':
     print('result from get_available_stack_from_all_regions', file=sys.stderr)
     print('================================================', file=sys.stderr)
     my_result = get_available_stack_from_all_regions()
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_available_stack_from_all_regions', file=sys.stderr)
     print('===========================================', file=sys.stderr)
 
     print('result from get_all_ec2_security_groups')
     print('================================================', file=sys.stderr)
     my_result = get_all_ec2_security_groups()
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
 
     print('filter by stage2')
     print('================================================', file=sys.stderr)
     filter_result = get_all_ec2_security_groups(filterby='Stage2')
-    __print_structure(filter_result)
+    dreambox.utils.print_structure(filter_result)
     print('end of get_all_ec2_security_groups')
     print('================================================', file=sys.stderr)
 
     print('result from get_all_elasticcache_security_groups')
     print('================================================', file=sys.stderr)
     my_result = get_all_elasticcache_security_groups()
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('filter by stage2')
     my_result = get_all_elasticcache_security_groups(filterby='stage3')
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_all_elasticcache_security_groups')
     print('================================================', file=sys.stderr)
 
     print('result from get_all_rds_security_groups')
     print('================================================', file=sys.stderr)
     my_result = get_all_rds_security_groups()
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('filter by stage2')
     my_result = get_all_rds_security_groups(filterby='stage3')
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_all_rds_security_groups')
     print('================================================', file=sys.stderr)
 
     print('result from get_all_redshift_security_groups')
     print('================================================', file=sys.stderr)
     my_result = get_all_redshift_security_groups()
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('filter by stage3')
     result = get_all_redshift_security_groups(filterby='stage3')
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_all_redshift_security_groups')
     print('================================================', file=sys.stderr)
 
     print('result from get_all_security_groups')
     print('================================================', file=sys.stderr)
     my_result = get_all_security_groups()
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('result from get_all_security_groups filtered by stage3')
     my_result = get_all_security_groups(my_filterby='stage3')
-    __print_structure(my_result)
+    dreambox.utils.print_structure(my_result)
     print('end of get_all_security_groups')
     print('================================================', file=sys.stderr)
 
@@ -563,7 +557,7 @@ if __name__ == '__main__':
     print('================================================', file=sys.stderr)
     result = get_all_rds_ingress_rules_for_stage(ec2profile='mgmt',
                                                  filterby='stage3')
-    __print_structure(result)
+    dreambox.utils.print_structure(result)
     print('end of get_all_rds_ingress_rules_for_stage', file=sys.stderr)
     print('================================================', file=sys.stderr)
 
@@ -571,7 +565,7 @@ if __name__ == '__main__':
     print('================================================', file=sys.stderr)
     result = get_all_redshift_ingress_rules_for_stage(ec2profile='mgmt',
                                                       filterby='stage3')
-    __print_structure(result)
+    dreambox.utils.print_structure(result)
     print('end of get_all_redshift_ingress_rules_for_stage', file=sys.stderr)
     print('================================================', file=sys.stderr)
 
@@ -579,6 +573,6 @@ if __name__ == '__main__':
     print('================================================', file=sys.stderr)
     result = get_all_ec2_ingress_rules_for_stage(ec2profile='mgmt',
                                                  filterby='stage3')
-    __print_structure(result)
+    dreambox.utils.print_structure(result)
     print('end of get_all_ec2_ingress_rules_for_stage', file=sys.stderr)
     print('================================================', file=sys.stderr)
