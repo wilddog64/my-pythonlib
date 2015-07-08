@@ -37,3 +37,16 @@ def print_structure(object=None, debug=True):
     if debug:
         pp.pprint(object)
 
+
+def filter_list_by(my_dict=None, myfilter=None):
+
+    if my_dict is None:
+        my_dict = {}
+    results = {}
+    if not myfilter is None:
+        for region, lists in my_dict.items():
+            results[region] = [p for p in lists if p.capitalize().startswith(myfilter.capitalize())]
+    else:
+        results = my_dict
+    return results
+
