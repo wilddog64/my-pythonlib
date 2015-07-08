@@ -5,6 +5,7 @@ from dreambox.aws.core import aws_cfn_cmd
 from dreambox.aws.core import aws_ecachecmd
 from dreambox.aws.core import aws_rdscmd
 from dreambox.aws.core import aws_redshiftcmd
+from dreambox.aws.core import aws_ecachecmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
@@ -127,6 +128,26 @@ def get_all_ec2_ingress_rules_for_stage(ec2profile=None,
                                        subcmd='describe-security-groups',
                                        dry_run=dry_run,
                                        query=ec2_qry)
+
+    return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
+
+
+def get_all_elasticache_ingress_rules_for_stage(ec2profile=None,
+                                                regions=None,
+                                                filterby=None,
+                                                dry_run=False):
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
+    elasticache_qry = 'CacheSecurityGroups[].[CacheSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName][]'
+
+    hashtable = {}
+    for region in regions:
+        hashtable[region] = aws_ecachecmd(aws_profile=ec2profile,
+                                          aws_region=region,
+                                          ecache_subcmd='describe-security-groups',
+                                          dry_run=dry_run,
+                                          query=elasticache_qry)
 
     return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
@@ -286,3 +307,10 @@ if __name__ == '__main__':
     print('end of get_all_ec2_ingress_rules_for_stage', file=sys.stderr)
     print('================================================', file=sys.stderr)
 
+    print('result from get_all_elasticache_ingress_rules_for_stage', file=sys.stderr)
+    print('================================================', file=sys.stderr)
+    result = get_all_elasticache_ingress_rules_for_stage(ec2profile='mgmt',
+                                                         filterby='stage3')
+    dreambox.utils.print_structure(result)
+    print('end of get_all_elasticache_ingress_rules_for_stage', file=sys.stderr)
+    print('================================================', file=sys.stderr)
