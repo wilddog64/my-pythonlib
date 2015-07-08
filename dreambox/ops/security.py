@@ -92,6 +92,25 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None,
     return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
 
+def revoke_all_rds_ingress_rules_for_stage(ec2profile=None,
+                                           regions=None,
+                                           filterby=None,
+                                           dry_run=False):
+    ingress_rules_to_delete = get_all_rds_ingress_rules_for_stage(ec2profile,
+                                                                  regions,
+                                                                  filterby)
+    for region, security_groups in ingress_rules_to_delete.items():
+        for security_group_name, ingress_rules in security_groups.items():
+            for ingress_rule in ingress_rules:
+                aws_rdscmd(aws_profile=ec2profile,
+                           aws_region=region,
+                           rds_subcmd='revoke-db-security-group-ingress',
+                           dry_run=dry_run,
+                           verbose=True,
+                           ec2_security_group_name=security_group_name,
+                           db_security_group_name=ingress_rule)
+
+
 def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
                                              regions=None,
                                              filterby=None,
@@ -227,6 +246,15 @@ def delete_security_groups(ec2profile=None,
                                         cluster_security_group_name=security_group)
 
 
+def revoke_all_ingress_rules(ec2profile=None,
+                             ec2regions=None,
+                             filterby=None,
+                             dry_run=False):
+    revoke_all_rds_ingress_rules_for_stage(ec2profile,
+                                           ec2regions,
+                                           filterby,
+                                           dry_run)
+
 if __name__ == '__main__':
     print('result from get_all_ec2_security_groups')
 
@@ -312,3 +340,9 @@ if __name__ == '__main__':
     dreambox.utils.print_structure(result)
     print('end of get_all_elasticache_ingress_rules_for_stage', file=sys.stderr)
     print('================================================', file=sys.stderr)
+
+    print('testing revoke_all_ingress_rules in dry run ode with filter set to stage3')
+    print('==========================================================================')
+    revoke_all_ingress_rules(filterby='stage3', dry_run=True)
+    print('end of testing revoke_all_ingress_rules')
+    print('==========================================================================')
