@@ -50,3 +50,23 @@ def filter_list_by(my_dict=None, myfilter=None):
         results = my_dict
     return results
 
+
+def create_hashtable_from_hashes(ahash=None, filterby=None):
+    chunk_table = {}
+    hash_tables = {}
+    hash_table = {}
+    for region, ingresses in ahash.items():
+        chunk_table[region] = chunks(2, ingresses)
+
+    key, value = None, None
+    for region, ingresses in chunk_table.items():
+        for ingress in ingresses:
+            items = list(chunks(2, ingress))
+            if items[0][0].lower().startswith(filterby.lower()):
+                key = items[0][0]
+                value = items[0][1]
+                hash_table[key] = value
+                hash_tables[region] = hash_table
+
+    return hash_tables
+

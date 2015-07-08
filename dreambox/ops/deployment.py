@@ -271,7 +271,7 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None,
                                        dry_run=dry_run,
                                        query=rds_qry)
 
-    return __create_hash_table_from_list(hashtable, filterby)
+    return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
 
 def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
@@ -291,7 +291,7 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
                                             dry_run=dry_run,
                                             query=redshift_qry)
 
-    return __create_hash_table_from_list(hashtable, filterby)
+    return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
 
 
@@ -312,7 +312,7 @@ def get_all_ec2_ingress_rules_for_stage(ec2profile=None,
                                        dry_run=dry_run,
                                        query=ec2_qry)
 
-    return __create_hash_table_from_list(hashtable, filterby)
+    return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
 
 def get_all_redshift_security_groups(ec2profile=None,
@@ -409,27 +409,6 @@ environment
     print('stage to work on is {}'.format(stage), file=sys.stderr)
     print('--dry-run: {}'.format(dry_run), file=sys.stdout)
     delete_security_groups(my_filterby=stage, dry_run=dry_run)
-
-
-def __create_hash_table_from_list(ahash=None, filterby=None):
-    chunk_table = {}
-    hash_tables = {}
-    hash_table = {}
-    for region, ingresses in ahash.items():
-        chunk_table[region] = chunks(2, ingresses)
-    print('filter by %s' % filterby, file=sys.stderr)
-
-    key, value = None, None
-    for region, ingresses in chunk_table.items():
-        for ingress in ingresses:
-            items = list(chunks(2, ingress))
-            if items[0][0].lower().startswith(filterby.lower()):
-                key = items[0][0]
-                value = items[0][1]
-                hash_table[key] = value
-                hash_tables[region] = hash_table
-
-    return hash_tables
 
 def execute(argv=[]):
     """
