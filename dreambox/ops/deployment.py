@@ -446,7 +446,6 @@ def __create_hash_table_from_list(ahash=None, filterby=None):
     return hash_tables
 
 
-
 def __print_structure(object=None):
     pp = pprint.PrettyPrinter(indent=3)
     pp.pprint(object)
