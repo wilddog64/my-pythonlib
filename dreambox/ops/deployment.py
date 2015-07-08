@@ -282,7 +282,7 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
-    redshift_qry = 'ClusterSecurityGroups[].[ClusterSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName]'
+    redshift_qry = 'ClusterSecurityGroups[].[ClusterSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName][]'
 
     hashtable = {}
     for region in regions:
@@ -413,21 +413,21 @@ def __create_hash_table_from_list(ahash=None, filterby=None):
     __print_structure(chunk_table)
     print('filter by %s' % filterby)
 
+    key, value = None, None
     for region, ingresses in chunk_table.items():
         for ingress in ingresses:
             items = list(chunks(2, ingress))
-            print('key is %s' % items[0][0])
-            key, value = None, None
+            __print_structure(items)
             if items[0][0].lower().startswith(filterby.lower()):
                 key = items[0][0]
                 value = items[0][1]
+                hash_table[key] = value
+                hash_tables[region] = hash_table
             # else:
             #     my_items = select(print(_), items[0][1])
             #     if my_items:
             #         key = my_items[0][0]
             #         value = my_items[0][1]
-            hash_table[key] = value
-            hash_tables[region] = hash_table
 
     return hash_tables
 
