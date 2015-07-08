@@ -288,7 +288,7 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
     for region in regions:
         hashtable[region] = aws_redshiftcmd(aws_profile=ec2profile,
                                             aws_region=region,
-                                            rds_subcmd='describe-db-security-groups',
+                                            redshift_subcmd='describe-db-security-groups',
                                             dry_run=dry_run,
                                             query=redshift_qry)
 
