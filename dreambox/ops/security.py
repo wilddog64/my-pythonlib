@@ -317,6 +317,10 @@ def revoke_all_ingress_rules(ec2profile=None,
                                                 ec2regions,
                                                 filterby,
                                                 dry_run)
+    revoke_all_elasticache_ingress_rules_for_stage(ec2profile,
+                                                   ec2regions,
+                                                   filterby,
+                                                   dry_run)
     revoke_all_ec2_ingress_rules_for_stage(ec2profile,
                                            ec2regions,
                                            filterby,
