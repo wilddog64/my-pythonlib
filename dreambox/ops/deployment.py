@@ -227,11 +227,10 @@ def get_all_elasticcache_security_groups(ec2profile=None,
     results = []
     result = {}
     for region in regions:
-        result[region] = aws_ecachecmd(
-         ec2profile,
-         region,
-         ecache_subcmd='describe-cache-security-groups',
-         query='CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        result[region] = aws_ecachecmd(ec2profile,
+                                       region,
+                                       ecache_subcmd='describe-cache-security-groups',
+                                       query='CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         results.extend(result)
 
     return dreambox.utils.filter_list_by(result, myfilter=filterby)
