@@ -7,10 +7,8 @@ from funcy.seqs import chunks
 from funcy.seqs import pairwise
 from itertools import chain
 import dreambox.ops.security
-import os
 import dreambox.utils
 import re
-from docopt import docopt
 import sys
 
 # get_all_asgs is a function that will return all the ASG defined for
