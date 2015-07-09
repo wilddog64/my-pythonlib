@@ -16,17 +16,6 @@ import sys
 
 import dreambox.ops.autoscaling
 
-__doc__ = """
-usage: deployment [--profie] [--region] [--help] <command> [<args>...]
-
-options:
-    --profile  # aws profile
-    --region   # region support by aws
-
-commonly use operation
-deployment get-all-asgs   # get all auto scaling groups define under AWS
-"""
-
 # get_available_stack_from_all_regions will return first available stack
 # environment from all regions.  The function takes these parameters,
 #
