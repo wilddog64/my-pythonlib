@@ -24,13 +24,11 @@ number from 1 - 9)
     region_stacks = {}
     m = re.compile(r'^stage\d$', re.IGNORECASE)
     for region in regions:
-        region_stack = [r for r in
-                          aws_cfn_cmd(aws_profile=profile,
-                                      aws_region=region,
-                                      cfn_subcmd='describe-stacks',
-                                      query=qry)
-                          if m.match(r)
-                        ]
+        region_stack = [r for r in aws_cfn_cmd(aws_profile=profile,
+                                               aws_region=region,
+                                               cfn_subcmd='describe-stacks',
+                                               query=qry)
+                        if m.match(r)]
         region_stacks[region] = region_stack
 
     return region_stacks
