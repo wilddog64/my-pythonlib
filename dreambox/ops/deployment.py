@@ -16,14 +16,16 @@ import sys
 
 import dreambox.ops.autoscaling
 
-# get_available_stack_from_all_regions will return first available stack
-# environment from all regions.  The function takes these parameters,
-#
-#   aws_profile is a profile defined in ~/.aws/config
-#
-# This function will search a given set of regions and return the first
-# available stack and return it as a hash of array back to caller
 def get_available_stack_from_all_regions(aws_profile=''):
+    '''
+get_available_stack_from_all_regions will return first available stack
+environment from all regions.  The function takes these parameters,
+
+  aws_profile is a profile defined in ~/.aws/config
+
+This function will search a given set of regions and return the first
+available stack and return it as a hash of array back to caller
+    '''
 
     from dreambox.ops.cloudformation import get_stack_names_from_all_regions
     # get all the stacks from every region. at this point, we don't want
