@@ -9,8 +9,11 @@ import sys
 
 def get_all_ec2_security_groups(ec2profile=None,
                                 regions=None,
+                                query=None,
                                 filterby=None):
 
+    if query is None:
+        query = 'SecurityGroups[].GroupName'
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
@@ -20,7 +23,7 @@ def get_all_ec2_security_groups(ec2profile=None,
         ec2_result[region] = aws_ec2cmd(ec2profile,
                                         region,
                                         subcmd='describe-security-groups',
-                                        query='SecurityGroups[].GroupName')
+                                        query=query)
         ec2_results.extend(ec2_result)
 
     return dreambox.utils.filter_list_by(ec2_result, myfilter=filterby)
