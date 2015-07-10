@@ -31,18 +31,21 @@ def get_all_ec2_security_groups(ec2profile=None,
 
 def get_all_elasticcache_security_groups(ec2profile=None,
                                          regions=None,
+                                         query=None,
                                          filterby=None):
 
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
+    if query is None:
+        query = 'CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName'
     ecache_results = []
     ecache_result = {}
     for region in regions:
         ecache_result[region] = aws_ecachecmd(ec2profile,
                                               region,
                                               ecache_subcmd='describe-cache-security-groups',
-                                              query='CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+                                              query=query)
         ecache_results.extend(ecache_result)
 
     return dreambox.utils.filter_list_by(ecache_result, myfilter=filterby)
