@@ -205,16 +205,16 @@ def get_all_redshift_security_groups(ec2profile=None,
                                      regions=['us-east-1', 'us-west-2'],
                                      filterby=None):
 
-    results = []
-    result = {}
+    redshift_results = []
+    redshift_result = {}
     for region in regions:
-        result[region] = aws_redshiftcmd(ec2profile,
-                                         region,
-                                         redshift_subcmd='describe-cluster-security-groups',
-                                         query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
-        results.extend(result)
+        redshift_result[region] = aws_redshiftcmd(ec2profile,
+                                                  region,
+                                                  redshift_subcmd='describe-cluster-security-groups',
+                                                  query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        redshift_results.extend(redshift_result)
 
-    return dreambox.utils.filter_list_by(result, myfilter=filterby)
+    return dreambox.utils.filter_list_by(redshift_result, myfilter=filterby)
 
 
 def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
