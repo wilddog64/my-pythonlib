@@ -1,19 +1,9 @@
 from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
-from dreambox.aws.core import aws_asgcmd
-from dreambox.aws.core import aws_cfn_cmd
-from dreambox.aws.core import aws_ecachecmd
 from dreambox.aws.core import aws_rdscmd
 from dreambox.aws.core import aws_redshiftcmd
 from dreambox.aws.core import aws_ecachecmd
-from funcy.strings import str_join
-from funcy.seqs import chunks
-from funcy.seqs import pairwise
-from itertools import chain
-import os
 import dreambox.utils
-import re
-from docopt import docopt
 import sys
 
 
