@@ -70,6 +70,13 @@ def create_hashtable_from_hashes(ahash=None, filterby=None):
                 value = items[0][1]
                 hash_table[key] = value
                 hash_tables[region] = hash_table
+            else:
+                key = items[0][0]
+                value = grep(items[0][1], filterby)
+                if value:
+                    hash_table[key] = value
+                    hash_tables[region] = hash_table
+
 
     return hash_tables
 
