@@ -14,16 +14,16 @@ def get_all_ec2_security_groups(ec2profile=None,
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
-    results = []
-    result = {}
+    ec2_results = []
+    ec2_result = {}
     for region in regions:
-        result[region] = aws_ec2cmd(ec2profile,
-                                    region,
-                                    subcmd='describe-security-groups',
-                                    query='SecurityGroups[].GroupName')
-        results.extend(result)
+        ec2_result[region] = aws_ec2cmd(ec2profile,
+                                        region,
+                                        subcmd='describe-security-groups',
+                                        query='SecurityGroups[].GroupName')
+        ec2_results.extend(ec2_result)
 
-    return dreambox.utils.filter_list_by(result, myfilter=filterby)
+    return dreambox.utils.filter_list_by(ec2_result, myfilter=filterby)
 
 
 def get_all_elasticcache_security_groups(ec2profile=None,
