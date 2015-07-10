@@ -205,12 +205,16 @@ def get_all_elasticache_ingress_rules_for_stage(ec2profile=None,
     for region in regions:
         hashtable[region] = aws_ecachecmd(aws_profile=ec2profile,
                                           aws_region=region,
-                                          ecache_subcmd='describe-security-groups',
+                                          ecache_subcmd='describe-cache-security-groups',
                                           dry_run=dry_run,
                                           query=elasticache_qry)
+    return_rst = None
+    if not dry_run:
+        return_rst = dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
+    else:
+        print('dry_run mode', file=sys.stderr)
 
-    return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
-
+    return return_rst
 
 def get_all_redshift_security_groups(ec2profile=None,
                                      regions=['us-east-1', 'us-west-2'],
