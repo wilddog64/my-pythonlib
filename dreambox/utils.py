@@ -1,6 +1,9 @@
+from __future__ import print_function
 from funcy.seqs import chunks
+from funcy.colls import select
 import dreambox.ops.deployment
 import pprint
+import sys
 
 # make_hash_of_hashes will make an array of hashes from a given list by these
 # steps,
@@ -70,3 +73,14 @@ def create_hashtable_from_hashes(ahash=None, filterby=None):
 
     return hash_tables
 
+
+def grep(input_list=None, search_str=None):
+    if search_str is None:
+        return input_list
+
+    grep_result = []
+    for this_input in input_list:
+        if search_str in this_input:
+            grep_result.append(this_input)
+
+    return grep_result
