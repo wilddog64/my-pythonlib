@@ -51,16 +51,16 @@ def get_all_rds_security_groups(ec2profile=None,
 
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
-    results = []
-    result = {}
+    rds_results = []
+    rds_result = {}
     for region in regions:
-        result[region] = aws_rdscmd(ec2profile,
-                                    region,
-                                    rds_subcmd='describe-db-security-groups',
-                                    query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
-        results.extend(result)
+        rds_result[region] = aws_rdscmd(ec2profile,
+                                        region,
+                                        rds_subcmd='describe-db-security-groups',
+                                        query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        rds_results.extend(rds_result)
 
-    return dreambox.utils.filter_list_by(result, myfilter=filterby)
+    return dreambox.utils.filter_list_by(rds_result, myfilter=filterby)
 
 
 def get_all_rds_ingress_rules_for_stage(ec2profile=None,
