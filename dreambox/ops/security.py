@@ -140,7 +140,6 @@ def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
                                 cluster_security_group_name=ingress_rule)
 
 
-
 def get_all_ec2_ingress_rules_for_stage(ec2profile=None,
                                         regions=None,
                                         filterby=None,
