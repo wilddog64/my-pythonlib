@@ -1,5 +1,6 @@
 from __future__ import print_function
 from dreambox.aws.core import aws_cfn_cmd
+import re
 
 
 def get_stack_names_from_all_regions(profile='',
