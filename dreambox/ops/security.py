@@ -144,7 +144,7 @@ def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
             for ingress_rule in ingress_rules:
                 aws_redshiftcmd(aws_profile=ec2profile,
                                 aws_region=region,
-                                redshift_subcmd='revoke_all_ingress_rules',
+                                redshift_subcmd='revoke-cluster-security-group-ingress',
                                 dry_run=dry_run,
                                 verbose=True,
                                 ec2_security_group_name=security_group_name,
