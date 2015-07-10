@@ -1,76 +1,77 @@
 from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
-from dreambox.aws.core import aws_asgcmd
-from dreambox.aws.core import aws_cfn_cmd
-from dreambox.aws.core import aws_ecachecmd
 from dreambox.aws.core import aws_rdscmd
 from dreambox.aws.core import aws_redshiftcmd
 from dreambox.aws.core import aws_ecachecmd
-from funcy.strings import str_join
-from funcy.seqs import chunks
-from funcy.seqs import pairwise
-from itertools import chain
-import os
 import dreambox.utils
-import re
-from docopt import docopt
 import sys
 
 
 def get_all_ec2_security_groups(ec2profile=None,
                                 regions=None,
+                                query=None,
                                 filterby=None):
 
+    if query is None:
+        query = 'SecurityGroups[].GroupName'
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
-    results = []
-    result = {}
+    ec2_results = []
+    ec2_result = {}
     for region in regions:
-        result[region] = aws_ec2cmd(ec2profile,
-                                    region,
-                                    subcmd='describe-security-groups',
-                                    query='SecurityGroups[].GroupName')
-        results.extend(result)
+        ec2_result[region] = aws_ec2cmd(ec2profile,
+                                        region,
+                                        subcmd='describe-security-groups',
+                                        query=query)
+        ec2_results.extend(ec2_result)
 
-    return dreambox.utils.filter_list_by(result, myfilter=filterby)
+    return dreambox.utils.filter_list_by(ec2_result, myfilter=filterby)
 
 
 def get_all_elasticcache_security_groups(ec2profile=None,
                                          regions=None,
+                                         query=None,
                                          filterby=None):
 
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
-    results = []
-    result = {}
+    if query is None:
+        query = 'CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName'
+    ecache_results = []
+    ecache_result = {}
     for region in regions:
-        result[region] = aws_ecachecmd(ec2profile,
-                                       region,
-                                       ecache_subcmd='describe-cache-security-groups',
-                                       query='CacheSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
-        results.extend(result)
+        ecache_result[region] = aws_ecachecmd(ec2profile,
+                                              region,
+                                              ecache_subcmd='describe-cache-security-groups',
+                                              query=query)
+        ecache_results.extend(ecache_result)
 
-    return dreambox.utils.filter_list_by(result, myfilter=filterby)
+    return dreambox.utils.filter_list_by(ecache_result, myfilter=filterby)
 
 
 def get_all_rds_security_groups(ec2profile=None,
                                 regions=None,
+                                query=None,
                                 filterby=None):
 
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
-    results = []
-    result = {}
-    for region in regions:
-        result[region] = aws_rdscmd(ec2profile,
-                                    region,
-                                    rds_subcmd='describe-db-security-groups',
-                                    query='DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
-        results.extend(result)
 
-    return dreambox.utils.filter_list_by(result, myfilter=filterby)
+    if query is None:
+        query = 'DBSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName'
+
+    rds_results = []
+    rds_result = {}
+    for region in regions:
+        rds_result[region] = aws_rdscmd(ec2profile,
+                                        region,
+                                        rds_subcmd='describe-db-security-groups',
+                                        query=query)
+        rds_results.extend(rds_result)
+
+    return dreambox.utils.filter_list_by(rds_result, myfilter=filterby)
 
 
 def get_all_rds_ingress_rules_for_stage(ec2profile=None,
@@ -130,6 +131,7 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
 
     return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
+
 def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
                                                 regions=None,
                                                 filterby=None,
@@ -147,7 +149,6 @@ def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
                                 verbose=True,
                                 ec2_security_group_name=security_group_name,
                                 cluster_security_group_name=ingress_rule)
-
 
 
 def get_all_ec2_ingress_rules_for_stage(ec2profile=None,
@@ -215,35 +216,16 @@ def get_all_redshift_security_groups(ec2profile=None,
                                      regions=['us-east-1', 'us-west-2'],
                                      filterby=None):
 
-    results = []
-    result = {}
+    redshift_results = []
+    redshift_result = {}
     for region in regions:
-        result[region] = aws_redshiftcmd(ec2profile,
-                                         region,
-                                         redshift_subcmd='describe-cluster-security-groups',
-                                         query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
-        results.extend(result)
+        redshift_result[region] = aws_redshiftcmd(ec2profile,
+                                                  region,
+                                                  redshift_subcmd='describe-cluster-security-groups',
+                                                  query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        redshift_results.extend(redshift_result)
 
-    return dreambox.utils.filter_list_by(result, myfilter=filterby)
-
-
-def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
-                                                   regions=None,
-                                                   filterby=None,
-                                                   dry_run=False):
-    ingress_rules_to_delete = get_all_elasticache_ingress_rules_for_stage(ec2profile,
-                                                                          regions,
-                                                                          filterby)
-    for region, security_groups in ingress_rules_to_delete.items():
-        for security_group_name, ingress_rules in security_groups.items():
-            for ingress_rule in ingress_rules:
-                aws_ecachecmd(aws_profile=ec2profile,
-                              aws_region=region,
-                              redshift_subcmd='revoke-cache-security-group-ingress',
-                              dry_run=dry_run,
-                              verbose=True,
-                              ec2_security_group_name=security_group_name,
-                              cache_security_group_name=ingress_rule)
+    return dreambox.utils.filter_list_by(redshift_result, myfilter=filterby)
 
 
 def get_all_security_groups(my_ec2profile=None,
@@ -303,6 +285,25 @@ def delete_security_groups(ec2profile=None,
                                         subcmd='delete-cluster-security-group',
                                         dry_run=dry_run,
                                         cluster_security_group_name=security_group)
+
+
+def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
+                                                   regions=None,
+                                                   filterby=None,
+                                                   dry_run=False):
+    ingress_rules_to_delete = get_all_elasticache_ingress_rules_for_stage(ec2profile,
+                                                                          regions,
+                                                                          filterby)
+    for region, security_groups in ingress_rules_to_delete.items():
+        for security_group_name, ingress_rules in security_groups.items():
+            for ingress_rule in ingress_rules:
+                aws_ecachecmd(aws_profile=ec2profile,
+                              aws_region=region,
+                              redshift_subcmd='revoke-cache-security-group-ingress',
+                              dry_run=dry_run,
+                              verbose=True,
+                              ec2_security_group_name=security_group_name,
+                              cache_security_group_name=ingress_rule)
 
 
 def revoke_all_ingress_rules(ec2profile=None,
