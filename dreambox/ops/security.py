@@ -120,6 +120,7 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
 
     return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
+
 def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
                                                 regions=None,
                                                 filterby=None,
