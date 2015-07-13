@@ -1,7 +1,9 @@
 from __future__ import print_function
 from funcy.seqs import chunks
 from funcy.colls import select
+from itertools import count
 import dreambox.ops.deployment
+import time
 import pprint
 import sys
 
@@ -91,3 +93,24 @@ def grep(input_list=None, search_str=None):
             grep_result.append(this_input)
 
     return grep_result
+
+
+def generate_buzz(period):
+    nexttime = time.time() + period
+    for i in count():
+        now = time.time()
+        sleep_time = nexttime - now
+        if sleep_time > 0:
+            time.sleep(sleep_time)
+            nexttime += period
+        else:
+            nexttime = now + period
+        yield i, nexttime
+
+if __name__ == '__main__':
+    print('testing generate_buzz')
+    print('=====================')
+    buzz = generate_buzz(3)
+    print('current time %s' % time.time())
+    buzz.next()
+    print('buzz time %s' % time.time())
