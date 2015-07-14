@@ -110,6 +110,9 @@ def revoke_all_rds_ingress_rules_for_stage(ec2profile=None,
                            verbose=True,
                            ec2_security_group_name=security_group_name,
                            db_security_group_name=ingress_rule)
+                print('ingress rule {} for {} is revoked'.format(ingress_rule,
+                                                                 security_group_name),
+                      file=sys.stderr)
 
 
 def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
@@ -149,6 +152,9 @@ def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
                                 verbose=True,
                                 ec2_security_group_name=security_group_name,
                                 cluster_security_group_name=ingress_rule)
+                print('ingress rule {} for {} is revoked'.format(ingress_rule,
+                                                                 security_group_name),
+                      file=sys.stderr)
 
 
 def get_all_ec2_ingress_rules_for_stage(ec2profile=None,
@@ -190,6 +196,9 @@ def revoke_all_ec2_ingress_rules_for_stage(ec2profile=None,
                            group_name=security_group_name,
                            port=ingress_rule[0],
                            protocol=ingress_rule[1])
+                print('ingress rule {} for {} is revoked'.format(ingress_rule,
+                                                                 security_group_name),
+                      file=sys.stderr)
 
 
 def get_all_elasticache_ingress_rules_for_stage(ec2profile=None,
@@ -308,6 +317,9 @@ def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
                               verbose=True,
                               ec2_security_group_name=security_group_name,
                               cache_security_group_name=ingress_rule)
+                print('ingress rule {} for {} is revoked'.format(ingress_rule,
+                                                                 security_group_name),
+                      file=sys.stderr)
 
 
 def revoke_all_ingress_rules(ec2profile=None,
