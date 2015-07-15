@@ -58,6 +58,57 @@ filterby - limit result by providing a filter string
     stacks_list = select(lambda x: filterby.lower() in x.lower(), stage_stacks)
     return stacks_list
 
+
+def get_stack_events(profile=None, region=None, stack_name=None):
+    '''
+get_stack_events return all the events for a given stack.  This function
+takes the following parameters,
+
+profile is an aws profile if one is provide; otherwise looking for default
+profile in ~/.aws/config or IAM profile for a node
+
+region is an AWS region that this function will work on
+
+stack_name is a name of stack that contains the event this function is looking
+for
+    '''
+    stack_events = aws_cfn_cmd(aws_profile=profile,
+                               aws_region=region,
+                               cfn_subcmd='describe-stack-events',
+                               stack_name=stack_name,
+                               query='StackEvents[]')
+    return stack_events
+
+
+def get_all_stackevents_for_stage(profile=None, region=None, filterby=None):
+    '''
+get_all_stackevents_for_stage will collect all cloudformation stack events for a
+given stage environment.  The function takes the following parameters,
+
+profile is an aws profile if one is provide; otherwise looking for default
+profile in ~/.aws/config or IAM profile for a node
+
+region is an AWS region that this function will work on
+
+filterby is a stage environment name, i.e. stage1 ... stage9
+    '''
+
+    stack_names = get_all_stacks_for_stage(profile=profile,
+                                           region=region,
+                                           filterby=filterby)
+    stacks_events = {}
+    for stack_name in stack_names:
+        stacks_events['stack_name'] = get_stack_events(profile=profile,
+                                                       region=region,
+                                                       stack_name=stack_name)
+
+
 if __name__ == '__main__':
     stacks = get_all_stacks_for_stage(region='us-west-2', filterby='stage3')
     dreambox.utils.print_structure(stacks)
+
+    print('testing get_all_stackevents_for_stage stage3')
+    stage_stack_events = get_all_stackevents_for_stage(region='us-west-2',
+                                                       filterby='stage3')
+    dreambox.utils.print_structure(stage_stack_events)
+    print('end testing get_all_stackevents_for_stage stage3')
