@@ -3,7 +3,6 @@ from dreambox.aws.core import aws_cfn_cmd
 from funcy.colls import select
 import dreambox.utils
 import re
-import sys
 
 
 def get_stack_names_from_all_regions(profile='',
