@@ -107,6 +107,11 @@ def generate_buzz(period):
             nexttime = now + period
         yield i, nexttime
 
+
+def chunk_list(seq=None, chunk_size=2):
+    return list(chunks(chunk_size, seq))
+
+
 if __name__ == '__main__':
     print('testing generate_buzz')
     print('=====================')

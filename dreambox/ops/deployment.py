@@ -115,6 +115,23 @@ usage:
     revoke_all_ingress_rules(filterby=stage, dry_run=dry_run)
 
 
+def get_all_ec2_instances_from_tag(argv=None):
+    '''
+usage:
+    ops get_all_ec2_instances_from_tag <stage>
+    '''
+
+    from dreambox.ops.ec2 import get_ec2_hosts_for_stage
+    arguments = docopt(get_all_ec2_instances_from_tag.__doc__, argv=argv)
+    stage = arguments['<stage>']
+    if stage.lower() == 'all':
+      stage=None
+
+    print('query stage environment: {}'.format(stage))
+    stage_ec2_instances = get_ec2_hosts_for_stage(stage=stage)
+    dreambox.utils.print_structure(stage_ec2_instances)
+
+
 def execute(argv=[]):
     """
 usage: deploy [--all] [--inc-magic-number] [<args>...]
