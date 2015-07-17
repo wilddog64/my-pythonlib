@@ -115,14 +115,14 @@ usage:
     revoke_all_ingress_rules(filterby=stage, dry_run=dry_run)
 
 
-def get_all_ec2_hosts_for(argv=None):
+def get_all_ec2_instances_from_tag(argv=None):
     '''
 usage:
-    ops get_all_ec2_hosts_for <stage>
+    ops get_all_ec2_instances_from_tag <stage>
     '''
 
     from dreambox.ops.ec2 import get_ec2_hosts_for_stage
-    arguments = docopt(get_all_ec2_hosts_for.__doc__, argv=argv)
+    arguments = docopt(get_all_ec2_instances_from_tag.__doc__, argv=argv)
     stage = arguments['<stage>']
     if stage.lower() == 'all':
       stage=None
