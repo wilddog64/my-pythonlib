@@ -24,7 +24,7 @@ stage environment.  This function takes the following parameters,
             ec2_tag = elem[-1]
             if ec2_tag:
                 tag_name = ec2_tag[0]['Value'].lower()
-                if ec2_tag[0:1] and not stage is None and 'stage' in tag_name and stage.lower() in tag_name.lower():
+                if ec2_tag[0:1] and not stage is None and stage.lower() in tag_name.lower():
                     my_hash[tag_name] = elem[0:2]
                 elif ec2_tag[0:1] and stage is None:
                     my_hash[tag_name] = elem[0:2]
