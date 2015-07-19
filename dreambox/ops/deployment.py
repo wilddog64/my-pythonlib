@@ -96,15 +96,15 @@ environment
     delete_security_groups(my_filterby=stage, dry_run=dry_run)
 
 
-def revoke_all_ingress_rules_for(argv=None):
+def revoke_all_ingress_rules_for_stage(argv=None):
     """
 usage:
-    ops revoke_all_ingress_rules_for <stage>...
-    ops revoke_all_ingress_rules_for <stage> [--dry-run=<no|yes>]
+    ops revoke_all_ingress_rules_for_stage <stage>...
+    ops revoke_all_ingress_rules_for_stage <stage> [--dry-run=<no|yes>]
     """
     from dreambox.ops.security import revoke_all_ingress_rules
 
-    arguments = docopt(revoke_all_ingress_rules_for.__doc__, argv=argv)
+    arguments = docopt(revoke_all_ingress_rules_for_stage.__doc__, argv=argv)
     stage = arguments['<stage>'][0]
     dry_run = arguments['--dry-run']
     if dry_run is None:
