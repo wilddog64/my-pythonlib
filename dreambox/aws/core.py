@@ -152,11 +152,13 @@ def aws_ecachecmd(aws_profile=None,
 
 def aws_cfn_cmd(aws_profile=None,
                 aws_region='us-east-1',
+                dry_run=False,
                 cfn_subcmd='',
                 **cfn_options):
     return aws_cmd(cmd_cat='cloudformation',
                    profile=aws_profile,
                    region=aws_region,
+                   dry_run=dry_run,
                    subcmd=cfn_subcmd,
                    **cfn_options
                    )
