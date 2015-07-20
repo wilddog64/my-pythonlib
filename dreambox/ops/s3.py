@@ -68,9 +68,9 @@ parameters,
 
     s3_tagset = {}
     for tagset in s3_bucket_tagset['TagSet']:
-         Key = tagset['Key']
-         Value = tagset['Value']
-         if Key:
+        Key = tagset['Key']
+        Value = tagset['Value']
+        if Key:
             s3_tagset[Key] = Value
 
     return s3_tagset
