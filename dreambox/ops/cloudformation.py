@@ -149,14 +149,14 @@ environ is a stage environment name, i.e. stage1 ... stage9
     return stack_infos
 
 if __name__ == '__main__':
-    # stacks = get_all_stacks_for_stage(region='us-west-2', filterby='stage3')
-    # dreambox.utils.print_structure(stacks)
+    stacks = get_all_stacks_for_stage(region='us-west-2', filterby='stage3')
+    dreambox.utils.print_structure(stacks)
 
-    # print('testing get_all_stackevents_for_stage stage3')
-    # stage_stack_events = get_all_stackevents_for_stage(region='us-west-2',
-    #                                                    filterby='stage3')
-    # dreambox.utils.print_structure(stage_stack_events)
-    # print('end testing get_all_stackevents_for_stage stage3')
+    print('testing get_all_stackevents_for_stage stage3')
+    stage_stack_events = get_all_stackevents_for_stage(region='us-west-2',
+                                                       filterby='stage3')
+    dreambox.utils.print_structure(stage_stack_events)
+    print('end testing get_all_stackevents_for_stage stage3')
 
     print('testing get_cloudformation_stack_info')
     stacks = get_cloudformation_stack_info(environ='stage3')
