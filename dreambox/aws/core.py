@@ -41,7 +41,6 @@ def aws_cmd(cmd_cat='',
         for k, v in options.items():
             if '_' in k:
                 k = re.sub('_', '-', k)
-                print('option key {}'.format(k), file=sys.stderr)
                 my_options[k] = v
             else:
                 my_options[k] = v
