@@ -102,12 +102,63 @@ filterby is a stage environment name, i.e. stage1 ... stage9
                                                        stack_name=stack_name)
 
 
-if __name__ == '__main__':
-    stacks = get_all_stacks_for_stage(region='us-west-2', filterby='stage3')
-    dreambox.utils.print_structure(stacks)
+def get_cloudformation_stack_info(profile=None, regions=None, environ=None):
+    '''
+get_cloudformation_stack_info will return cloudformation stack information for a
+given environemnt.  This function takes the following parameters,
 
-    print('testing get_all_stackevents_for_stage stage3')
-    stage_stack_events = get_all_stackevents_for_stage(region='us-west-2',
-                                                       filterby='stage3')
-    dreambox.utils.print_structure(stage_stack_events)
-    print('end testing get_all_stackevents_for_stage stage3')
+
+profile is an aws profile if one is provide; otherwise looking for default
+profile in ~/.aws/config or IAM profile for a node
+
+region is an AWS region that this function will work on
+
+environ is a stage environment name, i.e. stage1 ... stage9
+    '''
+    if regions is None:
+        regions = ['us-east-1', 'us-west-2']
+
+    def create_cloudformation_stack_objects(stack_list, environ=None):
+        stack_objects = stack_list
+        if not environ is None:
+            stack_objects = select(lambda x: environ.lower() == x[0].lower(),
+                                   stack_list)
+
+        stack_table = {}
+        for stack_object in stack_objects:
+            stack_name = stack_object[0]
+            stack_params = stack_object[1]
+            stack_table[stack_name] = {}
+            for stack_param in stack_params:
+                stack_key = stack_param['ParameterKey']
+                stack_value = stack_param['ParameterValue']
+                if stack_key is not None:
+                   stack_table[stack_name][stack_key] = stack_value
+        return stack_table
+
+    stack_infos = {}
+    for region in regions:
+        stack_info = aws_cfn_cmd(aws_profile=profile,
+                                 aws_region=region,
+                                 dry_run=False,
+                                 cfn_subcmd='describe-stacks',
+                                 query='Stacks[].[StackName,Parameters[]]')
+        stack_infos[region] = create_cloudformation_stack_objects(stack_info,
+                                                                  environ)
+
+    return stack_infos
+
+if __name__ == '__main__':
+    # stacks = get_all_stacks_for_stage(region='us-west-2', filterby='stage3')
+    # dreambox.utils.print_structure(stacks)
+
+    # print('testing get_all_stackevents_for_stage stage3')
+    # stage_stack_events = get_all_stackevents_for_stage(region='us-west-2',
+    #                                                    filterby='stage3')
+    # dreambox.utils.print_structure(stage_stack_events)
+    # print('end testing get_all_stackevents_for_stage stage3')
+
+    print('testing get_cloudformation_stack_info')
+    stacks = get_cloudformation_stack_info(environ='stage3')
+    dreambox.utils.print_structure(stacks)
+    print('end testing get_cloudformation_stack_info')
