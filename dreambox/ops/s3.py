@@ -34,7 +34,15 @@ takes these parameters,
     if filterby is not None:
        return_rst = select(lambda bucket: filterby.lower() in bucket['Name'],
                            return_rst)
-    return return_rst
+
+    item_table = {}
+    for item in return_rst:
+        Key = item['Name']
+        Value = item['CreationDate']
+        if Key:
+            item_table[Key] = Value
+
+    return item_table
 
 
 def get_bucket_tags(profile=None,
