@@ -1,8 +1,10 @@
 from __future__ import print_function
 from dreambox.aws.core import aws_cfn_cmd
 from funcy.colls import select
+from StringIO import StringIO
 import dreambox.utils
 import re
+import json
 
 
 def get_stack_names_from_all_regions(profile='',
@@ -126,14 +128,12 @@ environ is a stage environment name, i.e. stage1 ... stage9
 
         stack_table = {}
         for stack_object in stack_objects:
-            stack_name = stack_object[0]
-            stack_params = stack_object[1]
+            stack_name = stack_object[0].lower()
             stack_table[stack_name] = {}
-            for stack_param in stack_params:
-                stack_key = stack_param['ParameterKey']
-                stack_value = stack_param['ParameterValue']
-                if stack_key is not None:
-                   stack_table[stack_name][stack_key] = stack_value
+            for parameters in stack_object[1]:
+                dreambox.utils.print_structure(parameters)
+                stack_table[stack_name][parameters['ParameterKey']] = parameters['ParameterValue']
+
         return stack_table
 
     stack_infos = {}

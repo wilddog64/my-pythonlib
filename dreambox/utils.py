@@ -112,6 +112,13 @@ def chunk_list(seq=None, chunk_size=2):
     return list(chunks(chunk_size, seq))
 
 
+def get_epoch_time():
+    '''
+get_epoch_time return current epoch time
+    '''
+
+    return str((int(expiration) * 86400) + int(time.time()))
+
 if __name__ == '__main__':
     print('testing generate_buzz')
     print('=====================')
