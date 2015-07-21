@@ -5,6 +5,7 @@ from StringIO import StringIO
 import dreambox.utils
 import re
 import json
+import sys
 
 
 def get_stack_names_from_all_regions(profile='',
@@ -148,6 +149,37 @@ environ is a stage environment name, i.e. stage1 ... stage9
 
     return stack_infos
 
+
+def create_stack(profile=None,
+                 region=None,
+                 dry_run=False,
+                 verbose=False,
+                 **stack_options):
+    '''
+create_stack will creates a cloudformation stack via aws cloudformation
+create-stack command.  This function takes the following parameters,
+
+* profile is an aws profile if one is provide; otherwise looking for default
+  profile in ~/.aws/config or IAM profile for a node
+* region is an AWS region that this function will work on
+* stack_options is a python special **args options, which is a dictionary object
+  that contains key and value pair.  This special options have to be acceptible
+  by aws cloudformation create-stacks.  Refers to document for what are the
+  valid options.
+
+The function return stackId upon success
+    '''
+
+    stack_id = aws_cfn_cmd(aws_profile=profile,
+                           aws_region=region,
+                           cfn_subcmd='create-stack',
+                           dry_run=dry_run,
+                           verbose=verbose,
+                           **stack_options)
+
+    return stack_id
+
+
 if __name__ == '__main__':
     stacks = get_all_stacks_for_stage(region='us-west-2', filterby='stage3')
     dreambox.utils.print_structure(stacks)
@@ -162,3 +194,11 @@ if __name__ == '__main__':
     stacks = get_cloudformation_stack_info(environ='stage3')
     dreambox.utils.print_structure(stacks)
     print('end testing get_cloudformation_stack_info')
+
+    print('testing create_stack', file=sys.stderr)
+    stack_id = create_stack(region='us-west-2',
+                            dry_run=True,
+                            stack_name='stage3',
+                            template_url='https://s3.amazonaws.com/cfnwest/stage3',
+                            parameters='ParameterKey=stage3,ParameterValue=testing',
+                            capabilities='CAPABILTY_IAM')
