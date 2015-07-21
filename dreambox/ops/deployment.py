@@ -6,15 +6,15 @@ from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
 from itertools import chain
-import dreambox.ops.security
-import dreambox.ops.cloudformation
+import dreambox.aws.security
+import dreambox.aws.cloudformation
 import os
 import dreambox.utils
 import re
 from docopt import docopt
 import sys
 
-import dreambox.ops.autoscaling
+import dreambox.aws.autoscaling
 
 def get_available_stack_from_all_regions(aws_profile=''):
     '''
@@ -27,7 +27,7 @@ This function will search a given set of regions and return the first
 available stack and return it as a hash of array back to caller
     '''
 
-    from dreambox.ops.cloudformation import get_stack_names_from_all_regions
+    from dreambox.aws.cloudformation import get_stack_names_from_all_regions
     # get all the stacks from every region. at this point, we don't want
     # anything but the number attaches to the stack name
     region_stacks = get_stack_names_from_all_regions(profile=aws_profile)
@@ -87,7 +87,7 @@ ops delete_all_security_groups [options] # delete all security group for a given
 environment
     """
     # print('pass in parameters: {}'.format(argv), file=sys.stderr)
-    from dreambox.ops.security import delete_security_groups
+    from dreambox.aws.security import delete_security_groups
     arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
     stage = arguments['<stage>'][0]
     dry_run = arguments['--dry-run']
@@ -102,7 +102,7 @@ usage:
     ops revoke_all_ingress_rules_for_stage <stage>...
     ops revoke_all_ingress_rules_for_stage <stage> [--dry-run=<no|yes>]
     """
-    from dreambox.ops.security import revoke_all_ingress_rules
+    from dreambox.aws.security import revoke_all_ingress_rules
 
     arguments = docopt(revoke_all_ingress_rules_for_stage.__doc__, argv=argv)
     stage = arguments['<stage>'][0]
@@ -121,7 +121,7 @@ usage:
     ops get_all_ec2_instances_from_tag <partial_tag>
     '''
 
-    from dreambox.ops.ec2 import get_ec2_hosts_for_stage
+    from dreambox.aws.ec2 import get_ec2_hosts_for_stage
     arguments = docopt(get_all_ec2_instances_from_tag.__doc__, argv=argv)
     partial_tag = arguments['<partial_tag>']
     if partial_tag.lower() == 'all':
@@ -138,7 +138,7 @@ if __name__ == '__main__':
     print("script executed: %s and current script directory is: %s" % \
         (__file__, current_directory), file=sys.stderr)
     asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    my_result = dreambox.ops.autoscaling.get_all_play_asgs(ec2profile=None,
+    my_result = dreambox.aws.autoscaling.get_all_play_asgs(ec2profile=None,
                                                            ec2region='us-east-1',
                                                            env='production',
                                                            query=asg_query)
@@ -151,17 +151,17 @@ if __name__ == '__main__':
 
     print('result from get_only_play_asgs', file=sys.stderr)
     print('==============================', file=sys.stderr)
-    my_result = dreambox.ops.autoscaling.get_only_play_asgs(query=asg_query)
+    my_result = dreambox.aws.autoscaling.get_only_play_asgs(query=asg_query)
     dreambox.utils.print_structure(my_result)
     print('end of get_only_play_asgs', file=sys.stderr)
     print("\", file=sys.stderr")
 
     asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    my_result = dreambox.ops.autoscaling.get_only_play_asgs(query=asg_query)
+    my_result = dreambox.aws.autoscaling.get_only_play_asgs(query=asg_query)
 
     print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('=======================================================', file=sys.stderr)
-    results = dreambox.ops.autoscaling.get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
+    results = dreambox.aws.autoscaling.get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
     dreambox.utils.print_structure(results)
     print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('==================================================', file=sys.stderr)
