@@ -84,6 +84,26 @@ parameters,
     return s3_tagset
 
 
+def create_or_update_s3bucket(profile=None,
+                              region=None,
+                              bucket_name=None,
+                              key=None,
+                              value=None,
+                              dry_run=False,
+                              verbose=False):
+
+    print('testing')
+    tagset = ''' { "TagSet": { "Key": "%s", "Value": "%s" } }''' % (key, value)
+    aws_s3api_cmd(aws_profile=profile,
+                  aws_region=region,
+                  s3api_subcmd='put-bucket-tagging',
+                  dry_run=dry_run,
+                  verbose=verbose,
+                  bucket=bucket_name,
+                  tagging=tagset)
+
+    return tagset
+
 if __name__ == '__main__':
 
     print('testing get_bucket', file=sys.stderr)
@@ -98,4 +118,13 @@ if __name__ == '__main__':
     bucket_tagset = get_bucket_tags(bucket='03west-backup-databag')
     dreambox.utils.print_structure(bucket_tagset)
     print('end testing get_bucket_tags', file=sys.stderr)
+    print('------------------')
+
+    print('testing create_or_update_s3bucket', file=sys.stderr)
+    print('------------------')
+    create_or_update_s3bucket(bucket_name='03west-backup-databag',
+                              key='s3bucket',
+                              value='testing',
+                              dry_run=True)
+    print('end testing create_or_update_s3bucket', file=sys.stderr)
     print('------------------')
