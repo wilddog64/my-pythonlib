@@ -121,7 +121,7 @@ usage:
     ops get_all_ec2_instances_from_tag <partial_tag>
     '''
 
-    from dreambox.ops.ec2 import get_ec2_hosts_for_stage
+    from dreambox.aws.ec2 import get_ec2_hosts_for_stage
     arguments = docopt(get_all_ec2_instances_from_tag.__doc__, argv=argv)
     partial_tag = arguments['<partial_tag>']
     if partial_tag.lower() == 'all':
