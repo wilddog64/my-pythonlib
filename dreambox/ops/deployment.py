@@ -14,7 +14,7 @@ import re
 from docopt import docopt
 import sys
 
-import dreambox.ops.autoscaling
+import dreambox.aws.autoscaling
 
 def get_available_stack_from_all_regions(aws_profile=''):
     '''
@@ -138,7 +138,7 @@ if __name__ == '__main__':
     print("script executed: %s and current script directory is: %s" % \
         (__file__, current_directory), file=sys.stderr)
     asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    my_result = dreambox.ops.autoscaling.get_all_play_asgs(ec2profile=None,
+    my_result = dreambox.aws.autoscaling.get_all_play_asgs(ec2profile=None,
                                                            ec2region='us-east-1',
                                                            env='production',
                                                            query=asg_query)
@@ -151,17 +151,17 @@ if __name__ == '__main__':
 
     print('result from get_only_play_asgs', file=sys.stderr)
     print('==============================', file=sys.stderr)
-    my_result = dreambox.ops.autoscaling.get_only_play_asgs(query=asg_query)
+    my_result = dreambox.aws.autoscaling.get_only_play_asgs(query=asg_query)
     dreambox.utils.print_structure(my_result)
     print('end of get_only_play_asgs', file=sys.stderr)
     print("\", file=sys.stderr")
 
     asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    my_result = dreambox.ops.autoscaling.get_only_play_asgs(query=asg_query)
+    my_result = dreambox.aws.autoscaling.get_only_play_asgs(query=asg_query)
 
     print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('=======================================================', file=sys.stderr)
-    results = dreambox.ops.autoscaling.get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
+    results = dreambox.aws.autoscaling.get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
     dreambox.utils.print_structure(results)
     print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('==================================================', file=sys.stderr)
