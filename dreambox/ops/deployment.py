@@ -6,7 +6,7 @@ from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
 from itertools import chain
-import dreambox.ops.security
+import dreambox.aws.security
 import dreambox.aws.cloudformation
 import os
 import dreambox.utils
@@ -87,7 +87,7 @@ ops delete_all_security_groups [options] # delete all security group for a given
 environment
     """
     # print('pass in parameters: {}'.format(argv), file=sys.stderr)
-    from dreambox.ops.security import delete_security_groups
+    from dreambox.aws.security import delete_security_groups
     arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
     stage = arguments['<stage>'][0]
     dry_run = arguments['--dry-run']
@@ -102,7 +102,7 @@ usage:
     ops revoke_all_ingress_rules_for_stage <stage>...
     ops revoke_all_ingress_rules_for_stage <stage> [--dry-run=<no|yes>]
     """
-    from dreambox.ops.security import revoke_all_ingress_rules
+    from dreambox.aws.security import revoke_all_ingress_rules
 
     arguments = docopt(revoke_all_ingress_rules_for_stage.__doc__, argv=argv)
     stage = arguments['<stage>'][0]

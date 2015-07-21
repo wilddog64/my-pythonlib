@@ -7,7 +7,7 @@ from funcy.seqs import chunks
 from funcy.seqs import pairwise
 from funcy.colls import select
 from itertools import chain
-import dreambox.ops.security
+import dreambox.aws.security
 import dreambox.utils
 import re
 import sys
