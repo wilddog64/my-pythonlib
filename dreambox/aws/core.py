@@ -41,7 +41,6 @@ def aws_cmd(cmd_cat='',
         for k, v in options.items():
             if '_' in k:
                 k = re.sub('_', '-', k)
-                print('option key {}'.format(k), file=sys.stderr)
                 my_options[k] = v
             else:
                 my_options[k] = v
@@ -152,11 +151,13 @@ def aws_ecachecmd(aws_profile=None,
 
 def aws_cfn_cmd(aws_profile=None,
                 aws_region='us-east-1',
+                dry_run=False,
                 cfn_subcmd='',
                 **cfn_options):
     return aws_cmd(cmd_cat='cloudformation',
                    profile=aws_profile,
                    region=aws_region,
+                   dry_run=dry_run,
                    subcmd=cfn_subcmd,
                    **cfn_options
                    )
@@ -210,6 +211,37 @@ def aws_redshiftcmd(aws_profile=None,
                    dry_run=dry_run,
                    verbose=verbose,
                    **ecache_options)
+
+
+def aws_s3api_cmd(aws_profile=None,
+                  aws_region='us-west-2',
+                  s3api_subcmd=None,
+                  dry_run=False,
+                  verbose=False,
+                  **s3api_options):
+
+    '''
+aws_s3api_cmd is based command to issure verious aws s3api command.  The function
+takes the following parameters,
+
+
+#  aws_profile: profile define under ~/.aws/config
+#  aws_region: an aws region to work with
+#  s3api_subcmd: a sub-command applicable to autoscaling
+#  **s3api_options: a list of acceptable options to s3api sub-command
+#
+    '''
+    if aws_region is None:
+        aws_region = 'us-west-2'
+
+    return aws_cmd(cmd_cat='s3api',
+                   profile=aws_profile,
+                   region=aws_region,
+                   subcmd=s3api_subcmd,
+                   dry_run=dry_run,
+                   verbose=verbose,
+                   **s3api_options)
+
 
 if __name__ == "__main__":
     from dreambox.ops.deployment import get_all_play_asgs

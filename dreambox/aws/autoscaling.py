@@ -5,8 +5,9 @@ from dreambox.aws.core import aws_cfn_cmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.seqs import pairwise
+from funcy.colls import select
 from itertools import chain
-import dreambox.ops.security
+import dreambox.aws.security
 import dreambox.utils
 import re
 import sys
@@ -104,3 +105,64 @@ a given ASG group.  This function takes the following parameters,
             results.append(result)
     return chunks(2, list(chain.from_iterable(results)))
 
+def get_all_autoscaling_group_from(profile=None,
+                                   region=None,
+                                   filterby=None):
+    '''
+get_all_autoscaling_group_from will return all the autoscaling groups for a
+given stage environment
+    '''
+    asg_result = aws_asgcmd(aws_profile=profile,
+                            aws_region=region,
+                            asg_subcmd='describe-auto-scaling-groups',
+                            query='AutoScalingGroups[].AutoScalingGroupName')
+
+    return_result = None
+    if filterby is None:
+        return_result = asg_result
+    else:
+        return_result = select(lambda x: filterby.lower() in x.lower(), asg_result)
+    return return_result
+
+
+def suspend_autoscaling_groups_for_stage(profile=None,
+                                         region=None,
+                                         filterby=None,
+                                         verbose=False,
+                                         dry_run=False):
+    '''
+suspend_autoscaling_groups_for_stage will suspend autoscaling groups bsaed on
+a filterby parameter.  This function returns nothing.
+    '''
+    asg_groups = get_all_autoscaling_group_from(profile=profile,
+                                                region=region,
+                                                filterby=filterby)
+    for asg_group in asg_groups:
+        aws_asgcmd(aws_profile=profile,
+                   aws_region=region,
+                   asg_subcmd='suspend-processes',
+                   auto_scaling_group_name=asg_group,
+                   verbose=verbose,
+                   dry_run=dry_run)
+
+
+if __name__ == '__main__':
+
+    print('testing get_all_autoscaling_group_from with stage3 environment',
+          file=sys.stderr)
+    result = get_all_autoscaling_group_from(region='us-west-2',
+                                                 filterby='stage3')
+    dreambox.utils.print_structure(result)
+    print('end testing get_all_autoscaling_group_from with filter')
+    print()
+    print('testing get_all_autoscaling_group_from without any filter')
+    result = get_all_autoscaling_group_from(region='us-west-2')
+    dreambox.utils.print_structure(result)
+    print('end testing get_all_autoscaling_group_from without filter')
+    print()
+    print('testing suspend_autoscaling_groups_for_stage filter by stage3')
+    suspend_autoscaling_groups_for_stage(region='us-west-2',
+                                         filterby='stage3',
+                                         dry_run=True,
+                                         verbose=True)
+    print('end testing suspend_autoscaling_groups_for_stage filter by stage3')
