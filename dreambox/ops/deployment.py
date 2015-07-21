@@ -7,7 +7,7 @@ from funcy.seqs import chunks
 from funcy.seqs import pairwise
 from itertools import chain
 import dreambox.ops.security
-import dreambox.ops.cloudformation
+import dreambox.aws.cloudformation
 import os
 import dreambox.utils
 import re
@@ -27,7 +27,7 @@ This function will search a given set of regions and return the first
 available stack and return it as a hash of array back to caller
     '''
 
-    from dreambox.ops.cloudformation import get_stack_names_from_all_regions
+    from dreambox.aws.cloudformation import get_stack_names_from_all_regions
     # get all the stacks from every region. at this point, we don't want
     # anything but the number attaches to the stack name
     region_stacks = get_stack_names_from_all_regions(profile=aws_profile)
