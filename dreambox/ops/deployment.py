@@ -132,20 +132,6 @@ usage:
     dreambox.utils.print_structure(stage_ec2_instances)
 
 
-def execute(argv=[]):
-    """
-usage: deploy [--all] [--inc-magic-number] [<args>...]
-
-options:
-
-commonly use operations:
-ops deploy [options]   # get all auto scaling groups define under AWS
-
-    """
-    print("pass in parameters: {0}".format(argv), file=sys.stderr)
-    arguments = docopt(execute.__doc__, argv=argv)
-    print("argument receive: {}".format(arguments), file=sys.stderr)
-
 if __name__ == '__main__':
 
     current_directory = os.path.dirname(os.path.realpath(__file__))
