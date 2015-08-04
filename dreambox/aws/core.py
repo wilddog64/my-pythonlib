@@ -68,10 +68,12 @@ def aws_cmd(cmd_cat='',
                             stderr=subprocess.PIPE
                             )
     result, error = proc.communicate()
+    json_result = None
     if not error:
-        return json.loads(result)
-    else:
-        return error
+        if result:
+            json_result = json.loads(result)
+
+    return (json_result, error)
 
 
 # aws_ec2cmd is a function that will execute aws ec2 command category.  this

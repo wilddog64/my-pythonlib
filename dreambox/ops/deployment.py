@@ -132,6 +132,56 @@ usage:
     dreambox.utils.print_structure(stage_ec2_instances)
 
 
+def create_stage_environment(argv=None):
+    '''
+usage:
+    ops create_stage_environment <stage>...
+    ops create_stage_environment <stage> [--all-regions=<regions>]
+    ops create_stage_environment <stage> [--expiration-days=<days>]
+    ops create_stage_environment <stage> [--newest-snap=yes|no]
+    ops create_stage_environment <stage> [--owner-email=pagercarriers@dreambox.com]
+    ops create_stage_environment <stage> --db-root-password=<password>
+    ops create_stage_environment <stage> [--region=us-west-2]
+    ops create_stage_environment <stage> [--use-case=automation-test]
+
+options:
+    -h --help print this help message
+    -a --all-regions a list of aws regions that we are looking for environments [default: 'us-east-1,us-west-2']
+    -e --expiration-days an expiration time in days for stacks [default=90]
+    -n --newest-snap newest snapshot to use.  The default is false, which will use the second newest snapshot nd reserve the newest for DR
+    -o --owner-email.  Email notification sent to [default: 'operations@dreambox.com']
+    -p --db-root-password a mysql db root password
+    -u --use-case a purpose for the environment being spun up.  The value of the option will be tagged to the top-level stack [default: 'test automation']
+    '''
+    arguments = docopt(create_stage_environment.__doc__, argv=argv)
+    dreambox.utils.print_structure(arguments)
+    stage = arguments['<stage>'][0]
+    all_regions = arguments['--all-regions']
+    if all_regions is None:
+        all_regions = 'us-east-1,us-west-2'
+
+    expiration_days = arguments['--expiration-days']
+    if expiration_days is None:
+        expiration_days = 90
+
+    newest_snap = arguments['--newest-snap']
+    if newest_snap is None:
+        newest_snap = False
+
+    region = arguments['--region']
+    if region is None:
+      region = 'us-west-2'
+
+    db_root_password = arguments['--db-root-password']
+    use_case = arguments['--use-case']
+    print('environment to create: %s' % stage)
+    print('regions to search %s:' % all_regions)
+    print('stack expeire in %s days' % expiration_days)
+    print('stack deploy to %s' % region)
+    print('use newest snapshot: %s' % newest_snap)
+    print('use case %s' % use_case)
+
+
 if __name__ == '__main__':
 
     current_directory = os.path.dirname(os.path.realpath(__file__))
