@@ -14,21 +14,22 @@ The most commonly used ops commands are:
 """
 
 from docopt import docopt
-from dreambox.utils import get_deployment_function_object
+from dreambox.utils import get_function_object
 
 if __name__ == '__main__':
     import dreambox.ops.deployment
     args = docopt(__doc__,
-                version = 'ops version 0.0.1',
-                options_first = True,
-            )
+                  version='ops version 0.0.1',
+                  options_first=True,
+                 )
     print "global arguments: {0}".format(args)
     argv = [args['<command>']] + args['<args>']
-    if args['<command>'] == 'deploy':
-        from dreambox.ops.deployment import execute
-        execute(argv)
-    if args['<command>'] in dir(dreambox.ops.deployment):
-        func_name = args['<command>']
-        print 'found {0} from dreambox.ops.deployment, loading it now'.format(func_name)
-        func_obj = get_deployment_function_object(func_name)
+    command = args['<command>']
+    if command in dir(dreambox.ops.deployment):
+        print 'found {0} from dreambox.ops.deployment, loading it now'.format(command)
+        func_obj = get_function_object(dreambox.ops.deployment, command)
         func_obj(argv)
+    elif command == 'git-client':
+        import dreambox.ops.git
+        dreambox.ops.git.dispatch_command(argv)
+
