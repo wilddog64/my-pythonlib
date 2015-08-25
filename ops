@@ -46,12 +46,6 @@ if __name__ == '__main__':
 
     # sub command for revoke_all_ingress_rules_for_stage
     parser_revoke_ingress = subparsers.add_parser('revoke_all_ingress_rules_for_stage')
-    # parser_revoke_ingress.add_argument('-n',
-    #                                    '--dry-run',
-    #                                    type=bool,
-    #                                    dest='dry_run',
-    #                                    default=False,
-    #                                    help='a boolean flag direct the program to tells what happen, but will not execute')
     parser_revoke_ingress.add_argument('stage', help='a stage environment you like to have security rules revoked')
     parser_revoke_ingress.set_defaults(func=dreambox.ops.deployment.revoke_all_ingress_rules_for_stage)
 
@@ -86,13 +80,6 @@ if __name__ == '__main__':
                                        dest='repo_url',
                                        default='',
                                        help='a boolean flag direct the program to tells what happen, but will not execute')
-    # parser_clone_env_apps.add_argument('-n',
-    #                                    '--dry-run',
-    #                                    type=bool,
-    #                                    dest='test_run',
-    #                                    default=False,
-    #                                    help='a boolean flag direct the program to tells what happen, but will not execute')
-
     parser_clone_env_apps.set_defaults(func=dreambox.ops.git_client.clone_env_apps)
     args = parser.parse_args()
     args.func(args)
