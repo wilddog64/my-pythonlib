@@ -50,23 +50,15 @@ takes the following parameters,
                  dry_run=dry_run)
 
 
-def clone_env_apps(argv=None):
-    '''
-Usage: git-client clone_env_apps [options] <from_env> <to_env>
+def clone_env_apps(args=None):
+    from_env = args.from_env
+    to_env = args.to_env
+    repo_path = args.repo_path
+    repo_name = args.repo_name
+    repo_url = args.repo_url
+    dry_run = args.dry_run
+    message = '''
+clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
+    ''' % (from_env, to_env, repo_path, repo_name, repo_url, dry_run)
 
-    -p, --repo-path=<repo_path>  a path where repo should clone to [default: /tmp]
-    -o, --repo-name  a name for a repo [default: ]
-    -u, --repo-url   where is the upstream git repo [default: git@github.com:dreamboxlearning/chef-environments.git]
-    -n, --dry-run    a boolean flag that tells what will happen, but not actually execute it [default: True]
-    '''
-    try:
-        arguments = docopt.docopt(clone_env_apps.__doc__, argv=argv, options_first=True)
-        args = arguments['<args>']
-        fromEnv = args[0]
-        toEnv = args[1]
-        (fromEnv, toEnv) = args[1:]
-        print('clone from: %s to %s' % (fromEnv, toEnv))
-    except docopt.DocoptExit as docoptExit:
-        print(docoptExit.message, file=sys.stderr)
-    except Exception as exception:
-        print(exception.message, file=sys.stderr)
+    print(message, file=sys.stderr)

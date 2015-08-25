@@ -13,21 +13,87 @@ The most commonly used ops commands are:
     aws    perform aws operation
 """
 
+import argparse
 from docopt import docopt
+import dreambox.ops.deployment
+import dreambox.ops.git_client
+
 from dreambox.utils import get_function_object
 
 if __name__ == '__main__':
-    import dreambox.ops.deployment
-    args = docopt(__doc__,
-                  version='ops version 0.0.1',
-                  options_first=True,
-                 )
-    argv = [args['<command>']] + args['<args>']
-    command = args['<command>']
-    if command in dir(dreambox.ops.deployment):
-        func_obj = get_function_object(dreambox.ops.deployment, command)
-        func_obj(argv)
-    elif command == 'git-client':
-        import dreambox.ops.git
-        dreambox.ops.git.dispatch_command(argv)
+    # import dreambox.ops.deployment
+    # args = docopt(__doc__,
+    #               version='ops version 0.0.1',
+    #               options_first=True,
+    #              )
+    # argv = [args['<command>']] + args['<args>']
+    # command = args['<command>']
+    # if command in dir(dreambox.ops.deployment):
+    #     func_obj = get_function_object(dreambox.ops.deployment, command)
+    #     func_obj(argv)
+    # elif command == 'git-client':
+    #     import dreambox.ops.git
+    #     dreambox.ops.git.dispatch_command(argv)
+
+    parser = argparse.ArgumentParser(prog='ops', conflict_handler='resolve', add_help=False)
+    parser.add_argument('-n',
+                        '--dry-run',
+                        type=bool,
+                        dest='dry_run',
+                        default=False,
+                        help='a boolean flag direct the program to tells what happen, but will not execute')
+    subparsers = parser.add_subparsers()
+
+    # sub command for revoke_all_ingress_rules_for_stage
+    parser_revoke_ingress = subparsers.add_parser('revoke_all_ingress_rules_for_stage')
+    # parser_revoke_ingress.add_argument('-n',
+    #                                    '--dry-run',
+    #                                    type=bool,
+    #                                    dest='dry_run',
+    #                                    default=False,
+    #                                    help='a boolean flag direct the program to tells what happen, but will not execute')
+    parser_revoke_ingress.add_argument('stage', help='a stage environment you like to have security rules revoked')
+    parser_revoke_ingress.set_defaults(func=dreambox.ops.deployment.revoke_all_ingress_rules_for_stage)
+
+    # sub command for clone_env_apps
+    parser_clone_env_apps = subparsers.add_parser('clone_env_apps')
+
+    # positional arguments
+    parser_clone_env_apps.add_argument('from_env', help='where should we clone environment from')
+    parser_clone_env_apps.add_argument('to_env', help='where we should clone environment to')
+
+    parser_clone_env_apps.add_argument('-p',
+                                       '--repo-path',
+                                       type=str,
+                                       dest='repo_path',
+                                       default='/tmp',
+                                       help='a path where repo should clone to ')
+    parser_clone_env_apps.add_argument('-o',
+                                       '--repo-name',
+                                       type=str,
+                                       dest='repo_name',
+                                       default='',
+                                       help='the name of repo')
+    parser_clone_env_apps.add_argument('-u',
+                                       '--repo-url',
+                                       type=str,
+                                       dest='repo_url',
+                                       default='git@github.com:dreamboxlearning/chef-environments.git',
+                                       help='a github url where we can clone repo')
+    parser_clone_env_apps.add_argument('-n',
+                                       '--dry-run',
+                                       type=bool,
+                                       dest='repo_url',
+                                       default='',
+                                       help='a boolean flag direct the program to tells what happen, but will not execute')
+    # parser_clone_env_apps.add_argument('-n',
+    #                                    '--dry-run',
+    #                                    type=bool,
+    #                                    dest='test_run',
+    #                                    default=False,
+    #                                    help='a boolean flag direct the program to tells what happen, but will not execute')
+
+    parser_clone_env_apps.set_defaults(func=dreambox.ops.git_client.clone_env_apps)
+    args = parser.parse_args()
+    args.func(args)
 

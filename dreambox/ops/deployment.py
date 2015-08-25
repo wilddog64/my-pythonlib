@@ -96,23 +96,9 @@ environment
     delete_security_groups(my_filterby=stage, dry_run=dry_run)
 
 
-def revoke_all_ingress_rules_for_stage(argv=None):
-    """
-usage:
-    ops revoke_all_ingress_rules_for_stage <stage>...
-    ops revoke_all_ingress_rules_for_stage <stage> [--dry-run=<no|yes>]
-    """
+def revoke_all_ingress_rules_for_stage(args=None):
     from dreambox.aws.security import revoke_all_ingress_rules
-
-    arguments = docopt(revoke_all_ingress_rules_for_stage.__doc__, argv=argv)
-    stage = arguments['<stage>'][0]
-    dry_run = arguments['--dry-run']
-    if dry_run is None:
-        dry_run = False
-
-    print('stage to work on is {}'.format(stage), file=sys.stderr)
-    print('--dry-run: {}'.format(dry_run), file=sys.stdout)
-    revoke_all_ingress_rules(filterby=stage, dry_run=dry_run)
+    revoke_all_ingress_rules(filterby=args.stage, dry_run=args.dry_run)
 
 
 def get_all_ec2_instances_from_tag(argv=None):
