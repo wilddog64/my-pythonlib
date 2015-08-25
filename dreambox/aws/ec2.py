@@ -38,10 +38,10 @@ stage environment.  This function takes the following parameters,
         regions = ['us-east-1', 'us-west-2']
 
     for region in regions:
-        region_instances, error = aws_ec2cmd(ec2profile=profile,
-                                             ec2region=region,
-                                             subcmd='describe-instances',
-                                             query=inst_qry)
+        region_instances = aws_ec2cmd(ec2profile=profile,
+                                      ec2region=region,
+                                      subcmd='describe-instances',
+                                      query=inst_qry)
         # dreambox.utils.print_structure(region_instances)
         instances[region] = make_hash_from_ec2tag(region_instances, stage)
 

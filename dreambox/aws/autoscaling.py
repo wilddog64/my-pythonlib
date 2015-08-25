@@ -97,13 +97,11 @@ a given ASG group.  This function takes the following parameters,
     for k, v in asg_group.items():
         if v:
             ids = str_join(' ', v)
-            result, error = aws_ec2cmd(ec2profile,
-                                       ec2region,
-                                       subcmd='describe-instances',
-                                       instance_ids=ids,
-                                       query=qry)
-            if error:
-                sys.exit(error)
+            result = aws_ec2cmd(ec2profile,
+                                ec2region,
+                                subcmd='describe-instances',
+                                instance_ids=ids,
+                                query=qry)
             results.append(result)
     return chunks(2, list(chain.from_iterable(results)))
 
@@ -114,13 +112,10 @@ def get_all_autoscaling_group_from(profile=None,
 get_all_autoscaling_group_from will return all the autoscaling groups for a
 given stage environment
     '''
-    asg_result, error = aws_asgcmd(aws_profile=profile,
-                                   aws_region=region,
-                                   asg_subcmd='describe-auto-scaling-groups',
-                                   query='AutoScalingGroups[].AutoScalingGroupName')
-
-    if error:
-        sys.exit(error)
+    asg_result = aws_asgcmd(aws_profile=profile,
+                            aws_region=region,
+                            asg_subcmd='describe-auto-scaling-groups',
+                            query='AutoScalingGroups[].AutoScalingGroupName')
 
     return_result = None
     if filterby is None:

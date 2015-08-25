@@ -52,10 +52,10 @@ profile - aws profile if one exist.  If it is not provided, the function will
 region - which aws region do we want to work on
 filterby - limit result by providing a filter string
     '''
-    stage_stacks, error = aws_cfn_cmd(aws_profile=profile,
-                                      aws_region=region,
-                                      cfn_subcmd='describe-stacks',
-                                      query='Stacks[].StackName')
+    stage_stacks = aws_cfn_cmd(aws_profile=profile,
+                               aws_region=region,
+                               cfn_subcmd='describe-stacks',
+                               query='Stacks[].StackName')
 
     stacks_list = select(lambda x: filterby.lower() in x.lower(), stage_stacks)
     return stacks_list
@@ -139,11 +139,11 @@ environ is a stage environment name, i.e. stage1 ... stage9
 
     stack_infos = {}
     for region in regions:
-        stack_info, error = aws_cfn_cmd(aws_profile=profile,
-                                        aws_region=region,
-                                        dry_run=False,
-                                        cfn_subcmd='describe-stacks',
-                                        query='Stacks[].[StackName,Parameters[]]')
+        stack_info = aws_cfn_cmd(aws_profile=profile,
+                                 aws_region=region,
+                                 dry_run=False,
+                                 cfn_subcmd='describe-stacks',
+                                 query='Stacks[].[StackName,Parameters[]]')
         stack_infos[region] = create_cloudformation_stack_objects(stack_info,
                                                                   environ)
 
@@ -180,30 +180,6 @@ The function return stackId upon success
     return stack_id
 
 
-def delete_stack(profile=None,
-                 region=None,
-                 dry_run=False,
-                 verbose=False,
-                 stack_name=None):
-    '''
-delete_stack will creates a cloudformation stack via aws cloudformation
-create-stack command.  This function takes the following parameters,
-
-* profile is an aws profile if one is provide; otherwise looking for default
-  profile in ~/.aws/config or IAM profile for a node
-* region is an AWS region that this function will work on
-* stack_name is a stack needs to be deleted
-
-    '''
-
-    aws_cfn_cmd(aws_profile=profile,
-                aws_region=region,
-                cfn_subcmd='create-stack',
-                dry_run=dry_run,
-                verbose=verbose,
-                stack_name=stack_name)
-
-
 if __name__ == '__main__':
     stacks = get_all_stacks_for_stage(region='us-west-2', filterby='stage3')
     dreambox.utils.print_structure(stacks)
@@ -226,9 +202,3 @@ if __name__ == '__main__':
                             template_url='https://s3.amazonaws.com/cfnwest/stage3',
                             parameters='ParameterKey=stage3,ParameterValue=testing',
                             capabilities='CAPABILTY_IAM')
-
-    print('testing delete_stack', file=sys.stderr)
-    stack_id = delete_stack(region='us-west-2',
-                            dry_run=True,
-                            stack_name='stage3')
-    print('end testing delete_stack', file=sys.stderr)
