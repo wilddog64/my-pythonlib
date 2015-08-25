@@ -21,18 +21,18 @@ import dreambox.ops.git_client
 from dreambox.utils import get_function_object
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='ops', conflict_handler='resolve', add_help=False)
-    parser.add_argument('-n',
-                        '--dry-run',
-                        type=bool,
-                        dest='dry_run',
-                        default=False,
-                        help='a boolean flag direct the program to tells what happen, but will not execute')
+    parser = argparse.ArgumentParser(prog='ops', add_help=False)
     subparsers = parser.add_subparsers()
 
     # sub command for revoke_all_ingress_rules_for_stage
     parser_revoke_ingress = subparsers.add_parser('revoke_all_ingress_rules_for_stage')
     parser_revoke_ingress.add_argument('stage', help='a stage environment you like to have security rules revoked')
+    parser_revoke_ingress.add_argument('-n',
+                                       '--dry-run',
+                                       type=bool,
+                                       dest='dry_run',
+                                       default=False,
+                                       help='a boolean flag direct the program to tells what happen, but will not execute')
     parser_revoke_ingress.set_defaults(func=dreambox.ops.deployment.revoke_all_ingress_rules_for_stage)
 
     # sub command for clone_env_apps
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     parser_clone_env_apps.add_argument('-n',
                                        '--dry-run',
                                        type=bool,
-                                       dest='repo_url',
+                                       dest='dry_run',
                                        default='',
                                        help='a boolean flag direct the program to tells what happen, but will not execute')
     parser_clone_env_apps.set_defaults(func=dreambox.ops.git_client.clone_env_apps)
