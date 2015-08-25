@@ -52,27 +52,19 @@ takes the following parameters,
 
 def clone_env_apps(argv=None):
     '''
-Usage:
-    git-client clone_env_apps [options] <from_env> <to_env>
-    git-client clone_env_apps --repo-name <repo_name> <from_env> <to_env>
+Usage: git-client clone_env_apps [options] <from_env> <to_env>
 
-Options:
-    -h, --help
-    -p, --repo-path a path where repo should clone to
-           [default: /tmp]
-    -o, --repo-name a name for a repo
-           [default: ]
-    -u, --repo-url where is the upstream git repo
-           [default: git@github.com:dreamboxlearning/chef-environments.git]
-    -n, --dry-run a boolean flag that tells what will happen,
-           but not actually execute it [default: True]
+    -p, --repo-path=<repo_path>  a path where repo should clone to [default: /tmp]
+    -o, --repo-name  a name for a repo [default: ]
+    -u, --repo-url   where is the upstream git repo [default: git@github.com:dreamboxlearning/chef-environments.git]
+    -n, --dry-run    a boolean flag that tells what will happen, but not actually execute it [default: True]
     '''
     try:
         arguments = docopt.docopt(clone_env_apps.__doc__, argv=argv, options_first=True)
-        print('argument is a type of %s' % type(arguments))
-        dreambox.utils.print_structure(arguments)
-        fromEnv = arguments['<from_env>']
-        toEnv = arguments['<to_env>']
+        args = arguments['<args>']
+        fromEnv = args[0]
+        toEnv = args[1]
+        (fromEnv, toEnv) = args[1:]
         print('clone from: %s to %s' % (fromEnv, toEnv))
     except docopt.DocoptExit as docoptExit:
         print(docoptExit.message, file=sys.stderr)
