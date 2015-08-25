@@ -14,9 +14,9 @@ The most commonly used ops commands are:
 """
 
 import argparse
-from docopt import docopt
 import dreambox.ops.deployment
 import dreambox.ops.git_client
+import yaml
 
 from dreambox.utils import get_function_object
 
