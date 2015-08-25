@@ -22,11 +22,9 @@ if __name__ == '__main__':
                   version='ops version 0.0.1',
                   options_first=True,
                  )
-    print "global arguments: {0}".format(args)
     argv = [args['<command>']] + args['<args>']
     command = args['<command>']
     if command in dir(dreambox.ops.deployment):
-        print 'found {0} from dreambox.ops.deployment, loading it now'.format(command)
         func_obj = get_function_object(dreambox.ops.deployment, command)
         func_obj(argv)
     elif command == 'git-client':
