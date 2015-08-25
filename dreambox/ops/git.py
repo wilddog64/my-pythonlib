@@ -5,11 +5,8 @@ from docopt import docopt
 import dreambox.utils
 
 def dispatch_command(argv=None):
-    ''' usage: ops git [options] <command> [<args>...]
+    ''' usage: ops git-client <command> [<args>...]
 
-    options:
-      --profile awscli profile defines in ~/.aws/config
-      --region  awscli region, an AWS region
     '''
     args = docopt(dispatch_command.__doc__,
                   version='ops aws 0.0.1',
@@ -18,8 +15,8 @@ def dispatch_command(argv=None):
     argv = [args['<command>']] + args['<args>']
     print('arguments %s' % argv)
     command = args['<command>']
-    print('command receive is, %s' % command)
-    
+    print('command receive is %s' % command)
+
     func = dreambox.utils.get_function_object(dreambox.ops.git_client, command)
     func(argv)
 
