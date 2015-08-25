@@ -21,20 +21,6 @@ import dreambox.ops.git_client
 from dreambox.utils import get_function_object
 
 if __name__ == '__main__':
-    # import dreambox.ops.deployment
-    # args = docopt(__doc__,
-    #               version='ops version 0.0.1',
-    #               options_first=True,
-    #              )
-    # argv = [args['<command>']] + args['<args>']
-    # command = args['<command>']
-    # if command in dir(dreambox.ops.deployment):
-    #     func_obj = get_function_object(dreambox.ops.deployment, command)
-    #     func_obj(argv)
-    # elif command == 'git-client':
-    #     import dreambox.ops.git
-    #     dreambox.ops.git.dispatch_command(argv)
-
     parser = argparse.ArgumentParser(prog='ops', conflict_handler='resolve', add_help=False)
     parser.add_argument('-n',
                         '--dry-run',
