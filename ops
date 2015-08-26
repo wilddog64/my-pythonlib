@@ -20,7 +20,6 @@ import yaml
 import os
 
 import dreambox.utils
-from dreambox.utils import get_function_object
 
 def loadYamlConfig(yamlConfigFile):
     scriptDir = os.path.dirname(__file__)
