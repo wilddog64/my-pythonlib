@@ -17,10 +17,29 @@ import argparse
 import dreambox.ops.deployment
 import dreambox.ops.git_client
 import yaml
+import os
 
+import dreambox.utils
 from dreambox.utils import get_function_object
 
+def loadYamlConfig(yamlConfigFile):
+    scriptDir = os.path.dirname(__file__)
+    scriptEtc = os.path.join(scriptDir, 'etc')
+    yamlConfigFilePath = os.path.join(scriptEtc, yamlConfigFile)
+    with open(yamlConfigFilePath, 'r') as yamlh:
+        config = yaml.load(yamlh)
+
+    return config
+
+def createCommandLineOptions(config):
+    for app, config in config.items():
+        print('app name %s' % app)
+        dreambox.utils.print_structure(config)
+
 if __name__ == '__main__':
+    yamlConfig = loadYamlConfig('conf.yml') 
+    createCommandLineOptions(yamlConfig)
+
     parser = argparse.ArgumentParser(prog='ops', add_help=False)
     subparsers = parser.add_subparsers()
 
