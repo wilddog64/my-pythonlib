@@ -14,12 +14,8 @@ The most commonly used ops commands are:
 """
 
 import argparse
-import dreambox.ops.deployment
-import dreambox.ops.git_client
 import yaml
 import os
-
-import dreambox.utils
 
 def loadYamlConfig(yamlConfigFile):
     '''
@@ -33,8 +29,6 @@ configuration file.
 
 Note: the function assume conf.yml file exist in current script ./etc directory.
 you will need to make sure that ./etc/conf.yml exists.
-
-
     '''
     scriptDir = os.path.dirname(__file__)
     scriptEtc = os.path.join(scriptDir, 'etc')
