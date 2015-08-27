@@ -31,7 +31,7 @@ def loadYamlConfig(yamlConfigFile):
     return config
 
 def createCommandLineOptions(config):
-    cmdOptParser = argparse.ArgumentParser(prog='ops', add_help=False)
+    cmdOptParser = argparse.ArgumentParser(prog='ops')
     subParsers = cmdOptParser.add_subparsers()
     for app, config in config.items():
         print('app name %s' % app)
