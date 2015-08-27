@@ -44,7 +44,7 @@ you will need to make sure that ./etc/conf.yml exists.
 
     return config
 
-def createCommandLineOptions(config):
+def createSubCommandLineOptions(config):
     cmdOptParser = argparse.ArgumentParser(prog='ops')
     subParsers = cmdOptParser.add_subparsers()
     for app, config in config.items():
@@ -93,5 +93,5 @@ def __buildCmdOptions(subParsers=None, app=None, positionArgs=None, kwArgs=None,
 
 if __name__ == '__main__':
     yamlConfig = loadYamlConfig('conf.yml')
-    args = createCommandLineOptions(yamlConfig)
+    args = createSubCommandLineOptions(yamlConfig)
     args.func(args)
