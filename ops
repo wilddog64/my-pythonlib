@@ -48,8 +48,6 @@ def createSubCommandLineOptions(config):
     cmdOptParser = argparse.ArgumentParser(prog='ops')
     subParsers = cmdOptParser.add_subparsers()
     for app, config in config.items():
-        print('app name %s' % app)
-        dreambox.utils.print_structure(config)
         positionArgs = config['position']
         kwArgs = config['key-values']
         func = config['func']
@@ -70,7 +68,6 @@ def __buildCmdOptions(subParsers=None, app=None, positionArgs=None, kwArgs=None,
 
     # handling position arguments
     for positionArg, positionHelp in positionArgs.items():
-        print('postion argument %s' % positionArg)
         subParser.add_argument(positionArg, help=positionHelp)
 
     # handling key-value arguments
