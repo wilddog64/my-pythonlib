@@ -39,6 +39,15 @@ you will need to make sure that ./etc/conf.yml exists.
     return config
 
 def createSubCommandLineOptions(config):
+    '''
+createSubCommandLineOptions is a function that builds sub-command command line
+otions.  This function depends on argparse and pyYaml to build a usable command
+line options.  The function take only one parameter,
+
+* config which is a dict object return by a pyYaml load function
+
+createSubCommandLineOptions will return a parsed args object back to caller
+    '''
     cmdOptParser = argparse.ArgumentParser(prog='ops')
     subParsers = cmdOptParser.add_subparsers()
     for app, config in config.items():
