@@ -31,13 +31,56 @@ def loadYamlConfig(yamlConfigFile):
     return config
 
 def createCommandLineOptions(config):
+    cmdOptParser = argparse.ArgumentParser(prog='ops', add_help=False)
+    subParsers = cmdOptParser.add_subparsers()
     for app, config in config.items():
         print('app name %s' % app)
         dreambox.utils.print_structure(config)
+        positionArgs = config['position']
+        kwArgs = config['key-values']
+        func = config['func']
+        __buildCmdOptions(subParsers,
+                          app,
+                          positionArgs,
+                          kwArgs,
+                          func)
+
+    return cmdOptParser.parse_args()
+
+
+
+def __buildCmdOptions(subParsers=None, app=None, positionArgs=None, kwArgs=None, func=None):
+
+    # first we create a sub-parser object
+    subParser = subParsers.add_parser(app)
+
+    # handling position arguments
+    for positionArg, positionHelp in positionArgs.items():
+        print('postion argument %s' % positionArg)
+        subParser.add_argument(positionArg, help=positionHelp)
+
+    # handling key-value arguments
+    for optName, optSettings in kwArgs.items():
+        optShort = '-%s' % optSettings['short']
+        optLong = '--%s' % optName
+        optDefault = optSettings['default']
+        optType = optSettings['type']
+        optDest = optSettings['dest']
+        optHelp = optSettings['help']
+        subParser.add_argument(optShort,
+                               optLong,
+                               type=optType,
+                               dest=optDest,
+                               help=optHelp,
+                               default=optDefault
+                              )
+
+    subParser.set_defaults(func=func)
 
 if __name__ == '__main__':
-    yamlConfig = loadYamlConfig('conf.yml') 
-    createCommandLineOptions(yamlConfig)
+    yamlConfig = loadYamlConfig('conf.yml')
+    args = createCommandLineOptions(yamlConfig)
+    args.func(args)
 
     parser = argparse.ArgumentParser(prog='ops', add_help=False)
     subparsers = parser.add_subparsers()
