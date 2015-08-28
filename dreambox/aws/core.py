@@ -68,7 +68,7 @@ def aws_cmd(cmd_cat='',
                             stderr=subprocess.PIPE
                             )
     result, error = proc.communicate()
-    if not error:
+    if not error and result:
         return json.loads(result)
     else:
         return error
