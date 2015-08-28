@@ -48,21 +48,21 @@ line options.  The function take only one parameter,
 
 createSubCommandLineOptions will return a parsed args object back to caller
     '''
-    config = loadYamlConfig(yamlConfigFile)
-    cmdOptParser = argparse.ArgumentParser(prog='ops')
-    subParsers = cmdOptParser.add_subparsers()
-    for app, config in config.items():
-        positionArgs = config['position']
-        kwArgs = config['key-values']
-        func = config['func']
-        __buildCmdOptions(subParsers,
+    config = loadYamlConfig(yamlConfigFile)             # load yaml configuration file
+    cmdOptParser = argparse.ArgumentParser(prog='ops')  # create a main command line parser
+    subParsers = cmdOptParser.add_subparsers()          # create sub-parsers
+    for app, config in config.items():                  # loop through a dict object
+        positionArgs = config['position']               # positional arguments dict
+        kwArgs = config['key-values']                   # key/value dict object
+        func = config['func']                           # a sub-command entry, this is a python function
+        __buildCmdOptions(subParsers,                   # now build sub-command command line options
                           app,
                           positionArgs,
                           kwArgs,
                           func)
 
-    args = cmdOptParser.parse_args()
-    args.func(args)
+    args = cmdOptParser.parse_args()                    # create args object
+    args.func(args)                                     # pass args to the function
 
 
 
