@@ -65,7 +65,6 @@ createSubCommandLineOptions will return a parsed args object back to caller
     args.func(args)                                     # pass args to the function
 
 
-
 def __buildCmdOptions(subParsers=None,
                       app=None,
                       positionArgs=None,
