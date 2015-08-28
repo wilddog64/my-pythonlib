@@ -92,8 +92,7 @@ def __buildCmdOptions(subParsers=None,
                                type=optType,
                                dest=optDest,
                                help=optHelp,
-                               default=optDefault
-                              )
+                               default=optDefault)
 
     subParser.set_defaults(func=func)
 
