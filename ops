@@ -62,8 +62,9 @@ def __buildCmdOptions(subParsers=None,
     subParser = subParsers.add_parser(app)
 
     # handling position arguments
-    for positionArg, positionHelp in positionArgs.items():
-        subParser.add_argument(positionArg, help=positionHelp)
+    for args in positionArgs:
+        for positionArg, positionHelp in args.items():
+            subParser.add_argument(positionArg, help=positionHelp)
 
     # handling key-value arguments
     for optName, optSettings in kwArgs.items():
