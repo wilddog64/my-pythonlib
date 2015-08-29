@@ -3,8 +3,6 @@ import dreambox.git.client as Git
 import dreambox.utils
 import os
 import sys
-from docopt import docopt
-import docopt
 
 from dreambox.json.chef_env import update_environments
 
@@ -27,10 +25,13 @@ takes the following parameters,
     '''
     currentUser = dreambox.utils.get_current_user()
     currentTimestamp = dreambox.utils.current_timestamp()
-    appPath = os.path.join(repo_path, repo_name)
+    appPath = repo_path
+    if repo_name is not None:
+        appPath = os.path.join(repo_path, repo_name)
+
     envFilePath = os.path.join(appPath, from_env)
-    Git.clone_repo_to_local(repo_url,
-                            repo_path,
+    Git.clone_repo_to_local(git_url=repo_url,
+                            repo_path=repo_path,
                             app_name=repo_name,
                             recurse_submodules=False,
                             force_remove_repo=True)
@@ -41,7 +42,12 @@ takes the following parameters,
     Git.create_branch(branch_name=branchName,
                       repo_path=appPath,
                       create_and_switch=True)
-    update_environments(envFilePath, to_env)
+    to_list = []
+    if ',' in to_env:
+        to_list = to_env.split(',')
+    else:
+        to_list = [to_env]
+    update_environments(from_file=envFilePath, to=to_list)
     Git.merge_branch(repo_path=appPath,
                      from_branch=branchName,
                      to_branch='master',
@@ -62,3 +68,10 @@ clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
     ''' % (from_env, to_env, repo_path, repo_name, repo_url, dry_run)
 
     print(message, file=sys.stderr)
+
+    __merge_updated_chef_environment_file(args.from_env,
+                                          args.to_env,
+                                          args.repo_path,
+                                          args.repo_name,
+                                          args.repo_url,
+                                          args.dry_run)
