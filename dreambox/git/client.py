@@ -58,7 +58,7 @@ The function takes the following parameters,
     app_path = os.path.join(repo_path, app_name)
     if os.path.exists(app_path):
         shutil.rmtree(app_path)
-    Git.clone(repoUrl,
+    Git.clone(git_url,
               app_name,
               _cwd=repo_path,
               recurse_submodules=recurse_submodules,
