@@ -194,4 +194,9 @@ if __name__ == '__main__':
         'f': [{'a': [12, 13]}, {'c': 9}],
     }
     hash_slice = dict_slice(dict_obj, ['a', 'b', 'f'])
-    dreambox.utils.print_structure(hash_slice)
+    print_structure(hash_slice)
+
+
+def debug_print(debugFlag=True, message=''):
+    if debugFlag:
+        print(message, file=sys.stderr)
