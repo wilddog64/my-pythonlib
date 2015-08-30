@@ -166,7 +166,6 @@ following parameters,
 note: merge_branch only perform a simple no fast forward merge
     '''
     current_branch = get_current_branch_name(repo_path=repo_path)
-    Git.commit(a=True, m=merge_message)
     if current_branch != to_branch:
         Git.checkout(to_branch,
                      _cwd=repo_path,
@@ -230,6 +229,18 @@ takes the following parameters,
                           _cwd=repo_path,
                           _err=stderr_callback,
                           _out=stdout_callback)
+
+
+def commit(repoPath=None,
+           add=True,
+           commitMessage=None,
+           stderr_callback=__output_callback,
+           stdout_callback=__output_callback):
+    Git.commit(a=add,
+               m=commitMessage,
+               _cwd=repoPath,
+               _err=stderr_callback,
+               _out=stdout_callback)
 
 if __name__ == '__main__':
     repoPath = '/tmp'
