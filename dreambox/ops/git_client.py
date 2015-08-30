@@ -52,8 +52,8 @@ takes the following parameters,
                      from_branch=branchName,
                      to_branch='master',
                      merge_message=commitMessage)
-    Git.push_ref(repo_path=appPath,
-                 dry_run=dry_run)
+    # Git.push_ref(repo_path=appPath,
+    #              dry_run=dry_run)
 
 
 def clone_env_apps(args=None):

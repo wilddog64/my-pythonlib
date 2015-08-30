@@ -166,6 +166,7 @@ following parameters,
 note: merge_branch only perform a simple no fast forward merge
     '''
     current_branch = get_current_branch_name(repo_path=repo_path)
+    Git.commit(a=True, m=merge_message)
     if current_branch != to_branch:
         Git.checkout(to_branch,
                      _cwd=repo_path,
