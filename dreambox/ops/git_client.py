@@ -35,10 +35,7 @@ takes the following parameters,
                             app_name=repo_name,
                             recurse_submodules=False,
                             force_remove_repo=True)
-    branchName = 'production'
-    commitMessage = 'automic merge %s into master by %s at %s' % (branchName,
-                                                                  currentUser,
-                                                                  currentTimestamp)
+    branchName = 'merge-production-to-stage_env-by_%s@%s' % (currentUser, currentTimestamp)
     Git.create_branch(branch_name=branchName,
                       repo_path=appPath,
                       create_and_switch=True)
@@ -47,13 +44,21 @@ takes the following parameters,
         to_list = to_env.split(',')
     else:
         to_list = [to_env]
+
+    commitMessage = 'automic update %s base on %s by %s at %s' % (','.join(to_list),
+                                                                  from_env,
+                                                                  currentUser,
+                                                                  currentTimestamp)
+    mergeMessage = 'merge branch %s to master via automation process' % branchName
     update_environments(from_file=envFilePath, to=to_list)
+    Git.commit(repoPath=appPath, commitMessage=commitMessage)
+
     Git.merge_branch(repo_path=appPath,
                      from_branch=branchName,
                      to_branch='master',
-                     merge_message=commitMessage)
-    # Git.push_ref(repo_path=appPath,
-    #              dry_run=dry_run)
+                     merge_message=mergeMessage)
+    Git.push_ref(repo_path=appPath,
+                 dry_run=dry_run)
 
 
 def clone_env_apps(args=None):
