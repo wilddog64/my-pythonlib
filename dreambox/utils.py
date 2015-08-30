@@ -175,7 +175,7 @@ def get_current_user():
 
 
 def current_timestamp():
-    return strftime('%Y-%m-%d %H:%M:%S')
+    return strftime('%Y-%m-%d_%H-%M-%S')
 
 if __name__ == '__main__':
     print('testing generate_buzz')
