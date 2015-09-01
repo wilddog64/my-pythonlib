@@ -18,7 +18,7 @@ stage environment.  This function takes the following parameters,
 * stage - a stage environment to look for
     '''
 
-    def make_hash_from_ec2tag(a_list):
+    def make_hash_from_ec2tag(a_list, stage):
         my_hash = {}
 
         for elem in a_list:
@@ -44,7 +44,7 @@ stage environment.  This function takes the following parameters,
                                       subcmd='describe-instances',
                                       query=inst_qry)
         # dreambox.utils.print_structure(region_instances)
-        instances[region] = make_hash_from_ec2tag(region_instances)
+        instances[region] = make_hash_from_ec2tag(region_instances, stage)
 
     return instances
 
