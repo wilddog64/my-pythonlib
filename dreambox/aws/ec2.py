@@ -18,13 +18,13 @@ stage environment.  This function takes the following parameters,
 * stage - a stage environment to look for
     '''
 
-    def make_hash_from_ec2tag(a_list, stage=None):
+    def make_hash_from_ec2tag(a_list):
         my_hash = {}
 
         for elem in a_list:
             ec2_tag = elem[-1]
             if ec2_tag:
-                tag_name = ec2_tag[0]['Value'].lower()
+                tag_name = ec2_tag[0].lower()
                 if ec2_tag[0:1] and not stage is None and stage.lower() in tag_name.lower():
                     my_hash[tag_name] = elem[0:2]
                 elif ec2_tag[0:1] and stage is None:
@@ -33,7 +33,7 @@ stage environment.  This function takes the following parameters,
         return my_hash
 
 
-    inst_qry = 'Reservations[].Instances[].[PublicDnsName,PublicIpAddress,Tags[?Key==`Name`]]'
+    inst_qry = 'Reservations[].Instances[].[PublicDnsName,PublicIpAddress,Tags[?Key==`Name`].Value]'
     instances = {}
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
@@ -44,7 +44,7 @@ stage environment.  This function takes the following parameters,
                                       subcmd='describe-instances',
                                       query=inst_qry)
         # dreambox.utils.print_structure(region_instances)
-        instances[region] = make_hash_from_ec2tag(region_instances, stage)
+        instances[region] = make_hash_from_ec2tag(region_instances)
 
     return instances
 
