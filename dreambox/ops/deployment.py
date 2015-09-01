@@ -15,6 +15,7 @@ from docopt import docopt
 import sys
 
 import dreambox.aws.autoscaling
+import dreambox.aws.ec2 as ec2
 
 def get_available_stack_from_all_regions(aws_profile=''):
     '''
@@ -117,6 +118,21 @@ usage:
     stage_ec2_instances = get_ec2_hosts_for_stage(stage=partial_tag)
     dreambox.utils.print_structure(stage_ec2_instances)
 
+def get_all_instances_for(args=None):
+    profile=args.profile
+    region=args.region
+    filter_expression = args.expression
+
+    def filterby(x):
+        if x[0] is not None:
+          return filter_expression in x[0][0]
+
+    instance_query='Reservations[].Instances[].[Tags[?Key==`Name`].Value[],PrivateIpAddress,PrivateDnsName]'
+    instances = ec2.describe_instances(profile=profile,
+                                       region=region,
+                                       filterby=filterby,
+                                       query=instance_query)
+    dreambox.utils.print_structure(instances)
 
 if __name__ == '__main__':
 
