@@ -1,6 +1,7 @@
 from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
 import dreambox.utils
+import types
 import sys
 
 def get_ec2_hosts_for_stage(profile=None, regions=None, stage=None):
@@ -47,6 +48,41 @@ stage environment.  This function takes the following parameters,
 
     return instances
 
+def describe_instances(profile=None, region=None, filterby=None, **options):
+    '''
+describe_instances is a function that return all the instances for a give region.
+The function takes the following parameters,
+
+* profile is an AWS profile setting stored at ~/.aws/config
+* region is an AWS region
+* filterby is a function that filter through a list of instances
+* **options is any valid aws describe-instances command line options
+    '''
+
+    instances = aws_ec2cmd(ec2profile=profile,
+                           ec2region=region,
+                           subcmd='describe-instances',
+                           verbose=True,
+                           **options)
+    if filterby is not None and type(filterby) is types.FunctionType:
+        instances = filter(filterby, instances)
+
+    return instances
+
+
 if __name__ == '__main__':
     ec2_instances = get_ec2_hosts_for_stage(stage='stage3')
     dreambox.utils.print_structure(ec2_instances)
+
+    print('--- testing describe_instances ---')
+    instance_query = 'Reservations[].Instances[].[Tags[?Key==`Name`].Value[],PrivateIpAddress,PrivateDnsName]'
+    filter_expression = 'pp-thor-edex'
+    def filterby(x):
+        if x[0] is not None:
+            return filter_expression in x[0][0]
+    node_instances = describe_instances(profile='dreamboxdev',
+                                        region='us-east-1',
+                                        filterby=filterby,
+                                        query=instance_query)
+    dreambox.utils.print_structure(node_instances)
+    print('--- end testing describe_instances ---')
