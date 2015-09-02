@@ -2,7 +2,6 @@ from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
 import dreambox.utils
 import types
-import sys
 
 def get_ec2_hosts_for_stage(profile=None, regions=None, stage=None):
     '''
