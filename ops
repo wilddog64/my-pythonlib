@@ -18,7 +18,7 @@ Note: the function assume conf.yml file exist in current script ./etc directory.
 you will need to make sure that ./etc/conf.yml exists.
     '''
     scriptDir = os.path.dirname(os.path.realpath(__file__))
-    scriptEtc = os.path.join(scriptDir, 'etc')
+    scriptEtc = os.path.join(scriptDir, 'dreambox', 'etc')
     yamlConfigFilePath = os.path.join(scriptEtc, yamlConfigFile)
     with open(yamlConfigFilePath, 'r') as yamlh:
         config = yaml.load(yamlh)
