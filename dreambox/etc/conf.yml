@@ -69,3 +69,15 @@ get_all_instances_for:
       default: us-west-2
       help: an AWS region
   func: !!python/name:dreambox.ops.deployment.get_all_instances_for
+
+get_available_stack_from_all_regions:
+  position:
+    -
+  key-values:
+    profile:
+      type: !!python/name:types.StringType
+      dest: profile
+      short: P
+      default: !!python/name:types.NoneType
+      help: an AWS profile
+  func: !!python/name:dreambox.ops.deployment.get_available_stack_from_all_regions
