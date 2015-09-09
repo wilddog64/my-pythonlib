@@ -39,7 +39,8 @@ createSubCommandLineOptions will return a parsed args object back to caller
     cmdOptParser = argparse.ArgumentParser(prog='ops')  # create a main command line parser
     subParsers = cmdOptParser.add_subparsers()          # create sub-parsers
     for app, config in config.items():                  # loop through a dict object
-        positionArgs = config['position']               # positional arguments dict
+        if 'position' in config:
+            positionArgs = config['position']           # positional arguments dict
         kwArgs = config['key-values']                   # key/value dict object
         func = config['func']                           # a sub-command entry, this is a python function
         __buildCmdOptions(subParsers,                   # now build sub-command command line options
@@ -63,8 +64,10 @@ def __buildCmdOptions(subParsers=None,
 
     # handling position arguments
     for args in positionArgs:
-        for positionArg, positionHelp in args.items():
-            subParser.add_argument(positionArg, help=positionHelp['help'])
+        if args is not None:
+            for positionArg, positionHelp in args.items():
+                if positionArg and 'help' in positionHelp:
+                    subParser.add_argument(positionArg, help=positionHelp['help'])
 
     # handling key-value arguments
     for optName, optSettings in kwArgs.items():

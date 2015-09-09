@@ -17,7 +17,7 @@ import sys
 import dreambox.aws.autoscaling
 import dreambox.aws.ec2 as ec2
 
-def get_available_stack_from_all_regions(aws_profile=''):
+def get_available_stack_from_all_regions(args=None):
     '''
 get_available_stack_from_all_regions will return first available stack
 environment from all regions.  The function takes these parameters,
@@ -29,6 +29,9 @@ available stack and return it as a hash of array back to caller
     '''
 
     from dreambox.aws.cloudformation import get_stack_names_from_all_regions
+    aws_profile = args.profile
+    if aws_profile is None:
+      aws_profile = ''
     # get all the stacks from every region. at this point, we don't want
     # anything but the number attaches to the stack name
     region_stacks = get_stack_names_from_all_regions(profile=aws_profile)
