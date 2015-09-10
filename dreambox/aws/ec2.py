@@ -141,13 +141,13 @@ if __name__ == '__main__':
 
     print('--- testing list_instances_securitygroups ---')
     filter_expression = 'pp-'
-    securitygroup_filter = 'Playpen-default-app'
+    securitygroup_filter = 'sg-a132cfc6'
     def filterby_tag(x):
         if x[0] is not None:
             return filter_expression in x[0][0] and x[3] == 'running'
     def filter_securitygroup(x):
         if x[2] is not None:
-            return securitygroup_filter.lower() not in x[2][0]['GroupName'].lower()
+            return securitygroup_filter.lower() not in x[2][0]['GroupId'].lower()
 
     return_instances = list_instances_securitygroups(profile='dreamboxdev',
                                                      region='us-east-1',
