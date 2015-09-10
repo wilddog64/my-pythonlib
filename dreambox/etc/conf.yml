@@ -66,7 +66,7 @@ get_all_instances_for:
       type: !!python/name:types.StringType
       dest: region
       short: R
-      default: us-west-2
+      default: us-east-1
       help: an AWS region
   func: !!python/name:dreambox.ops.deployment.get_all_instances_for
 
