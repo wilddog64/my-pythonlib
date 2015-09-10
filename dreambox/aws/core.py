@@ -71,7 +71,7 @@ def aws_cmd(cmd_cat='',
     if not error and result:
         return json.loads(result)
     else:
-        return error
+        sys.exit(error)
 
 
 # aws_ec2cmd is a function that will execute aws ec2 command category.  this
