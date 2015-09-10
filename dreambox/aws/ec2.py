@@ -69,6 +69,36 @@ The function takes the following parameters,
     return instances
 
 
+def list_instances_securitygroups(profile=None,
+                                  region='',
+                                  filterby_tag=None,
+                                  filterby_securitygroup=None):
+    '''
+list_instances_securitygroups is a function that will return all instances with
+security group for a given region.  The function takes these parameters,
+
+* profile is an AWS profile defined in ~/.aws/config.  For AWS instances, this
+  is not required
+* region is an AWS region that this function will work on
+* fiterby_tag is a filter function that searches instances by looking at particular tag
+* filteryby_security_group is a filter function that looks for a particular scurity group
+  asscoiate with instances
+
+if filterby_tag and filterby_security_group are not provided, then return all instances
+with security groups
+    '''
+    # a query that return InstanceId, Tag, and SecurityGroups
+    instance_query = 'Reservations[].Instances[].[Tags[?Key==`Name`].Value,InstanceId,SecurityGroups[]]'
+    instances = describe_instances(profile=profile,
+                                   region=region,
+                                   filterby=filterby_tag,
+                                   query=instance_query)
+    if filterby_securitygroup is not None:
+        instances = filter(filterby_securitygroup, instances)
+
+    return instances
+
+
 if __name__ == '__main__':
     ec2_instances = get_ec2_hosts_for_stage(stage='stage3')
     dreambox.utils.print_structure(ec2_instances)
@@ -85,3 +115,17 @@ if __name__ == '__main__':
                                         query=instance_query)
     dreambox.utils.print_structure(node_instances)
     print('--- end testing describe_instances ---')
+
+    print('--- testing list_instances_securitygroups ---')
+    filter_expression = 'pp-'
+    securitygroup_filter = 'Playpen-default-app'
+    def filter_securitygroup(x):
+        if x[2] is not None:
+            return securitygroup_filter.lower() not in x[2][0]['GroupName'].lower()
+
+    return_instances = list_instances_securitygroups(profile='dreamboxdev',
+                                                     region='us-east-1',
+                                                     filterby_tag=filterby,
+                                                     filterby_securitygroup=filter_securitygroup)
+    dreambox.utils.print_structure(return_instances)
+    print('--- end testing list_instances_securitygroups ---')
