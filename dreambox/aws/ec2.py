@@ -114,8 +114,8 @@ for a given AWS instance.  The function takes the following parameters,
 * region is an AWS region that this function will work on
 * **kwargs is any valid aws ec2 modify_instance_attributes options
     '''
-    aws_ec2cmd(profile=profile,
-               region=region,
+    aws_ec2cmd(ec2profile=profile,
+               ec2region=region,
                subcmd='modify-instance-attribute',
                dry_run=dry_run,
                verbose=verbose,
@@ -152,3 +152,11 @@ if __name__ == '__main__':
                                                      filterby_securitygroup=filter_securitygroup)
     dreambox.utils.print_structure(return_instances)
     print('--- end testing list_instances_securitygroups ---')
+    print()
+    print('--- testing modify_instance_attribute ---')
+    modify_instance_attribute(profile='dreamboxdev',
+                              region='us-east-1',
+                              dry_run=True,
+                              verbose=True,
+                              instance_id='i-7ddc1081',
+                              group='sg-a132cfc6')
