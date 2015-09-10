@@ -88,7 +88,7 @@ if filterby_tag and filterby_security_group are not provided, then return all in
 with security groups
     '''
     # a query that return InstanceId, Tag, and SecurityGroups
-    instance_query = 'Reservations[].Instances[].[Tags[?Key==`Name`].Value,InstanceId,SecurityGroups[]]'
+    instance_query = 'Reservations[].Instances[].[Tags[?Key==`Name`].Value,InstanceId,SecurityGroups[],State.Name]'
     instances = describe_instances(profile=profile,
                                    region=region,
                                    filterby=filterby_tag,
@@ -142,13 +142,16 @@ if __name__ == '__main__':
     print('--- testing list_instances_securitygroups ---')
     filter_expression = 'pp-'
     securitygroup_filter = 'Playpen-default-app'
+    def filterby_tag(x):
+        if x[0] is not None:
+            return filter_expression in x[0][0] and x[3] == 'running'
     def filter_securitygroup(x):
         if x[2] is not None:
             return securitygroup_filter.lower() not in x[2][0]['GroupName'].lower()
 
     return_instances = list_instances_securitygroups(profile='dreamboxdev',
                                                      region='us-east-1',
-                                                     filterby_tag=filterby,
+                                                     filterby_tag=filterby_tag,
                                                      filterby_securitygroup=filter_securitygroup)
     dreambox.utils.print_structure(return_instances)
     print('--- end testing list_instances_securitygroups ---')
