@@ -137,6 +137,33 @@ def get_all_instances_for(args=None):
                                        query=instance_query)
     dreambox.utils.print_structure(instances)
 
+def add_security_group_to_instances(args=None):
+    profile = args.profile
+    region = args.region
+    filter_expression = args.filter_expression
+    securitygroup_id = args.security_group_id
+    dry_run = args.dry_run
+    def filterby_tag(x):
+        if x[0] is not None:
+            return filter_expression in x[0][0] and x[3] == 'running'
+    def filter_securitygroup(x):
+        if x[2] is not None:
+            return securitygroup_id.lower() not in x[2][0]['GroupId'].lower()
+
+    instances = ec2.list_instances_securitygroups(profile='dreamboxdev',
+                                                  region='us-east-1',
+                                                  filterby_tag=filterby_tag,
+                                                  filterby_securitygroup=filter_securitygroup)
+    for instance in instances:
+      # dreambox.utils.print_structure(instance)
+      print('processing %s, add %s' % (instance[1], securitygroup_id))
+      ec2.modify_instance_attribute(profile=profile,
+                                    region=region,
+                                    dry_run=dry_run,
+                                    instance_id=instance[1],
+                                    group=securitygroup_id)
+
+
 if __name__ == '__main__':
 
     current_directory = os.path.dirname(os.path.realpath(__file__))
