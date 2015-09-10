@@ -99,6 +99,29 @@ with security groups
     return instances
 
 
+def modify_instance_attribute(profile=None,
+                              region=None,
+                              dry_run=False,
+                              verbose=True,
+                              **kwargs):
+    '''
+modify_instance_attribute is a function that allows to modify attributes
+for a given AWS instance.  The function takes the following parameters,
+
+
+* profile is an AWS profile defined in ~/.aws/config.  For AWS instances, this
+  is not required
+* region is an AWS region that this function will work on
+* **kwargs is any valid aws ec2 modify_instance_attributes options
+    '''
+    aws_ec2cmd(profile=profile,
+               region=region,
+               subcmd='modify-instance-attribute',
+               dry_run=dry_run,
+               verbose=verbose,
+               **kwargs)
+
+
 if __name__ == '__main__':
     ec2_instances = get_ec2_hosts_for_stage(stage='stage3')
     dreambox.utils.print_structure(ec2_instances)
