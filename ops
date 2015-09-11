@@ -36,7 +36,8 @@ line options.  The function take only one parameter,
 createSubCommandLineOptions will return a parsed args object back to caller
     '''
     config = loadYamlConfig(yamlConfigFile)             # load yaml configuration file
-    cmdOptParser = argparse.ArgumentParser(prog='ops')  # create a main command line parser
+    cmdOptParser = argparse.ArgumentParser(prog='ops',  # create a main command line parser
+                                           description='operation common execution tasks')
     subParsers = cmdOptParser.add_subparsers()          # create sub-parsers
     for app, config in config.items():                  # loop through a dict object
         if 'position' in config:
