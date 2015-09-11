@@ -137,6 +137,7 @@ def get_all_instances_for(args=None):
                                        query=instance_query)
     dreambox.utils.print_structure(instances)
 
+
 def add_security_group_to_instances(args=None):
     profile = args.profile
     region = args.region
