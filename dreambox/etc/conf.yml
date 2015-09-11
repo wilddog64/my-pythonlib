@@ -1,0 +1,159 @@
+---
+# conf.yml file tells python script, ops to generate command line options.
+# The configuration file has these structure,
+#
+revoke_all_ingress_rules_for_stage:  # application name (a sub-command from a main one)
+  help: revoke ingress rule for a given stage environment
+  position:  # define positional arguments in this section
+    -
+      stage:   # name of a positional argument
+        help: a stage environment you like to have security rules revoked  # help message
+  key-values: # key/value command options defines in this section
+    dry-run:  # name of the argument
+      type: !!python/name:types.BooleanType  # type of the argument, refer lib/types for detail
+      dest: dry_run                          # python variable store the command line option value
+      default: False                         # a default value if command line is not specified
+      short: n                               # a short name for the option
+      help: a boolean flag direct the program to tells what happen, but will not execute # a help message
+  func: !!python/name:dreambox.ops.deployment.revoke_all_ingress_rules_for_stage
+
+clone_env_apps:
+  help: clone chef application settings from one chef environment to another (normally from production
+        to one of the 9 stage environment).  this operation assume all chef environment files are stored
+        in a git repository.  It will create a branch, update the desired chef environment file, commit
+        the update, merge changes into master, and push to remote git repository.
+  position:
+    -
+      to_env:
+        help: where we should clone environment to
+      from_env:
+        help: where should we clone environment from
+  key-values:
+    repo-path:
+      type: !!python/name:types.StringType
+      short: p
+      dest: repo_path
+      default: /tmp
+      help: a path where repo should clone to
+    repo-name:
+      type: !!python/name:types.StringType
+      dest: repo_name
+      short: o
+      default:
+      help: the name of repo
+    repo-url:
+      type: !!python/name:types.StringType
+      short: u
+      dest: repo_url
+      default: git@github.com:dreamboxlearning/chef-environments.git
+      help: a git repo url where we can clone from
+    dry-run:  # name of the argument
+      type: !!python/name:types.BooleanType
+      dest: dry_run
+      default: False
+      short: n
+      help: a boolean flag direct the program to tells what happen, but will not execute
+  func: !!python/name:dreambox.ops.git_client.clone_env_apps
+
+get_all_instances_for:
+  help: get all AWS instances for a given search
+  position:
+    -
+      expression:
+        help: an expression to search
+  key-values:
+    profile:
+      type: !!python/name:types.StringType
+      dest: profile
+      short: P
+      default: !!python/none
+      help: an AWS profile
+    region:
+      type: !!python/name:types.StringType
+      dest: region
+      short: R
+      default: us-east-1
+      help: an AWS region
+  func: !!python/name:dreambox.ops.deployment.get_all_instances_for
+
+get_available_stack_from_all_regions:
+  help: return what available stack from all known AWS regions (us-east-1, and us-west-2)
+  position:
+    -
+  key-values:
+    profile:
+      type: !!python/name:types.StringType
+      dest: profile
+      short: P
+      default: !!python/none
+      help: an AWS profile
+  func: !!python/name:dreambox.ops.deployment.get_available_stack_from_all_regions
+
+add_security_group_to_instances:
+  help: add a security group to AWS instances.  The function performs a search based on
+        AWS instances tag, and add a security group to them.  It will only add security
+        group to a node that does not have it.  Note, security group has to be a valid
+        AWS security group id rather than security group name
+  position:
+    -
+      filter_expression:
+        help: can be full or partial tag name to search for
+  key-values:
+    profile:
+      type: !!python/name:types.StringType
+      dest: profile
+      short: P
+      default: !!python/none
+      help: an AWS profile
+    region:
+      type: !!python/name:types.StringType
+      dest: region
+      short: R
+      default: us-east-1
+      help: an AWS region
+    security-group-id:
+      type: !!python/name:types.StringType
+      dest: security_group_id
+      short: s
+      default:
+      help: an AWS security group id to add to instances
+    dry-run:  # name of the argument
+      type: !!python/name:types.BooleanType
+      dest: dry_run
+      default: False
+      short: n
+      help: a boolean flag direct the program to tells what happen, but will not execute
+  func: !!python/name:dreambox.ops.deployment.add_security_group_to_instances
+
+resume_autoscaling_group_for:
+  help: resume_autoscaling_group_for will resume ASG processes for a given stage environments
+  position:
+    -
+      stage:
+        help: a stage environment we are looking for to resume autoscaling groups processes
+  key-values:
+    profile:
+      type: !!python/name:types.StringType
+      dest: profile
+      short: P
+      default: !!python/none
+      help: an AWS profile
+    region:
+      type: !!python/name:types.StringType
+      dest: region
+      short: R
+      default: us-east-1
+      help: an AWS region
+    dry-run:  # name of the argument
+      type: !!python/name:types.BooleanType
+      dest: dry_run
+      default: False
+      short: n
+      help: a boolean flag direct the program to tells what happen, but will not execute
+    verbose:
+      type: !!python/name:types.BooleanType
+      dest: verbose
+      default: False
+      short: v
+      help: show more information
+  func: !!python/name:dreambox.ops.deployment.resume_autoscaling_group_for

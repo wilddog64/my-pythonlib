@@ -14,9 +14,10 @@ import re
 from docopt import docopt
 import sys
 
-import dreambox.aws.autoscaling
+import dreambox.aws.autoscaling as asg
+import dreambox.aws.ec2 as ec2
 
-def get_available_stack_from_all_regions(aws_profile=''):
+def get_available_stack_from_all_regions(args=None):
     '''
 get_available_stack_from_all_regions will return first available stack
 environment from all regions.  The function takes these parameters,
@@ -28,6 +29,9 @@ available stack and return it as a hash of array back to caller
     '''
 
     from dreambox.aws.cloudformation import get_stack_names_from_all_regions
+    aws_profile = args.profile
+    if aws_profile is None:
+      aws_profile = ''
     # get all the stacks from every region. at this point, we don't want
     # anything but the number attaches to the stack name
     region_stacks = get_stack_names_from_all_regions(profile=aws_profile)
@@ -96,23 +100,9 @@ environment
     delete_security_groups(my_filterby=stage, dry_run=dry_run)
 
 
-def revoke_all_ingress_rules_for_stage(argv=None):
-    """
-usage:
-    ops revoke_all_ingress_rules_for_stage <stage>...
-    ops revoke_all_ingress_rules_for_stage <stage> [--dry-run=<no|yes>]
-    """
+def revoke_all_ingress_rules_for_stage(args=None):
     from dreambox.aws.security import revoke_all_ingress_rules
-
-    arguments = docopt(revoke_all_ingress_rules_for_stage.__doc__, argv=argv)
-    stage = arguments['<stage>'][0]
-    dry_run = arguments['--dry-run']
-    if dry_run is None:
-        dry_run = False
-
-    print('stage to work on is {}'.format(stage), file=sys.stderr)
-    print('--dry-run: {}'.format(dry_run), file=sys.stdout)
-    revoke_all_ingress_rules(filterby=stage, dry_run=dry_run)
+    revoke_all_ingress_rules(filterby=args.stage, dry_run=args.dry_run)
 
 
 def get_all_ec2_instances_from_tag(argv=None):
@@ -131,6 +121,60 @@ usage:
     stage_ec2_instances = get_ec2_hosts_for_stage(stage=partial_tag)
     dreambox.utils.print_structure(stage_ec2_instances)
 
+def get_all_instances_for(args=None):
+    profile=args.profile
+    region=args.region
+    filter_expression = args.expression
+
+    def filterby(x):
+        if x[0] is not None:
+          return filter_expression in x[0][0]
+
+    instance_query='Reservations[].Instances[].[Tags[?Key==`Name`].Value,PrivateIpAddress,PrivateDnsName,InstanceId]'
+    instances = ec2.describe_instances(profile=profile,
+                                       region=region,
+                                       filterby=filterby,
+                                       query=instance_query)
+    dreambox.utils.print_structure(instances)
+
+def add_security_group_to_instances(args=None):
+    profile = args.profile
+    region = args.region
+    filter_expression = args.filter_expression
+    securitygroup_id = args.security_group_id
+    dry_run = args.dry_run
+    def filterby_tag(x):
+        if x[0] is not None:
+            return filter_expression in x[0][0] and x[3] == 'running'
+    def filter_securitygroup(x):
+        if x[2] is not None:
+            return securitygroup_id.lower() not in x[2][0]['GroupId'].lower()
+
+    instances = ec2.list_instances_securitygroups(profile='dreamboxdev',
+                                                  region='us-east-1',
+                                                  filterby_tag=filterby_tag,
+                                                  filterby_securitygroup=filter_securitygroup)
+    for instance in instances:
+      # dreambox.utils.print_structure(instance)
+      print('processing %s, add %s' % (instance[1], securitygroup_id))
+      ec2.modify_instance_attribute(profile=profile,
+                                    region=region,
+                                    dry_run=dry_run,
+                                    instance_id=instance[1],
+                                    group=securitygroup_id)
+
+
+def resume_autoscaling_group_for(args=None):
+    profile = args.profile
+    region  = args.region
+    stage   = args.stage
+    verbose = args.verbose
+    dry_run = args.dry_run
+    asg.resume_autoscaling_group_for_stage(profile=profile,
+                                           region=region,
+                                           stage=stage,
+                                           verbose=verbose,
+                                           dry_run=dry_run)
 
 if __name__ == '__main__':
 
