@@ -1,11 +1,9 @@
 from __future__ import print_function
 from funcy.seqs import chunks
-from funcy.colls import select
 from itertools import count
 import dreambox.ops.deployment
 import time
 import pprint
-import sys
 
 # make_hash_of_hashes will make an array of hashes from a given list by these
 # steps,
