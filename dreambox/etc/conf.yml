@@ -60,7 +60,7 @@ get_all_instances_for:
       type: !!python/name:types.StringType
       dest: profile
       short: P
-      default:
+      default: !!python/none
       help: an AWS profile
     region:
       type: !!python/name:types.StringType
@@ -78,7 +78,7 @@ get_available_stack_from_all_regions:
       type: !!python/name:types.StringType
       dest: profile
       short: P
-      default: !!python/name:types.NoneType
+      default: !!python/none
       help: an AWS profile
   func: !!python/name:dreambox.ops.deployment.get_available_stack_from_all_regions
 
@@ -92,7 +92,7 @@ add_security_group_to_instances:
       type: !!python/name:types.StringType
       dest: profile
       short: P
-      default: !!python/name:types.NoneType
+      default: !!python/none
       help: an AWS profile
     region:
       type: !!python/name:types.StringType
