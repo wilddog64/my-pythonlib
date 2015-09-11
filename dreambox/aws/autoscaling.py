@@ -146,6 +146,32 @@ a filterby parameter.  This function returns nothing.
                    dry_run=dry_run)
 
 
+def resume_autoscaling_group_for_stage(profile=None,
+                                       region=None,
+                                       stage=None,
+                                       verbose=True,
+                                       dry_run=False):
+    '''
+resume_autoscaling_group_for_stage is a function that resume a suspend autoscaling
+groups for a given stage environment.  The function takes the following parameters,
+
+* 2profile: a profile that is defined under ~/.aws/config
+* 2region: region in AWS this function works on
+* stage: a stage enviornment to look for
+    '''
+    asg_groups = get_all_autoscaling_group_from(profile=profile,
+                                                region=region,
+                                                filterby=stage)
+    if verbose:
+      dreambox.utils.print_structure(asg_groups)
+    for asg_group in asg_groups:
+       aws_asgcmd(aws_profile=profile,
+                  aws_region=region,
+                  asg_subcmd='resume-processes',
+                  verbose=verbose,
+                  dry_run=dry_run,
+                  auto_scaling_group=asg_group)
+
 if __name__ == '__main__':
 
     print('testing get_all_autoscaling_group_from with stage3 environment',
@@ -166,3 +192,10 @@ if __name__ == '__main__':
                                          dry_run=True,
                                          verbose=True)
     print('end testing suspend_autoscaling_groups_for_stage filter by stage3')
+    print()
+    print('testing resume_autoscaling_group_for_stage')
+    resume_autoscaling_group_for_stage(region='us-west-2',
+                                       stage='stage3',
+                                       verbose='True',
+                                       dry_run=True)
+    print('testing resume_autoscaling_group_for_stage')
