@@ -107,13 +107,15 @@ a given ASG group.  This function takes the following parameters,
 
 def get_all_autoscaling_group_from(profile=None,
                                    region=None,
-                                   filterby=None):
+                                   filterby=None,
+                                   verbose=False):
     '''
 get_all_autoscaling_group_from will return all the autoscaling groups for a
 given stage environment
     '''
     asg_result = aws_asgcmd(aws_profile=profile,
                             aws_region=region,
+                            verbose=verbose,
                             asg_subcmd='describe-auto-scaling-groups',
                             query='AutoScalingGroups[].AutoScalingGroupName')
 
@@ -122,6 +124,9 @@ given stage environment
         return_result = asg_result
     else:
         return_result = select(lambda x: filterby.lower() in x.lower(), asg_result)
+
+    if verbose:
+        dreambox.utils.print_structure(return_result)
     return return_result
 
 
@@ -196,6 +201,6 @@ if __name__ == '__main__':
     print('testing resume_autoscaling_group_for_stage')
     resume_autoscaling_group_for_stage(region='us-west-2',
                                        stage='stage3',
-                                       verbose='True',
+                                       verbose=True,
                                        dry_run=True)
     print('testing resume_autoscaling_group_for_stage')
