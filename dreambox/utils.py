@@ -1,13 +1,12 @@
 from __future__ import print_function
 from funcy.seqs import chunks
-from funcy.colls import select
 from itertools import count
 from time import strftime
 
 import time
+import re
 import pprint
 import sys
-import json
 import os
 import pwd
 
@@ -67,6 +66,8 @@ def create_hashtable_from_hashes(ahash=None, filterby=None):
     chunk_table = {}
     hash_tables = {}
     hash_table = {}
+    regex_pattern = r'{0}\b'.format(filterby)
+    m = re.compile(regex_pattern, re.I)
     for region, ingresses in ahash.items():
         chunk_table[region] = chunks(2, ingresses)
 
@@ -74,7 +75,8 @@ def create_hashtable_from_hashes(ahash=None, filterby=None):
     for region, ingresses in chunk_table.items():
         for ingress in ingresses:
             items = list(chunks(2, ingress))
-            if items[0][0].lower().startswith(filterby.lower()):
+            # if items[0][0].lower().startswith(filterby.lower()):
+            if m.match(items[0][0]):
                 key = items[0][0]
                 values = items[0][1]
                 hash_table[key] = values
