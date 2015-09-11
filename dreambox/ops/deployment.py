@@ -14,7 +14,7 @@ import re
 from docopt import docopt
 import sys
 
-import dreambox.aws.autoscaling
+import dreambox.aws.autoscaling as asg
 import dreambox.aws.ec2 as ec2
 
 def get_available_stack_from_all_regions(args=None):
@@ -163,6 +163,18 @@ def add_security_group_to_instances(args=None):
                                     instance_id=instance[1],
                                     group=securitygroup_id)
 
+
+def resume_autoscaling_group_for(args=None):
+    profile = args.profile
+    region  = args.region
+    stage   = args.stage
+    verbose = args.verbose
+    dry_run = args.dry_run
+    asg.resume_autoscaling_group_for_stage(profile=profile,
+                                           region=region,
+                                           stage=stage,
+                                           verbose=verbose,
+                                           dry_run=dry_run)
 
 if __name__ == '__main__':
 
