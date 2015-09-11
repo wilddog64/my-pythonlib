@@ -144,7 +144,7 @@ def add_security_group_to_instances(args=None):
     securitygroup_id = args.security_group_id
     dry_run = args.dry_run
     def filterby_tag(x):
-        if x[0] is not None:
+        if x[0] is not None and len(x[0]) > 0:
             return filter_expression in x[0][0] and x[3] == 'running'
     def filter_securitygroup(x):
         if x[2] is not None:
