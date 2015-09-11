@@ -1,4 +1,5 @@
 from __future__ import print_function
+from funcy.seqs import pairwise
 import dreambox.aws.security
 import dreambox.aws.cloudformation
 import os
