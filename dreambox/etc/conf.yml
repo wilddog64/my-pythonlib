@@ -115,7 +115,6 @@ add_security_group_to_instances:
   func: !!python/name:dreambox.ops.deployment.add_security_group_to_instances
 
 resume_autoscaling_group_for:
-
   position:
     -
       stage:
