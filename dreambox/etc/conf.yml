@@ -18,9 +18,10 @@ revoke_all_ingress_rules_for_stage:  # application name (a sub-command from a ma
   func: !!python/name:dreambox.ops.deployment.revoke_all_ingress_rules_for_stage
 
 clone_env_apps:
-  help: clone chef application settings from one chef environment to another (normally from production to one of the 9 stage environment).
-        this operation assume all chef environment files are stored in a git repository.  It will create a branch, update the desired
-        chef environment file, commit the update, merge changes into master, and push to remote git repository. 
+  help: clone chef application settings from one chef environment to another (normally from production
+        to one of the 9 stage environment).  this operation assume all chef environment files are stored
+        in a git repository.  It will create a branch, update the desired chef environment file, commit
+        the update, merge changes into master, and push to remote git repository.
   position:
     -
       to_env:
