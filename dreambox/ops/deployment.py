@@ -150,8 +150,8 @@ def add_security_group_to_instances(args=None):
         if x[2] is not None:
             return securitygroup_id.lower() not in x[2][0]['GroupId'].lower()
 
-    instances = ec2.list_instances_securitygroups(profile='dreamboxdev',
-                                                  region='us-east-1',
+    instances = ec2.list_instances_securitygroups(profile=profile,
+                                                  region=region,
                                                   filterby_tag=filterby_tag,
                                                   filterby_securitygroup=filter_securitygroup)
     for instance in instances:
