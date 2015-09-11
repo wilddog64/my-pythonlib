@@ -1,7 +1,6 @@
 ---
 # conf.yml file tells python script, ops to generate command line options.
-# The configuration file has these structure,
-#
+# The configuration file has these structure: (Note: every field in the strcutre is required)
 revoke_all_ingress_rules_for_stage:  # application name (a sub-command from a main one)
   help: revoke ingress rule for a given stage environment
   position:  # define positional arguments in this section
