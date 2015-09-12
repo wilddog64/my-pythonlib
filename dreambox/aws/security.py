@@ -218,15 +218,9 @@ def get_all_elasticache_ingress_rules_for_stage(ec2profile=None,
                                           ecache_subcmd='describe-cache-security-groups',
                                           dry_run=dry_run,
                                           query=elasticache_qry)
-    if verbose:
-        dreambox.utils.print_structure(hashtable)
-        print()
     return_rst = None
     if not dry_run:
         return_rst = dreambox.utils.create_hashtable_from_hashes2(hashtable, filterby)
-        if verbose:
-            dreambox.utils.print_structure(return_rst)
-            print()
     else:
         print('dry_run mode', file=sys.stderr)
 
