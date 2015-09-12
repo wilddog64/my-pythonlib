@@ -312,7 +312,7 @@ def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
             for ingress_rule in ingress_rules:
                 aws_ecachecmd(aws_profile=ec2profile,
                               aws_region=region,
-                              redshift_subcmd='revoke-cache-security-group-ingress',
+                              ecache_subcmd='revoke-cache-security-group-ingress',
                               dry_run=dry_run,
                               verbose=True,
                               ec2_security_group_name=security_group_name,
