@@ -96,7 +96,7 @@ environment
 
 def revoke_all_ingress_rules_for_stage(args=None):
     from dreambox.aws.security import revoke_all_ingress_rules
-    revoke_all_ingress_rules(filterby=args.stage, dry_run=args.dry_run)
+    revoke_all_ingress_rules(filterby=args.stage, verbose=args.verbose, dry_run=args.dry_run)
 
 
 def get_all_ec2_instances_from_tag(argv=None):

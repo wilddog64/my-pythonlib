@@ -204,7 +204,7 @@ def revoke_all_ec2_ingress_rules_for_stage(ec2profile=None,
 def get_all_elasticache_ingress_rules_for_stage(ec2profile=None,
                                                 regions=None,
                                                 filterby=None,
-                                                verbose=True,
+                                                verbose=False,
                                                 dry_run=False):
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
@@ -310,17 +310,19 @@ def delete_security_groups(ec2profile=None,
 def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
                                                    regions=None,
                                                    filterby=None,
+                                                   verbose=False,
                                                    dry_run=False):
     ingress_rules_to_delete = get_all_elasticache_ingress_rules_for_stage(ec2profile,
                                                                           regions,
-                                                                          filterby)
+                                                                          filterby,
+                                                                          verbose=verbose)
     for region, security_groups in ingress_rules_to_delete.items():
         for security_group_name, ingress_rules in security_groups.items():
                 aws_ecachecmd(aws_profile=ec2profile,
                               aws_region=region,
                               ecache_subcmd='revoke-cache-security-group-ingress',
                               dry_run=dry_run,
-                              verbose=True,
+                              verbose=verbose,
                               ec2_security_group_name=security_group_name,
                               cache_security_group_name=ingress_rules[0][0],
                               ec2_security_group_owner_id=ingress_rules[1])
@@ -332,7 +334,8 @@ def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
 def revoke_all_ingress_rules(ec2profile=None,
                              ec2regions=None,
                              filterby=None,
-                             dry_run=False):
+                             dry_run=False,
+                             verbose=False):
     revoke_all_rds_ingress_rules_for_stage(ec2profile,
                                            ec2regions,
                                            filterby,
@@ -344,7 +347,8 @@ def revoke_all_ingress_rules(ec2profile=None,
     revoke_all_elasticache_ingress_rules_for_stage(ec2profile,
                                                    ec2regions,
                                                    filterby,
-                                                   dry_run)
+                                                   dry_run,
+                                                   verbose)
     revoke_all_ec2_ingress_rules_for_stage(ec2profile,
                                            ec2regions,
                                            filterby,

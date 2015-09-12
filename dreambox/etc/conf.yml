@@ -14,6 +14,12 @@ revoke_all_ingress_rules_for_stage:  # application name (a sub-command from a ma
       default: False                         # a default value if command line is not specified
       short: n                               # a short name for the option
       help: a boolean flag direct the program to tells what happen, but will not execute # a help message
+    verbose:
+      type: !!python/name:types.BooleanType
+      dest: verbose
+      default: False
+      short: v
+      help: show more information
   func: !!python/name:dreambox.ops.deployment.revoke_all_ingress_rules_for_stage
 
 clone_env_apps:
