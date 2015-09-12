@@ -204,11 +204,12 @@ def revoke_all_ec2_ingress_rules_for_stage(ec2profile=None,
 def get_all_elasticache_ingress_rules_for_stage(ec2profile=None,
                                                 regions=None,
                                                 filterby=None,
+                                                verbose=True,
                                                 dry_run=False):
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
-    elasticache_qry = 'CacheSecurityGroups[].[CacheSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName][]'
+    elasticache_qry = 'CacheSecurityGroups[].[CacheSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName,OwnerId]'
 
     hashtable = {}
     for region in regions:
@@ -217,9 +218,15 @@ def get_all_elasticache_ingress_rules_for_stage(ec2profile=None,
                                           ecache_subcmd='describe-cache-security-groups',
                                           dry_run=dry_run,
                                           query=elasticache_qry)
+    if verbose:
+        dreambox.utils.print_structure(hashtable)
+        print()
     return_rst = None
     if not dry_run:
-        return_rst = dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
+        return_rst = dreambox.utils.create_hashtable_from_hashes2(hashtable, filterby)
+        if verbose:
+            dreambox.utils.print_structure(return_rst)
+            print()
     else:
         print('dry_run mode', file=sys.stderr)
 
@@ -309,15 +316,15 @@ def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
                                                                           filterby)
     for region, security_groups in ingress_rules_to_delete.items():
         for security_group_name, ingress_rules in security_groups.items():
-            for ingress_rule in ingress_rules:
                 aws_ecachecmd(aws_profile=ec2profile,
                               aws_region=region,
                               ecache_subcmd='revoke-cache-security-group-ingress',
                               dry_run=dry_run,
                               verbose=True,
                               ec2_security_group_name=security_group_name,
-                              cache_security_group_name=ingress_rule)
-                print('ingress rule {} for {} is revoked'.format(ingress_rule,
+                              cache_security_group_name=ingress_rules[0][0],
+                              ec2_security_group_owner_id=ingress_rules[1])
+                print('ingress rule {} for {} is revoked'.format(ingress_rules[0][0],
                                                                  security_group_name),
                       file=sys.stderr)
 
