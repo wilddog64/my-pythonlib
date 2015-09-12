@@ -81,7 +81,7 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None,
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
-    rds_qry = 'DBSecurityGroups[].[DBSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName][]'
+    rds_qry = 'DBSecurityGroups[].[DBSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName]'
     hashtable = {}
     for region in regions:
         hashtable[region] = aws_rdscmd(aws_profile=ec2profile,
@@ -90,7 +90,7 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None,
                                        dry_run=dry_run,
                                        query=rds_qry)
 
-    return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
+    return dreambox.utils.create_hashtable_from_hashes2(hashtable, filterby)
 
 
 def revoke_all_rds_ingress_rules_for_stage(ec2profile=None,
@@ -122,7 +122,7 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
     if regions is None:
         regions = ['us-east-1', 'us-west-2']
 
-    redshift_qry = 'ClusterSecurityGroups[].[ClusterSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName][]'
+    redshift_qry = 'ClusterSecurityGroups[].[ClusterSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName]'
 
     hashtable = {}
     for region in regions:
@@ -132,7 +132,7 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
                                             dry_run=dry_run,
                                             query=redshift_qry)
 
-    return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
+    return dreambox.utils.create_hashtable_from_hashes2(hashtable, filterby)
 
 
 def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
