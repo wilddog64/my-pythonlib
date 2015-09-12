@@ -1,6 +1,7 @@
 from __future__ import print_function
 from funcy.seqs import chunks
 from itertools import count
+from itertools import chain
 from time import strftime
 
 import time
@@ -90,6 +91,28 @@ def create_hashtable_from_hashes(ahash=None, filterby=None):
 
 
     return hash_tables
+
+
+def create_hashtable_from_hashes2(ahash=None, filterby=None):
+    hashtable = {}
+    regex_pattern = r'{0}\b'.format(filterby)
+    m = re.compile(regex_pattern, re.I)
+
+    def filter_element(x):
+        if len(x[1]) > 0:
+            return m.match(x[1][0])
+        else:
+            return False
+
+    for region, securities in ahash.items():
+        table = {}
+        values = list(chain.from_iterable(filter(filter_element, securities)))
+        if len(values) > 0:
+            table[values[0]] = values[1:]
+            hashtable[region] = table
+
+
+    return hashtable
 
 
 def grep(input_list=None, search_str=None):
