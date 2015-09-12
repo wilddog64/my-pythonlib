@@ -13,7 +13,7 @@ setup(name='dreambox',
       author='Chengkai Liang',
       author_email='chengkai.liang@dreambox.com',
       url='https://bitbucket.org/chengkai/dreambox-pythonlib',
-      install_requires=['funcy', 'awscli', 'docopt'],
+      install_requires=['funcy', 'awscli', 'pyyaml'],
       packages=find_packages(),
       classifiers=[
            "Programming Language :: Python",

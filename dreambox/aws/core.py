@@ -68,10 +68,11 @@ def aws_cmd(cmd_cat='',
                             stderr=subprocess.PIPE
                             )
     result, error = proc.communicate()
-    if not error and result:
-        return json.loads(result)
+    if len(error) == 0:
+        if len(result) > 0:
+            return json.loads(result)
     else:
-        return error
+        sys.exit(error)
 
 
 # aws_ec2cmd is a function that will execute aws ec2 command category.  this
@@ -244,41 +245,4 @@ takes the following parameters,
 
 
 if __name__ == "__main__":
-    from dreambox.ops.deployment import get_all_play_asgs
-    from dreambox.ops.deployment import get_only_play_asgs
-    from dreambox.ops.deployment import get_ec2_instances_hostnames_from_asg_groups
-    import pprint
-
-    pp = pprint.PrettyPrinter(indent=3)
-    current_directory = os.path.dirname(os.path.realpath(__file__))
-    print("script executed: {0} and current script directory is: {1}".format(__file__, current_directory), file=sys.stderr)
-    asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    result = get_all_play_asgs(ec2profile='dreambox',
-                               ec2region='us-east-1',
-                               env='production',
-                               query=asg_query)
-    print('result from get_all_play_asgs', file=sys.stderr)
-    print('============================', file=sys.stderr)
-    pp.pprint(result)
-    print('end of get_all_play_asgs', file=sys.stderr)
-    print('============================', file=sys.stderr)
-
-    print('result from get_only_play_asgs', file=sys.stderr)
-    print('==============================', file=sys.stderr)
-    result = get_only_play_asgs(query=asg_query)
-    pp.pprint(result)
-    print('end of get_only_play_asgs', file=sys.stderr)
     print()
-
-    print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
-    print('=======================================================', file=sys.stderr)
-    results = get_ec2_instances_hostnames_from_asg_groups(asg_group=result)
-    pp.pprint(results)
-    print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
-    print('==================================================', file=sys.stderr)
-    print()
-
-    results = aws_cfn_cmd(aws_region='us-east-1',
-                          cfn_subcmd='describe-stacks',
-                          query='Stacks[].StackName[]')
-    pp.pprint(results)
