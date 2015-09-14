@@ -5,13 +5,13 @@ import sys
 import glob
 import dreambox.utils
 
-def load_chef_environment_attributes(json_file):
+def load_chef_environment_attributes(json_file, section='default_attributes'):
     dirname = os.path.dirname(json_file)
     filename = os.path.basename(json_file)
     with open(json_file, 'r') as jsonf:
         json_result = json.loads(jsonf.read())
 
-    return (json_result['default_attributes'], dirname, filename)
+    return (json_result[section], dirname, filename)
 
 
 def load_chef_environment_file(json_file):
@@ -143,6 +143,6 @@ if __name__ == '__main__':
     print('testing update_environment', file=sys.stderr)
     print('--------------------------', file=sys.stderr)
     search_info = update_environments(from_file=json_file)
-    # dreambox.utils.print_structure(search_info)
+    dreambox.utils.print_structure(search_info)
     print('end testing update_environment', file=sys.stderr)
     print('------------------------------', file=sys.stderr)
