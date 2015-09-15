@@ -13,17 +13,27 @@ def load_chef_environment_attributes(json_file, section='default_attributes'):
     return (json_result[section], dirname, filename)
 
 
-
 def get_delta_set(from_json_env=None, to_json_env=None):
-    key_difference = to_json_env.viewkeys() - from_json_env.viewkeys()
-    dreambox.utils.print_structure(key_difference)
-    if key_difference:
-        to_json_env.update((key, from_json_env) 
-           for key in to_json_env.viewkeys() - from_json_env.viewkeys())
-    else:
-        return None
+    '''
+get_delta_set is a function that will compare two dictionary objects
+and return an updated dict.  This function takes two parameters,
 
-    return to_json_env
+* from_json_env is a base json block
+* to_json_env is a json block that compares with base json block
+
+return a updated dictionary: to_json_env if there are difference between the
+two; otherwise, return None
+    '''
+    key_difference = from_json_env.viewkeys() - to_json_env.viewkeys()
+    delta = None
+    if key_difference:
+        print('keys are different: ', file=sys.stderr)
+        dreambox.utils.print_structure(key_difference)
+        to_json_env.update((key, from_json_env)
+           for key in from_json_env.viewkeys() - to_json_env.viewkeys())
+        delta = to_json_env
+
+    return delta
 
 
 def load_chef_environment_file(json_file):
@@ -174,6 +184,7 @@ if __name__ == '__main__':
     stage1_json, stage1_dirname, stage1_filename = load_chef_environment_attributes(stage1_json, section='cookbook_versions')
     update_json = get_delta_set(prod_json, stage1_json)
     if update_json:
+        print('find delta: ', file=sys.stderr)
         dreambox.utils.print_structure(update_json)
     else:
         print('both are same, nothing to change', file=sys.stderr)
