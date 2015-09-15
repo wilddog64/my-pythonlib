@@ -13,6 +13,19 @@ def load_chef_environment_attributes(json_file, section='default_attributes'):
     return (json_result[section], dirname, filename)
 
 
+
+def get_delta_set(from_json_env=None, to_json_env=None):
+    key_difference = to_json_env.viewkeys() - from_json_env.viewkeys()
+    dreambox.utils.print_structure(key_difference)
+    if key_difference:
+        to_json_env.update((key, from_json_env) 
+           for key in to_json_env.viewkeys() - from_json_env.viewkeys())
+    else:
+        return None
+
+    return to_json_env
+
+
 def load_chef_environment_file(json_file):
     with open(json_file, 'r') as jsonf:
         json_result = json.loads(jsonf.read())
@@ -152,3 +165,17 @@ if __name__ == '__main__':
     dreambox.utils.print_structure(cookbook_versions)
     print('end testing load_chef_environment_attributes', file=sys.stderr)
     print('--------------------------------------------', file=sys.stderr)
+    print()
+    print('testing get_delta_set', file=sys.stderr)
+    print('---------------------------', file=sys.stderr)
+    prod_json = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'
+    stage1_json =  '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/stage1.json'
+    prod_json, prod_dirname, prod_filename = load_chef_environment_attributes(prod_json, section='cookbook_versions')
+    stage1_json, stage1_dirname, stage1_filename = load_chef_environment_attributes(stage1_json, section='cookbook_versions')
+    update_json = get_delta_set(prod_json, stage1_json)
+    if update_json:
+        dreambox.utils.print_structure(update_json)
+    else:
+        print('both are same, nothing to change', file=sys.stderr)
+    print('testing compare_differences', file=sys.stderr)
+    print('---------------------------', file=sys.stderr)
