@@ -1,6 +1,7 @@
 from __future__ import print_function
 import dreambox.git.client as Git
 import dreambox.utils
+import dreambox.json.chef_env as chef_env
 import os
 import sys
 
@@ -80,3 +81,40 @@ clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
                                           args.repo_name,
                                           args.repo_url,
                                           args.dry_run)
+
+
+def compare_env_cookbook_versions(source='production.json',
+                                  target='stage1.json',
+                                  repo='git@github.com:dreamboxlearning/chef-environments.git',
+                                  repoName='chef-environments',
+                                  workspace='/tmp'):
+    '''
+compare_env_cookbook_versions function compare cookbook versions pin in two environments and
+report the difference between them.  The function takes the following parameters,
+
+* source is a source chef environment file
+* target is a target chef environment file to compare with source
+* repo is a git repository url
+* workspace is where git repository will be cloned to
+    '''
+    Git.clone_repo_to_local(git_url=repo,
+                            repo_path=workspace,
+                            app_name=repoName,
+                            recurse_submodules=False,
+                            force_remove_repo=True)
+    fullPath = os.path.join(workspace, repoName)
+    sourcePath = os.path.join(fullPath, source)
+    targetPath = os.path.join(fullPath, target)
+    sourceJson, sourceDir, sourceFilename = chef_env.load_chef_environment_attributes(sourcePath, 'cookbook_versions')
+    targetJson, targetDir, targetFilename = chef_env.load_chef_environment_attributes(targetPath, 'cookbook_versions')
+    delta = chef_env.get_delta_set(sourceJson, targetJson)
+
+    return delta
+
+
+if __name__ == '__main__':
+    diff = compare_env_cookbook_versions(target='stage6.json')
+    if diff:
+        dreambox.utils.print_structure(diff)
+    else:
+        print('no difference found')
