@@ -112,6 +112,40 @@ report the difference between them.  The function takes the following parameters
     return mismatch_key, delta
 
 
+def diff_env_cookbook_pinned_versions(args=None):
+    sourceEnv = args.source
+    targetEnv = args.target
+    repo=args.repo
+    repoName=args.repo_name
+    workspace=args.workspace
+
+    if repoName is None:
+        repoName = 'chef-environment'
+    print('source environment %s' % sourceEnv)
+    print('target environment %s' % targetEnv)
+    print('repo url %s' % repo)
+    print('repo name %s' % repoName)
+    print('workspace %s' % workspace)
+    mismatch_key, delta = compare_env_cookbook_versions(source=sourceEnv,
+                                                        target=targetEnv,
+                                                        repo=repo,
+                                                        repoName=repoName,
+                                                        workspace=workspace)
+    if mismatch_key:
+        print('cookbooks missing from %s compare with %s' % (sourceEnv, targetEnv), file=sys.stderr)
+        dreambox.utils.print_structure(mismatch_key)
+    else:
+        print('no mismatch cookbooks found between %s and %s' % (sourceEnv, targetEnv), file=sys.stderr)
+
+    if delta:
+        print('cookbooks have different version between %s and %s' % (sourceEnv, targetEnv), file=sys.stderr)
+        dreambox.utils.print_structure(delta)
+    else:
+        print('both environments %s and %s have same cookbook versions' % (sourceEnv, targetEnv), file=sys.stderr)
+
+
+
+
 if __name__ == '__main__':
     mismatch, delta = compare_env_cookbook_versions(target='stage6.json')
     if mismatch:
