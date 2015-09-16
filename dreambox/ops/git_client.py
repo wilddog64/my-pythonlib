@@ -107,14 +107,18 @@ report the difference between them.  The function takes the following parameters
     targetPath = os.path.join(fullPath, target)
     sourceJson, sourceDir, sourceFilename = chef_env.load_chef_environment_attributes(sourcePath, 'cookbook_versions')
     targetJson, targetDir, targetFilename = chef_env.load_chef_environment_attributes(targetPath, 'cookbook_versions')
-    delta = chef_env.get_delta_set(sourceJson, targetJson)
+    mismatch_key, delta = chef_env.get_delta_set(sourceJson, targetJson)
 
-    return delta
+    return mismatch_key, delta
 
 
 if __name__ == '__main__':
-    diff = compare_env_cookbook_versions(target='stage6.json')
-    if diff:
-        dreambox.utils.print_structure(diff)
+    mismatch, delta = compare_env_cookbook_versions(target='stage6.json')
+    if mismatch:
+        dreambox.utils.print_structure(mismatch)
     else:
         print('no difference found')
+
+    if delta:
+        print('found values of element are different')
+        dreambox.utils.print_structure(delta)
