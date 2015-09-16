@@ -55,7 +55,7 @@ def load_all_chef_environment_files(json_files):
     return json_file_hash
 
 
-def update_environments(from_file='production.json', search_key=None, to='all'):
+def update_environments(from_file='production.json', search_key=None, to='all', update=True):
 
     if search_key is None:
         search_key = ['account.version',
@@ -75,6 +75,7 @@ def update_environments(from_file='production.json', search_key=None, to='all'):
               'production.json']
     # filter out from_file
     to_list = filter(lambda x: x.lower() != from_file.lower(), to)
+    dreambox.utils.print_structure(to_list)
     # dreambox.utils.print_structure(to_list)
 
     # load desired chef environment attributes from a file stored in from_file
@@ -92,7 +93,9 @@ def update_environments(from_file='production.json', search_key=None, to='all'):
         attribute_tuple[0],
         search_key)
 
-    __update_environment_files(to_list_pathinfo, hashinfo[attribute_tuple[-2:]])
+    if update:
+        print('updating chef environment file', file=sys.stderr)
+        __update_environment_files(to_list_pathinfo, hashinfo[attribute_tuple[-2:]])
 
     return hashinfo
 
@@ -168,7 +171,7 @@ if __name__ == '__main__':
     print()
     print('testing update_environment', file=sys.stderr)
     print('--------------------------', file=sys.stderr)
-    search_info = update_environments(from_file=json_file)
+    search_info = update_environments(from_file=json_file, to=['stage4'], update=False)
     dreambox.utils.print_structure(search_info)
     print('end testing update_environment', file=sys.stderr)
     print('------------------------------', file=sys.stderr)
