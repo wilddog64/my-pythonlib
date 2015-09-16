@@ -23,7 +23,9 @@ available stack and return it as a hash of array back to caller
     '''
 
     from dreambox.aws.cloudformation import get_stack_names_from_all_regions
-    aws_profile = args.profile
+    aws_profile = ''
+    if args is not None:
+       aws_profile = args.profile
     if aws_profile is None:
       aws_profile = ''
     # get all the stacks from every region. at this point, we don't want

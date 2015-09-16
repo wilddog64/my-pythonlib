@@ -24,16 +24,21 @@ and return an updated dict.  This function takes two parameters,
 return a updated dictionary: to_json_env if there are difference between the
 two; otherwise, return None
     '''
+    # find out what cookbooks are not in the target json file
     key_difference = from_json_env.viewkeys() - to_json_env.viewkeys()
-    delta = None
+    key_mismatch = None
     if key_difference:
         print('keys are different: ', file=sys.stderr)
         dreambox.utils.print_structure(key_difference)
         to_json_env.update((key, from_json_env)
            for key in from_json_env.viewkeys() - to_json_env.viewkeys())
-        delta = to_json_env
+        key_mismatch = to_json_env
 
-    return delta
+    # find different values in target hash by comparsion with source one
+    delta = [elem for elem in from_json_env
+                if not (from_json_env[elem] == to_json_env[elem])]
+
+    return key_mismatch, delta
 
 
 def load_chef_environment_file(json_file):
@@ -182,11 +187,15 @@ if __name__ == '__main__':
     stage1_json =  '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/stage1.json'
     prod_json, prod_dirname, prod_filename = load_chef_environment_attributes(prod_json, section='cookbook_versions')
     stage1_json, stage1_dirname, stage1_filename = load_chef_environment_attributes(stage1_json, section='cookbook_versions')
-    update_json = get_delta_set(prod_json, stage1_json)
+    update_json, delta = get_delta_set(prod_json, stage1_json)
     if update_json:
         print('find delta: ', file=sys.stderr)
         dreambox.utils.print_structure(update_json)
     else:
         print('both are same, nothing to change', file=sys.stderr)
+
+    if delta:
+        print('values are different', file=sys.stderr)
+        dreambox.utils.print_structure(delta)
     print('testing compare_differences', file=sys.stderr)
     print('---------------------------', file=sys.stderr)
