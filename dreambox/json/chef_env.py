@@ -25,8 +25,7 @@ return a updated dictionary: to_json_env if there are difference between the
 two; otherwise, return None
     '''
     # find out what cookbooks are not in the target json file
-    key_difference = from_json_env.viewkeys() - to_json_env.viewkeys()
-    key_mismatch = None
+    key_mismatch = from_json_env.viewkeys() - to_json_env.viewkeys()
     # if key_difference:
     #     print('keys are different: ', file=sys.stderr)
     #     dreambox.utils.print_structure(key_difference)
