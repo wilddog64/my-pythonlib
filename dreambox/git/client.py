@@ -89,7 +89,7 @@ def create_branch(branch_name=None,
                   repo_path=None,
                   stderr_callback=__output_callback,
                   stdout_callback=__output_callback,
-                  create_and_switch=True):
+                  create_and_switch=False):
     '''
 create_branch function will create a branch in a given repo.  The function
 takes the following parameters,
