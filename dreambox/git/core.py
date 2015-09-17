@@ -145,6 +145,7 @@ if __name__ == '__main__':
     print("end testing commit(None, dry_run=True, n=True, m='testing') -- git commit -n -m 'testing', .")
     print()
     print('--- testing rev_parse ---', file=sys.stderr)
+    print('checking branch existenance')
     return_code = rev_parse('git-client', _cwd='.', quiet=True, verify=True, _ok_code=[0, 1])
     print('return code is: %d' % return_code)
     print('--- end testing rev_parse ---', file=sys.stderr)
