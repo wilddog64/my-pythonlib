@@ -109,7 +109,7 @@ report the difference between them.  The function takes the following parameters
     targetJson, targetDir, targetFilename = chef_env.load_chef_environment_attributes(targetPath, 'cookbook_versions')
     mismatch_key, delta = chef_env.get_delta_set(sourceJson, targetJson)
 
-    return mismatch_key, delta
+    return mismatch_key, delta, sourceJson, targetJson
 
 
 def diff_env_cookbook_pinned_versions(args=None):
@@ -126,11 +126,11 @@ def diff_env_cookbook_pinned_versions(args=None):
     print('repo url %s' % repo)
     print('repo name %s' % repoName)
     print('workspace %s' % workspace)
-    mismatch_key, delta = compare_env_cookbook_versions(source=sourceEnv,
-                                                        target=targetEnv,
-                                                        repo=repo,
-                                                        repoName=repoName,
-                                                        workspace=workspace)
+    mismatch_key, delta, sourceJson, targetJson = compare_env_cookbook_versions(source=sourceEnv,
+                                                                                target=targetEnv,
+                                                                                repo=repo,
+                                                                                repoName=repoName,
+                                                                                workspace=workspace)
     if mismatch_key:
         print('cookbooks missing from %s compare with %s' % (sourceEnv, targetEnv), file=sys.stderr)
         dreambox.utils.print_structure(mismatch_key)
@@ -147,7 +147,7 @@ def diff_env_cookbook_pinned_versions(args=None):
 
 
 if __name__ == '__main__':
-    mismatch, delta = compare_env_cookbook_versions(target='stage6.json')
+    mismatch, delta, source, target = compare_env_cookbook_versions(target='stage6.json')
     if mismatch:
         dreambox.utils.print_structure(mismatch)
     else:
