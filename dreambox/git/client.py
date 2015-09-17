@@ -1,6 +1,4 @@
 from __future__ import print_function
-
-import sh
 import dreambox.git.core as Git
 import os
 import shutil
@@ -72,6 +70,8 @@ Note: if local repo already exist, unless force_remove_repo is set to true, it w
     elif not os.path.exists(app_path):
         clone_repo = True
     else:
+        if get_current_branch_name(repo_path=app_path) != 'master':
+          Git.checkout('master', _cwd=app_path)
         Git.pull(_cwd=app_path)
 
     # we only clone repo if clone_repo flag is set to true
@@ -89,7 +89,7 @@ def create_branch(branch_name=None,
                   repo_path=None,
                   stderr_callback=__output_callback,
                   stdout_callback=__output_callback,
-                  create_and_switch=False):
+                  create_and_switch=False,):
     '''
 create_branch function will create a branch in a given repo.  The function
 takes the following parameters,
@@ -107,19 +107,24 @@ takes the following parameters,
 * create_and_switch is a boolean flag that tells create_branch once branch created,
   switch to it.  This is set to true by default.
     '''
-    try:
-        if create_and_switch:
-            Git.checkout(branch_name,
-                         _cwd=repo_path,
-                         b=create_and_switch,
-                         _err=stderr_callback,
-                         _out=stdout_callback)
-        else:
-            Git.branch(branch_name, _cwd=repo_path)
-    except sh.ErrorReturnCode_128:
-        print('branch %s alrady exists!' % branch_name, file=sys.stderr) 
-    except sh.ErrorReturnCode:
-        raise sh.ErrorReturnCode
+    if create_and_switch:
+       if branch_exists(branch_name=branch_name,
+                        repo_path=repo_path):
+           Git.checkout(branch_name,
+                        _cwd=repo_path,
+                        b=create_and_switch,
+                        _err=stderr_callback,
+                        _out=stdout_callback)
+       elif get_current_branch_name(repo_path=repo_path) != branch_name:
+           Git.checkout(branch_name,
+                        _cwd=repo_path,
+                        _err=stderr_callback,
+                        _out=stdout_callback)
+    else:
+       Git.branch(branch_name,
+                  _cwd=repo_path,
+                  _err=stderr_callback,
+                  _out=stdout_callback)
 
 
 def remove_repo_untrack_files(repo_path, dry_run=False):
@@ -265,6 +270,38 @@ def commit(repoPath=None,
                _err=stderr_callback,
                _out=stdout_callback)
 
+
+def branch_exists(branch_name=None, repo_path='.'):
+    '''
+branch_exists function will check to see if a given git
+branch exists in current repo or not. The function takes the
+following parameters
+
+* branch_name is a git branch to check
+* repo_name is where repo that contains a branch_name
+    '''
+    rc = Git.rev_parse('git-client',
+                       _cwd=repo_path,
+                       quiet=True,
+                       verify=True,
+                       _ok_code=[0, 1])
+    return not rc
+
+
+def project_isa_gitrepo(project_path='.'):
+    '''
+project_isa_gitrepo is a function to verify if a given project (directory)
+is actually a git repo or not.  The function takes only one parameter,
+
+* project_path is a path to project that this function is trying to verify
+    '''
+    rc = Git.rev_parse(_cwd=project_path,
+                       is_inside_work_tree=True,
+                       quiet=True,
+                       _ok_code=[0, 128])
+
+    return not rc
+
 if __name__ == '__main__':
     repoPath = '/tmp'
     repoName = 'git-testing'
@@ -285,7 +322,9 @@ if __name__ == '__main__':
     print('testing create_branch')
     create_branch(branch_name='production',
                   repo_path=appPath,
-                  create_and_switch=True)
+                  stderr_callback=__output_callback,
+                  stdout_callback=__output_callback,
+                  create_and_switch=True,)
     print('end testing create_branch')
 
     print('testing remove_repo_untrack_files with dry_run set to true')
