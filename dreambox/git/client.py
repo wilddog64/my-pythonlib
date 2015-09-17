@@ -116,6 +116,7 @@ takes the following parameters,
                         _err=stderr_callback,
                         _out=stdout_callback)
        elif get_current_branch_name(repo_path=repo_path) != branch_name:
+           print('branch %s already exists, switch to it' % branch_name)
            Git.checkout(branch_name,
                         _cwd=repo_path,
                         _err=stderr_callback,
