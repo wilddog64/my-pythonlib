@@ -62,6 +62,9 @@ Note: if local repo already exist, unless force_remove_repo is set to true, it w
     app_path = os.path.join(repo_path, app_name)
     print('working on %s' % app_path, file=sys.stderr)
 
+    # if repo exists and for_remove_repo flag is on, or
+    # repo does not exists then we will clone it from remote;
+    # otherwise, we do git pull
     clone_repo = False
     if os.path.exists(app_path) and force_remove_repo:
         shutil.rmtree(app_path)
@@ -71,6 +74,7 @@ Note: if local repo already exist, unless force_remove_repo is set to true, it w
     else:
         Git.pull(_cwd=app_path)
 
+    # we only clone repo if clone_repo flag is set to true
     if clone_repo: 
         Git.clone(git_url,
                   app_name,
