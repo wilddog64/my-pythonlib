@@ -229,20 +229,19 @@ takes the following parameters,
 
 
     '''
-    output = None
     if ref is None:
-        output = Git.push(n=dry_run,
-                          u=set_upstream,
-                          _cwd=repo_path,
-                          _err=__output_callback)
+        Git.push(n=dry_run,
+                 u=set_upstream,
+                 _cwd=repo_path,
+                 _err=__output_callback)
     else:
-        output = Git.push(remote,
-                          ref,
-                          n=dry_run,
-                          u=set_upstream,
-                          _cwd=repo_path,
-                          _err=stderr_callback,
-                          _out=stdout_callback)
+        Git.push(remote,
+                 ref,
+                 n=dry_run,
+                 u=set_upstream,
+                 _cwd=repo_path,
+                 _err=stderr_callback,
+                 _out=stdout_callback)
 
 
 def commit(repoPath=None,
