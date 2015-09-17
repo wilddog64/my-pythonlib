@@ -306,6 +306,9 @@ if __name__ == '__main__':
     repoPath = '/tmp'
     repoName = 'git-testing'
     initialize_repo(repo_path=repoPath, repo_name=repoName)
+    print('checking if %s is actually a git repo', file=sys.stderr)
+    if project_isa_gitrepo(project_path=os.path.join(repoPath, repoName)):
+      print('%s is a valid git repo' % repoName)
 
     repoUrl = 'git@github.com:dreamboxlearning/chef-environments.git'
     appName = 'environments'
