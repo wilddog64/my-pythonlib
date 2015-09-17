@@ -147,6 +147,9 @@ if __name__ == '__main__':
     print('--- testing rev_parse ---', file=sys.stderr)
     print('checking branch existenance')
     return_code = rev_parse('git-client', _cwd='.', quiet=True, verify=True, _ok_code=[0, 1])
-    print('return code is: %d' % return_code)
+    print('check_branch return code is: %d' % return_code)
+    print('checking if a given project is a git repo', file=sys.stderr)
+    return_code = rev_parse(_cwd='/tmp', is_inside_work_tree=True, quiet=True, _ok_code=[0, 128])
+    print('return code for check project is git repo is %d' % return_code)
     print('--- end testing rev_parse ---', file=sys.stderr)
 
