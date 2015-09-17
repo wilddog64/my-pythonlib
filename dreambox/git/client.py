@@ -53,17 +53,31 @@ The function takes the following parameters,
   the submodules.  Default value is False
 
 * force_remove_repo is a boolean flag that tell clone_repo_to_local to remove existing repo
-  before clone it from remote.  By default, this is set to false.
+  before clone it from remote.  By default, this is set to false
+
+Note: if local repo already exist, unless force_remove_repo is set to true, it will pull
+      from remote repo.
     '''
     app_path = os.path.join(repo_path, app_name)
-    if os.path.exists(app_path):
+    print('working on %s' % app_path, file=sys.stderr)
+
+    clone_repo = False
+    if os.path.exists(app_path) and force_remove_repo:
         shutil.rmtree(app_path)
-    Git.clone(git_url,
-              app_name,
-              _cwd=repo_path,
-              recurse_submodules=recurse_submodules,
-              _err=stderr_callback,
-              _out=stderr_callback)
+        clone_repo = True
+    elif not os.path.exists(app_path):
+        clone_repo = True
+    else:
+        Git.pull(_cwd=app_path)
+
+    if clone_repo: 
+        Git.clone(git_url,
+                  app_name,
+                  _cwd=repo_path,
+                  recurse_submodules=recurse_submodules,
+                  _err=stderr_callback,
+                  _out=stderr_callback)
+
 
 
 def create_branch(branch_name=None,
@@ -255,7 +269,7 @@ if __name__ == '__main__':
     clone_repo_to_local(git_url=repoUrl,
                         repo_path=repoPath,
                         app_name=appName,
-                        force_remove_repo=True)
+                        force_remove_repo=False)
     print('end testing clone_repo_to_local', file=sys.stderr)
     print()
     print('testing create_branch')
