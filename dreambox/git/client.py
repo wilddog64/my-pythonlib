@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import sh
 import dreambox.git.core as Git
 import os
 import shutil
@@ -102,14 +103,19 @@ takes the following parameters,
 * create_and_switch is a boolean flag that tells create_branch once branch created,
   switch to it.  This is set to true by default.
     '''
-    if create_and_switch:
-        Git.checkout(branch_name,
-                     _cwd=repo_path,
-                     b=create_and_switch,
-                     _err=stderr_callback,
-                     _out=stdout_callback)
-    else:
-        Git.branch(branch_name, _cwd=repo_path)
+    try:
+        if create_and_switch:
+            Git.checkout(branch_name,
+                         _cwd=repo_path,
+                         b=create_and_switch,
+                         _err=stderr_callback,
+                         _out=stdout_callback)
+        else:
+            Git.branch(branch_name, _cwd=repo_path)
+    except sh.ErrorReturnCode_128:
+        print('branch %s alrady exists!' % branch_name, file=sys.stderr) 
+    except sh.ErrorReturnCode:
+        raise sh.ErrorReturnCode
 
 
 def remove_repo_untrack_files(repo_path, dry_run=False):
@@ -270,6 +276,7 @@ if __name__ == '__main__':
                         app_name=appName,
                         force_remove_repo=False)
     print('end testing clone_repo_to_local', file=sys.stderr)
+    Git.checkout('master', _cwd=appPath)
     print()
     print('testing create_branch')
     create_branch(branch_name='production',
