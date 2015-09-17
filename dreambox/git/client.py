@@ -108,8 +108,8 @@ takes the following parameters,
   switch to it.  This is set to true by default.
     '''
     if create_and_switch:
-       if branch_exists(branch_name=branch_name,
-                        repo_path=repo_path):
+       if not branch_exists(branch_name=branch_name,
+                            repo_path=repo_path):
            Git.checkout(branch_name,
                         _cwd=repo_path,
                         b=create_and_switch,
@@ -280,7 +280,7 @@ following parameters
 * branch_name is a git branch to check
 * repo_name is where repo that contains a branch_name
     '''
-    rc = Git.rev_parse('git-client',
+    rc = Git.rev_parse(branch_name,
                        _cwd=repo_path,
                        quiet=True,
                        verify=True,
