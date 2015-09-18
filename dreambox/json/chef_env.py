@@ -189,15 +189,15 @@ if __name__ == '__main__':
     stage1_json =  '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/stage1.json'
     prod_json, prod_dirname, prod_filename = load_chef_environment_attributes(prod_json, section='cookbook_versions')
     stage1_json, stage1_dirname, stage1_filename = load_chef_environment_attributes(stage1_json, section='cookbook_versions')
-    update_json, delta = get_delta_set(prod_json, stage1_json)
-    if update_json:
+    missing_cookbooks, mismatch_values = get_delta_set(prod_json, stage1_json)
+    if missing_cookbooks:
         print('keys looks different are: ', file=sys.stderr)
-        dreambox.utils.print_structure(update_json)
+        dreambox.utils.print_structure(missing_cookbooks)
     else:
         print('no mismatch keys found', file=sys.stderr)
 
-    if delta:
+    if mismatch_values:
         print('values for these are different', file=sys.stderr)
-        dreambox.utils.print_structure(delta)
+        dreambox.utils.print_structure(mismatch_values)
     print('testing compare_differences', file=sys.stderr)
     print('---------------------------', file=sys.stderr)
