@@ -129,25 +129,31 @@ def diff_env_cookbook_pinned_versions(args=None):
     print('repo url %s' % repo)
     print('repo name %s' % repoName)
     print('workspace %s' % workspace)
-    mismatch_key, delta, sourceJson, targetJson = compare_env_cookbook_versions(source=sourceEnv,
-                                                                                target=targetEnv,
-                                                                                repo=repo,
-                                                                                repoName=repoName,
-                                                                                workspace=workspace)
-    if mismatch_key:
-        print('cookbooks missing from %s compare with %s' % (sourceEnv, targetEnv), file=sys.stderr)
-        dreambox.utils.print_structure(mismatch_key)
+    (missingCookbooks,
+     mismatchCookbookVersions,
+     source,
+     target,
+     sourcePath,
+     targetPath) = compare_env_cookbook_versions(source=sourceEnv,
+                                                 target=targetEnv,
+                                                 repo=repo,
+                                                 workspace=workspace)
+    if missingCookbooks:
+        dreambox.utils.print_structure(missingCookbooks)
     else:
-        print('no mismatch cookbooks found between %s and %s' % (sourceEnv, targetEnv), file=sys.stderr)
+        print('no missing cookbooks found')
 
-    if delta:
-        print('cookbooks have different version between %s and %s' % (sourceEnv, targetEnv), file=sys.stderr)
-        dreambox.utils.print_structure(delta)
-    else:
-        print('both environments %s and %s have same cookbook versions' % (sourceEnv, targetEnv), file=sys.stderr)
+    if mismatchCookbookVersions:
+        print('--- mismatch cookbook versions ---', file=sys.stderr)
+        dreambox.utils.print_structure(mismatchCookbookVersions)
+        for key in mismatchCookbookVersions:
+            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]), file=sys.stderr)
+            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
+            target['cookbook_versions'][key] = source['cookbook_versions'][key]
 
 
 if __name__ == '__main__':
+    import json
     (missingCookbooks,
      mismatchCookbookVersions,
      source,
@@ -171,3 +177,5 @@ if __name__ == '__main__':
             print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
             print('updating mismatch cookbook versions now ...', file=sys.stderr)
             target['cookbook_versions'][key] = source['cookbook_versions'][key]
+        with open(targetPath, 'w') as updateh:
+            updateh.write(json.dumps(target, sort_keys=True, indent=2, separators=(',', ': ')))
