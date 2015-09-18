@@ -130,23 +130,21 @@ def __update_json_object(filename, json_object, key, value):
             old_value2 = json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]]
             if new_value1 != old_value1:
                 json_object['default_attributes'][keys[0]][keys[1]][inner_keys[0]] = new_value1
-                should_write_to_file = True
-            else:
-                print('current file [{}] no need update {}.{}.{} is {} '.format(filename,
+                print('environment file [{}] {}.{}.{} update to {} '.format(filename,
                        keys[0],
                        keys[1],
                        inner_keys[0],
                        json_object['default_attributes'][keys[0]][keys[1]][inner_keys[0]]))
+                should_write_to_file = True
 
             if new_value2 != old_value2:
-                json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]] = new_value2
-                should_write_to_file = True
-            else:
-                print('current file [{}] no need update: {}.{}.{} is {}'.format(filename,
+                print('environment file [{}] {}.{}.{} update to {} '.format(filename,
                        keys[0],
                        keys[1],
-                       inner_keys[1],
+                       inner_keys[0],
                        json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]]))
+                json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]] = new_value2
+                should_write_to_file = True
 
     elif type(value) is unicode:
         if app in json_object['default_attributes']:
