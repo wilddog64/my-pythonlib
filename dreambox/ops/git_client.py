@@ -37,7 +37,7 @@ takes the following parameters,
                             app_name=repo_name,
                             recurse_submodules=False,
                             force_remove_repo=True)
-    branchName = 'merge-production-to-stage_env-by_%s@%s' % (currentUser, currentTimestamp)
+    branchName = 'merge-production-to-stage'
     Git.create_branch(branch_name=branchName,
                       repo_path=appPath,
                       create_and_switch=True)
@@ -104,11 +104,6 @@ report the difference between them.  The function takes the following parameters
 * repo is a git repository url
 * workspace is where git repository will be cloned to
     '''
-    Git.clone_repo_to_local(git_url=repo,
-                            repo_path=workspace,
-                            app_name=repoName,
-                            recurse_submodules=False,
-                            force_remove_repo=False)
     fullPath = os.path.join(workspace, repoName)
     sourcePath = os.path.join(fullPath, source)
     targetPath = os.path.join(fullPath, target)
@@ -197,13 +192,13 @@ upon execute successfully, the update python object will be returned
     if mismatchCookbookVersions:
         print('found values of element are different')
         print('--- list different ---')
-        print('total elements need to update: %s' % len(mismatchCookbookVersions), file=sys.stderr)
+        print('total elements need to update: %s' % len(mismatchCookbookVersions))
         print('--- mismatch cookbook versions ---', file=sys.stderr)
         dreambox.utils.print_structure(mismatchCookbookVersions)
         for key in mismatchCookbookVersions:
-            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]), file=sys.stderr)
-            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
-            print('updating mismatch cookbook versions now ...', file=sys.stderr)
+            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]))
+            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]))
+            print('updating mismatch cookbook versions now ...')
             target['cookbook_versions'][key] = source['cookbook_versions'][key]
 
     jcore.write_json_to_file(targetPath, target)
