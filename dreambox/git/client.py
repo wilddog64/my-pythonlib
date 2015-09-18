@@ -330,7 +330,7 @@ if __name__ == '__main__':
                   stdout_callback=__output_callback,
                   create_and_switch=True,)
     print('end testing create_branch')
-
+    print()
     print('testing remove_repo_untrack_files with dry_run set to true')
     remove_repo_untrack_files(repo_path='.', dry_run=True)
     print('end testing remove_repo_untrack_files with dry_run set to true')
