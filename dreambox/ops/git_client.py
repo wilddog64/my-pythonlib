@@ -104,11 +104,6 @@ report the difference between them.  The function takes the following parameters
 * repo is a git repository url
 * workspace is where git repository will be cloned to
     '''
-    Git.clone_repo_to_local(git_url=repo,
-                            repo_path=workspace,
-                            app_name=repoName,
-                            recurse_submodules=False,
-                            force_remove_repo=False)
     fullPath = os.path.join(workspace, repoName)
     sourcePath = os.path.join(fullPath, source)
     targetPath = os.path.join(fullPath, target)
