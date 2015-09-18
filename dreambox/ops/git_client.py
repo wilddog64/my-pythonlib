@@ -151,6 +151,28 @@ def diff_env_cookbook_pinned_versions(args=None):
             print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
 
 
+def update_chef_environment_cookbooks(sourceEnvObj=None,
+                                      targetEnvObj=None,
+                                      section=None,
+                                      cookbookList=None,):
+    '''
+update_chef_environment_cookbooks is a function that perform the update 
+chef enviornment file for mismatch cookbooks (missing cookbooks or
+version mismatch).  The function takes the following parameters,
+
+* sourceEnvObj is a python object that represent source chef envionment json file
+* targetEnvObj is a python object that represent target chef envionment json file
+* section is a json section in environment file that contains attributes to be updated
+* cookbookList is a list of cookbooks that need to update versions or add
+
+upon execute successfully, the update python object will be returned
+    '''
+    for cookbook in cookbookList:
+        targetEnvObj[section][cookbook] = sourceEnvObj[section][cookbook]
+
+    return targetEnvObj
+
+
 if __name__ == '__main__':
     import json
     (missingCookbooks,
