@@ -149,7 +149,6 @@ def diff_env_cookbook_pinned_versions(args=None):
         for key in mismatchCookbookVersions:
             print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]), file=sys.stderr)
             print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
-            target['cookbook_versions'][key] = source['cookbook_versions'][key]
 
 
 if __name__ == '__main__':
