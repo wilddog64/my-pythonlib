@@ -192,13 +192,13 @@ upon execute successfully, the update python object will be returned
     if mismatchCookbookVersions:
         print('found values of element are different')
         print('--- list different ---')
-        print('total elements need to update: %s' % len(mismatchCookbookVersions), file=sys.stderr)
+        print('total elements need to update: %s' % len(mismatchCookbookVersions))
         print('--- mismatch cookbook versions ---', file=sys.stderr)
         dreambox.utils.print_structure(mismatchCookbookVersions)
         for key in mismatchCookbookVersions:
-            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]), file=sys.stderr)
-            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
-            print('updating mismatch cookbook versions now ...', file=sys.stderr)
+            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]))
+            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]))
+            print('updating mismatch cookbook versions now ...')
             target['cookbook_versions'][key] = source['cookbook_versions'][key]
 
     jcore.write_json_to_file(targetPath, target)
