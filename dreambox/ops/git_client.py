@@ -105,11 +105,14 @@ report the difference between them.  The function takes the following parameters
     fullPath = os.path.join(workspace, repoName)
     sourcePath = os.path.join(fullPath, source)
     targetPath = os.path.join(fullPath, target)
-    sourceJson, sourceDir, sourceFilename = chef_env.load_chef_environment_attributes(sourcePath, 'cookbook_versions')
-    targetJson, targetDir, targetFilename = chef_env.load_chef_environment_attributes(targetPath, 'cookbook_versions')
-    mismatch_key, delta = chef_env.get_delta_set(sourceJson, targetJson)
+    sourceCookbookJson, sourceDir, sourceFilename = chef_env.load_chef_environment_attributes(sourcePath, 'cookbook_versions')
+    targetCookbookJson, targetDir, targetFilename = chef_env.load_chef_environment_attributes(targetPath, 'cookbook_versions')
+    mismatch_key, delta = chef_env.get_delta_set(sourceCookbookJson, targetCookbookJson)
 
-    return mismatch_key, delta, sourceJson, targetJson
+    sourceObject = chef_env.load_chef_environment_file(sourcePath)
+    targetObject = chef_env.load_chef_environment_file(targetPath)
+
+    return mismatch_key, delta, sourceObject, targetObject, sourcePath, targetPath
 
 
 def diff_env_cookbook_pinned_versions(args=None):
@@ -145,12 +148,26 @@ def diff_env_cookbook_pinned_versions(args=None):
 
 
 if __name__ == '__main__':
-    mismatch, delta, source, target = compare_env_cookbook_versions(target='stage6.json')
-    if mismatch:
-        dreambox.utils.print_structure(mismatch)
+    (missingCookbooks,
+     mismatchCookbookVersions,
+     source,
+     target,
+     sourcePath,
+     targetPath) = compare_env_cookbook_versions(target='stage1.json')
+
+    if missingCookbooks:
+        dreambox.utils.print_structure(missingCookbooks)
     else:
         print('no difference found')
 
-    if delta:
+    if mismatchCookbookVersions:
         print('found values of element are different')
-        dreambox.utils.print_structure(delta)
+        print('--- list different ---')
+        print('total elements need to update: %s' % len(mismatchCookbookVersions), file=sys.stderr)
+        print('--- mismatch cookbook versions ---', file=sys.stderr)
+        dreambox.utils.print_structure(mismatchCookbookVersions)
+        for key in mismatchCookbookVersions:
+            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]), file=sys.stderr)
+            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
+            print('updating mismatch cookbook versions now ...', file=sys.stderr)
+            target['cookbook_versions'][key] = source['cookbook_versions'][key]
