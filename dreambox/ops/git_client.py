@@ -2,6 +2,7 @@ from __future__ import print_function
 import dreambox.git.client as Git
 import dreambox.utils
 import dreambox.json.chef_env as chef_env
+import dreambox.json.core as jcore
 import os
 import sys
 
@@ -199,7 +200,7 @@ upon execute successfully, the update python object will be returned
             print('updating mismatch cookbook versions now ...', file=sys.stderr)
             target['cookbook_versions'][key] = source['cookbook_versions'][key]
 
-    return target
+    jcore.write_json_to_file(targetPath, target)
 
 
 if __name__ == '__main__':
@@ -214,10 +215,10 @@ if __name__ == '__main__':
     targetEnvFile = '/tmp/chef-environments/stage1.json'
     repo='git@github.com:dreamboxlearning/chef-environments.git'
     repoName = 'chef-environments'
-    target = update_chef_environment_cookbooks(sourceEnvFile=sourceEnvFile,
-                                               targetEnvFile=targetEnvFile,
-                                               repo='git@github.com:dreamboxlearning/chef-environments.git',
-                                               repoName='chef-envirnment')
+    update_chef_environment_cookbooks(sourceEnvFile=sourceEnvFile,
+                                      targetEnvFile=targetEnvFile,
+                                      repo='git@github.com:dreamboxlearning/chef-environments.git',
+                                      repoName=repoName)
     # dreambox.utils.print_structure(target)
     # if missingCookbooks:
     #     dreambox.utils.print_structure(missingCookbooks)
