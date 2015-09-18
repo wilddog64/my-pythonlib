@@ -127,6 +127,22 @@ def __update_environment_file(filename, json_object, key, value):
                 print('current file[{}] value for  default_attributes.{}.{} does not change]'.format(filename, keys[0], keys[1]))
 
 
+def write_json_to_file(jsonFile=None, jsonObj=None):
+    '''
+write_json_to_file is function that will write json object to a file.  The
+function takes two parameters,
+
+* jsonFile is a file that this function will write to. If only filename pass in, the
+  file will be written to current directory
+* jsonObj is an json object or document to write to a given file
+    '''
+    with open(jsonFile, 'w') as fileHandle:
+        fileHandle.write(json.dumps(jsonObj,
+                                    sort_keys=True,
+                                    indent=2,
+                                    separators=(',', ': ')))
+
+
 if __name__ == '__main__':
     json_file = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'
 
@@ -143,54 +159,3 @@ if __name__ == '__main__':
     # dreambox.utils.print_structure(search_info)
     print('end testing update_environment', file=sys.stderr)
     print('------------------------------', file=sys.stderr)
-
-#     for k,v in value_locations.items():
-#         version_dict[k] = get_json_value(document, value_locations[k])
-#     if version_dict:
-#         return version_dict
-#     else:
-#         raise Exception('Location not found in the environment file!')
-#
-#
-# def get_json_value(document, value_location, base='default_attributes'):
-#     return_value = None
-#     if len(value_location) == 1 and \
-#        value_location[0] in document[base].keys():
-#         return_value =  document[base][value_location[0]]
-#
-#     if len(value_location) == 2 and \
-#        value_location[0] in document[base].keys() and \
-#        value_location[1] in document[base][value_location[0]].keys():
-#         return_value = document[base][value_location[0]][value_location[1]]
-#
-#     elif len(value_location) == 3 and \
-#         value_location[0] in document[base].keys() and \
-#         value_location[1] in document[base][value_location[0]].keys() and \
-#         value_location[2] in document[base][value_location[0]][value_location[1]].keys():
-#         return_value = document[base][value_location[0]][value_location[1]][value_location[2]]
-#     else:
-#         raise Exception('Value could not be located in the doc %s' % str(value_location))
-#
-#     return return_value
-#
-# def set_json_environment_values(chef_environment, value_locations, desired_values_dict):
-#     document = json.load(open(chef_environment_path(chef_environment)))
-#     version_dict = {}
-#     for k,v in value_locations.items():
-#         document = set_json_value(document, value_locations[k], desired_values_dict[value_locations[k][-1]])
-#     json_file = open(chef_environment_path(chef_environment), "w+")
-#     json_file.write(json.dumps(document, sort_keys=True, indent=2, separators=(',', ': ')))
-#     return json_file.close()
-#
-#
-# def set_json_value(document, value_location, desired_val, base='default_attributes'):
-#     if len(value_location) == 1 and value_location[0] in document[base].keys():
-#         document[base][value_location[0]] = desired_val
-#     elif len(value_location) == 2 and value_location[0] in document[base].keys() and value_location[1] in document[base][value_location[0]].keys():
-#         document[base][value_location[0]][value_location[1]] = desired_val
-#     elif len(value_location) == 3 and value_location[0] in document[base].keys() and value_location[1] in document[base][value_location[0]].keys() and value_location[2] in document[base][value_location[0]][value_location[1]].keys():
-#         document[base][value_location[0]][value_location[1]][value_location[2]] = desired_val
-#     else:
-#         raise Exception('Could not replace value in json doc %s' % (str(value_location)))
-#     return document
-

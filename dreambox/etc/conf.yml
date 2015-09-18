@@ -162,3 +162,38 @@ resume_autoscaling_group_for:
       short: v
       help: show more information
   func: !!python/name:dreambox.ops.deployment.resume_autoscaling_group_for
+
+diff_env_cookbook_pinned_versions:
+  help: Compare two chef environment pinned cookbooks and report differences bwtween them. 
+        By default this compares bwtween production.json any one of the 9 stage environments.
+        Yet you can override the source and destination to compare with.
+  position:
+    -
+      target:
+        help: a target environment to compare with source.
+  key-values:
+    source:
+      type: !!python/name:types.StringType
+      short: s
+      dest: source
+      default: production.json
+      help: source environment file
+    workspace:
+      type: !!python/name:types.StringType
+      short: p
+      dest: workspace
+      default: /tmp
+      help: a path where repo should clone to
+    repo-name:
+      type: !!python/name:types.StringType
+      dest: repo_name
+      short: o
+      default: !!python/none
+      help: the name of repo
+    repo-url:
+      type: !!python/name:types.StringType
+      short: u
+      dest: repo
+      default: git@github.com:dreamboxlearning/chef-environments.git
+      help: a git repo url where we can clone from
+  func: !!python/name:dreambox.ops.git_client.diff_env_cookbook_pinned_versions

@@ -1,5 +1,4 @@
 from __future__ import print_function
-
 import dreambox.git.core as Git
 import os
 import shutil
@@ -53,24 +52,44 @@ The function takes the following parameters,
   the submodules.  Default value is False
 
 * force_remove_repo is a boolean flag that tell clone_repo_to_local to remove existing repo
-  before clone it from remote.  By default, this is set to false.
+  before clone it from remote.  By default, this is set to false
+
+Note: if local repo already exist, unless force_remove_repo is set to true, it will pull
+      from remote repo.
     '''
     app_path = os.path.join(repo_path, app_name)
-    if os.path.exists(app_path):
+    print('working on %s' % app_path, file=sys.stderr)
+
+    # if repo exists and for_remove_repo flag is on, or
+    # repo does not exists then we will clone it from remote;
+    # otherwise, we do git pull
+    clone_repo = False
+    if os.path.exists(app_path) and force_remove_repo:
         shutil.rmtree(app_path)
-    Git.clone(git_url,
-              app_name,
-              _cwd=repo_path,
-              recurse_submodules=recurse_submodules,
-              _err=stderr_callback,
-              _out=stderr_callback)
+        clone_repo = True
+    elif not os.path.exists(app_path):
+        clone_repo = True
+    else:
+        if get_current_branch_name(repo_path=app_path) != 'master':
+          Git.checkout('master', _cwd=app_path)
+        Git.pull(_cwd=app_path)
+
+    # we only clone repo if clone_repo flag is set to true
+    if clone_repo: 
+        Git.clone(git_url,
+                  app_name,
+                  _cwd=repo_path,
+                  recurse_submodules=recurse_submodules,
+                  _err=stderr_callback,
+                  _out=stderr_callback)
+
 
 
 def create_branch(branch_name=None,
                   repo_path=None,
                   stderr_callback=__output_callback,
                   stdout_callback=__output_callback,
-                  create_and_switch=True):
+                  create_and_switch=False,):
     '''
 create_branch function will create a branch in a given repo.  The function
 takes the following parameters,
@@ -89,13 +108,24 @@ takes the following parameters,
   switch to it.  This is set to true by default.
     '''
     if create_and_switch:
-        Git.checkout(branch_name,
-                     _cwd=repo_path,
-                     b=create_and_switch,
-                     _err=stderr_callback,
-                     _out=stdout_callback)
+       if not branch_exists(branch_name=branch_name,
+                            repo_path=repo_path):
+           Git.checkout(branch_name,
+                        _cwd=repo_path,
+                        b=create_and_switch,
+                        _err=stderr_callback,
+                        _out=stdout_callback)
+       elif get_current_branch_name(repo_path=repo_path) != branch_name:
+           print('branch %s already exists, switch to it' % branch_name)
+           Git.checkout(branch_name,
+                        _cwd=repo_path,
+                        _err=stderr_callback,
+                        _out=stdout_callback)
     else:
-        Git.branch(branch_name, _cwd=repo_path)
+       Git.branch(branch_name,
+                  _cwd=repo_path,
+                  _err=stderr_callback,
+                  _out=stdout_callback)
 
 
 def remove_repo_untrack_files(repo_path, dry_run=False):
@@ -215,20 +245,19 @@ takes the following parameters,
 
 
     '''
-    output = None
     if ref is None:
-        output = Git.push(n=dry_run,
-                          u=set_upstream,
-                          _cwd=repo_path,
-                          _err=__output_callback)
+        Git.push(n=dry_run,
+                 u=set_upstream,
+                 _cwd=repo_path,
+                 _err=__output_callback)
     else:
-        output = Git.push(remote,
-                          ref,
-                          n=dry_run,
-                          u=set_upstream,
-                          _cwd=repo_path,
-                          _err=stderr_callback,
-                          _out=stdout_callback)
+        Git.push(remote,
+                 ref,
+                 n=dry_run,
+                 u=set_upstream,
+                 _cwd=repo_path,
+                 _err=stderr_callback,
+                 _out=stdout_callback)
 
 
 def commit(repoPath=None,
@@ -242,10 +271,45 @@ def commit(repoPath=None,
                _err=stderr_callback,
                _out=stdout_callback)
 
+
+def branch_exists(branch_name=None, repo_path='.'):
+    '''
+branch_exists function will check to see if a given git
+branch exists in current repo or not. The function takes the
+following parameters
+
+* branch_name is a git branch to check
+* repo_name is where repo that contains a branch_name
+    '''
+    rc = Git.rev_parse(branch_name,
+                       _cwd=repo_path,
+                       quiet=True,
+                       verify=True,
+                       _ok_code=[0, 1])
+    return not rc
+
+
+def project_isa_gitrepo(project_path='.'):
+    '''
+project_isa_gitrepo is a function to verify if a given project (directory)
+is actually a git repo or not.  The function takes only one parameter,
+
+* project_path is a path to project that this function is trying to verify
+    '''
+    rc = Git.rev_parse(_cwd=project_path,
+                       is_inside_work_tree=True,
+                       quiet=True,
+                       _ok_code=[0, 128])
+
+    return not rc
+
 if __name__ == '__main__':
     repoPath = '/tmp'
     repoName = 'git-testing'
     initialize_repo(repo_path=repoPath, repo_name=repoName)
+    print('checking if %s is actually a git repo', file=sys.stderr)
+    if project_isa_gitrepo(project_path=os.path.join(repoPath, repoName)):
+      print('%s is a valid git repo' % repoName)
 
     repoUrl = 'git@github.com:dreamboxlearning/chef-environments.git'
     appName = 'environments'
@@ -255,15 +319,18 @@ if __name__ == '__main__':
     clone_repo_to_local(git_url=repoUrl,
                         repo_path=repoPath,
                         app_name=appName,
-                        force_remove_repo=True)
+                        force_remove_repo=False)
     print('end testing clone_repo_to_local', file=sys.stderr)
+    Git.checkout('master', _cwd=appPath)
     print()
     print('testing create_branch')
     create_branch(branch_name='production',
                   repo_path=appPath,
-                  create_and_switch=True)
+                  stderr_callback=__output_callback,
+                  stdout_callback=__output_callback,
+                  create_and_switch=True,)
     print('end testing create_branch')
-
+    print()
     print('testing remove_repo_untrack_files with dry_run set to true')
     remove_repo_untrack_files(repo_path='.', dry_run=True)
     print('end testing remove_repo_untrack_files with dry_run set to true')

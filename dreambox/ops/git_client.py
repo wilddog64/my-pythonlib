@@ -1,6 +1,8 @@
 from __future__ import print_function
 import dreambox.git.client as Git
 import dreambox.utils
+import dreambox.json.chef_env as chef_env
+import dreambox.json.core as jcore
 import os
 import sys
 
@@ -51,6 +53,12 @@ takes the following parameters,
                                                                   currentTimestamp)
     mergeMessage = 'merge branch %s to master via automation process' % branchName
     update_environments(from_file=envFilePath, to=to_list)
+    for env in to_list:
+        update_chef_environment_cookbooks(sourceEnvFile=envFilePath,
+                                          targetEnvFile=env,
+                                          repo=repo_url,
+                                          repoName=repo_name,
+                                          workspace=repo_path)
     Git.commit(repoPath=appPath, commitMessage=commitMessage)
 
     Git.merge_branch(repo_path=appPath,
@@ -80,3 +88,140 @@ clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
                                           args.repo_name,
                                           args.repo_url,
                                           args.dry_run)
+
+
+def compare_env_cookbook_versions(source='production.json',
+                                  target='stage1.json',
+                                  repo='git@github.com:dreamboxlearning/chef-environments.git',
+                                  repoName='chef-environments',
+                                  workspace='/tmp'):
+    '''
+compare_env_cookbook_versions function compare cookbook versions pin in two environments and
+report the difference between them.  The function takes the following parameters,
+
+* source is a source chef environment file
+* target is a target chef environment file to compare with source
+* repo is a git repository url
+* workspace is where git repository will be cloned to
+    '''
+    Git.clone_repo_to_local(git_url=repo,
+                            repo_path=workspace,
+                            app_name=repoName,
+                            recurse_submodules=False,
+                            force_remove_repo=False)
+    fullPath = os.path.join(workspace, repoName)
+    sourcePath = os.path.join(fullPath, source)
+    targetPath = os.path.join(fullPath, target)
+    sourceCookbookJson, sourceDir, sourceFilename = chef_env.load_chef_environment_attributes(sourcePath, 'cookbook_versions')
+    targetCookbookJson, targetDir, targetFilename = chef_env.load_chef_environment_attributes(targetPath, 'cookbook_versions')
+    mismatch_key, delta = chef_env.get_delta_set(sourceCookbookJson, targetCookbookJson)
+
+    sourceObject = chef_env.load_chef_environment_file(sourcePath)
+    targetObject = chef_env.load_chef_environment_file(targetPath)
+
+    return mismatch_key, delta, sourceObject, targetObject, sourcePath, targetPath
+
+
+def diff_env_cookbook_pinned_versions(args=None):
+    sourceEnv = args.source
+    targetEnv = args.target
+    repo=args.repo
+    repoName=args.repo_name
+    workspace=args.workspace
+
+    if repoName is None:
+        repoName = 'chef-environment'
+    print('source environment %s' % sourceEnv)
+    print('target environment %s' % targetEnv)
+    print('repo url %s' % repo)
+    print('repo name %s' % repoName)
+    print('workspace %s' % workspace)
+    (missingCookbooks,
+     mismatchCookbookVersions,
+     source,
+     target,
+     sourcePath,
+     targetPath) = compare_env_cookbook_versions(source=sourceEnv,
+                                                 target=targetEnv,
+                                                 repo=repo,
+                                                 workspace=workspace)
+    if missingCookbooks:
+        dreambox.utils.print_structure(missingCookbooks)
+    else:
+        print('no missing cookbooks found')
+
+    if mismatchCookbookVersions:
+        print('--- mismatch cookbook versions ---', file=sys.stderr)
+        dreambox.utils.print_structure(mismatchCookbookVersions)
+        for key in mismatchCookbookVersions:
+            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]), file=sys.stderr)
+            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
+
+
+def update_chef_environment_cookbooks(sourceEnvFile=None,
+                                      targetEnvFile=None,
+                                      repo=None,
+                                      repoName='chef-environment',
+                                      workspace='/tmp',):
+    '''
+update_chef_environment_cookbooks is a function that perform the update 
+chef enviornment file for mismatch cookbooks (missing cookbooks or
+version mismatch).  The function takes the following parameters,
+
+* sourceEnvObj is a python object that represent source chef envionment json file
+* targetEnvObj is a python object that represent target chef envionment json file
+* section is a json section in environment file that contains attributes to be updated
+* cookbookList is a list of cookbooks that need to update versions or add
+
+upon execute successfully, the update python object will be returned
+    '''
+    (missingCookbooks,
+     mismatchCookbookVersions,
+     source,
+     target,
+     sourcePath,
+     targetPath) = compare_env_cookbook_versions(source=sourceEnvFile,
+                                                 target=targetEnvFile,
+                                                 repo=repo,
+                                                 repoName=repoName,
+                                                 workspace=workspace)
+
+    # add missing cookbooks to target environment file
+    if missingCookbooks:
+        for key in missingCookbooks:
+            target['cookbook_versions'][key] = source['cookbook_versions'][key]
+    else:
+        print('no difference found')
+
+    # update mismatch cookbook version for target 
+    if mismatchCookbookVersions:
+        print('found values of element are different')
+        print('--- list different ---')
+        print('total elements need to update: %s' % len(mismatchCookbookVersions), file=sys.stderr)
+        print('--- mismatch cookbook versions ---', file=sys.stderr)
+        dreambox.utils.print_structure(mismatchCookbookVersions)
+        for key in mismatchCookbookVersions:
+            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]), file=sys.stderr)
+            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
+            print('updating mismatch cookbook versions now ...', file=sys.stderr)
+            target['cookbook_versions'][key] = source['cookbook_versions'][key]
+
+    jcore.write_json_to_file(targetPath, target)
+
+
+if __name__ == '__main__':
+    (missingCookbooks,
+     mismatchCookbookVersions,
+     source,
+     target,
+     sourcePath,
+     targetPath) = compare_env_cookbook_versions(target='stage1.json')
+    
+    sourceEnvFile = '/tmp/chef-environments/production.json'
+    targetEnvFile = '/tmp/chef-environments/stage1.json'
+    repo='git@github.com:dreamboxlearning/chef-environments.git'
+    repoName = 'chef-environments'
+    update_chef_environment_cookbooks(sourceEnvFile=sourceEnvFile,
+                                      targetEnvFile=targetEnvFile,
+                                      repo='git@github.com:dreamboxlearning/chef-environments.git',
+                                      repoName=repoName)

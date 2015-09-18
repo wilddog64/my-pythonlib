@@ -10,6 +10,7 @@ import pprint
 import sys
 import os
 import pwd
+import collections
 
 # make_hash_of_hashes will make an array of hashes from a given list by these
 # steps,
@@ -202,6 +203,38 @@ def get_current_user():
 def current_timestamp():
     return strftime('%Y-%m-%d_%H-%M-%S')
 
+
+
+def debug_print(debugFlag=True, message=''):
+    if debugFlag:
+        print(message, file=sys.stderr)
+
+
+def update_dictionary(orig_dict=None, new_dict=None):
+    '''
+update_dictionary is a function that will recursively update
+a python dictionary object at any level.  The function takes
+two parameters,
+
+* orig_dict is a dictinary object to be updated
+* new_dict is dictinary use to update orig_dict
+
+when update complete, this function will return orig_dict
+Note: this function is coming from stackoverflow article,
+http://stackoverflow.com/questions/3232943/update-value-of-a-nested-dictionary-of-varying-depth
+    '''
+    for key, val in new_dict.iteritems():
+        if isinstance(val, collections.Mapping):
+            tmp = update_dictionary(orig_dict.get(key, {}), val)
+            orig_dict[key] = tmp
+        elif isinstance(val, list):
+            orig_dict[key] = (orig_dict[key] + val)
+        else:
+            orig_dict[key] = new_dict[key]
+
+    return orig_dict
+
+
 if __name__ == '__main__':
     print('testing generate_buzz')
     print('=====================')
@@ -220,8 +253,16 @@ if __name__ == '__main__':
     }
     hash_slice = dict_slice(dict_obj, ['a', 'b', 'f'])
     print_structure(hash_slice)
-
-
-def debug_print(debugFlag=True, message=''):
-    if debugFlag:
-        print(message, file=sys.stderr)
+    print()
+    print('--- testing update_dictionary ---', file=sys.stderr)
+    origin_dict = {
+       'prodct': '1.7.8',
+       'magneto': '12.0.1',
+    }
+    new_dict = {
+        'lession': '1.0.5',
+        'product': '1.7.9',
+    }
+    update_dict = update_dictionary(origin_dict, new_dict)
+    print_structure(update_dict)
+    print('--- end testing update_dictionary ---', file=sys.stderr)

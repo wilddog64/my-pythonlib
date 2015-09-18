@@ -3,6 +3,7 @@ import sh
 from sh import git
 import os
 import shutil
+import sys
 
 def __git(subcmd, **kwargs):
     git_object = None
@@ -82,6 +83,12 @@ def pull(*args, **kwargs):
     return __git('pull', **kwargs)(*args)
 
 
+def rev_parse(*args, **kwargs):
+    output = __git('rev-parse', **kwargs)(*args)
+    return output.exit_code
+
+
+
 if __name__ == '__main__':
     print("testing __git('status', s=True)")
     g_status_short = __git('status', s=True)
@@ -136,3 +143,13 @@ if __name__ == '__main__':
     commit_output = commit(None, a=True, dry_run=True, m='testing commit')
     print(commit_output)
     print("end testing commit(None, dry_run=True, n=True, m='testing') -- git commit -n -m 'testing', .")
+    print()
+    print('--- testing rev_parse ---', file=sys.stderr)
+    print('checking branch existenance')
+    return_code = rev_parse('git-client', _cwd='.', quiet=True, verify=True, _ok_code=[0, 1])
+    print('check_branch return code is: %d' % return_code)
+    print('checking if a given project is a git repo', file=sys.stderr)
+    return_code = rev_parse(_cwd='/tmp', is_inside_work_tree=True, quiet=True, _ok_code=[0, 128])
+    print('return code for check project is git repo is %d' % return_code)
+    print('--- end testing rev_parse ---', file=sys.stderr)
+
