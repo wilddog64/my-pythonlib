@@ -144,8 +144,6 @@ def diff_env_cookbook_pinned_versions(args=None):
         print('both environments %s and %s have same cookbook versions' % (sourceEnv, targetEnv), file=sys.stderr)
 
 
-
-
 if __name__ == '__main__':
     mismatch, delta, source, target = compare_env_cookbook_versions(target='stage6.json')
     if mismatch:
