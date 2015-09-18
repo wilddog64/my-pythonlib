@@ -127,6 +127,22 @@ def __update_environment_file(filename, json_object, key, value):
                 print('current file[{}] value for  default_attributes.{}.{} does not change]'.format(filename, keys[0], keys[1]))
 
 
+def write_json_to_file(jsonFile=None, jsonObj=None):
+    '''
+write_json_to_file is function that will write json object to a file.  The
+function takes two parameters,
+
+* jsonFile is a file that this function will write to. If only filename pass in, the
+  file will be written to current directory
+* jsonObj is an json object or document to write to a given file
+    '''
+    with open(jsonFile, 'w') as fileHandle:
+        fileHandle.write(json.dumps(jsonObj,
+                                    sort_keys=True,
+                                    indent=2,
+                                    separators=(',', ': ')))
+
+
 if __name__ == '__main__':
     json_file = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'
 
