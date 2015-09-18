@@ -53,6 +53,12 @@ takes the following parameters,
                                                                   currentTimestamp)
     mergeMessage = 'merge branch %s to master via automation process' % branchName
     update_environments(from_file=envFilePath, to=to_list)
+    for env in to_list:
+        update_chef_environment_cookbooks(sourceEnvFile=envFilePath,
+                                          targetEnvFile=env,
+                                          repo=repo_url,
+                                          repoName=repo_name,
+                                          workspace=repo_path)
     Git.commit(repoPath=appPath, commitMessage=commitMessage)
 
     Git.merge_branch(repo_path=appPath,
