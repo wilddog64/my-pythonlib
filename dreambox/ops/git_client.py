@@ -37,7 +37,7 @@ takes the following parameters,
                             app_name=repo_name,
                             recurse_submodules=False,
                             force_remove_repo=True)
-    branchName = 'merge-production-to-stage_env-by_%s@%s' % (currentUser, currentTimestamp)
+    branchName = 'merge-production-to-stage'
     Git.create_branch(branch_name=branchName,
                       repo_path=appPath,
                       create_and_switch=True)
