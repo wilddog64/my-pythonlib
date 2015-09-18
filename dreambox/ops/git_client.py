@@ -151,10 +151,11 @@ def diff_env_cookbook_pinned_versions(args=None):
             print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
 
 
-def update_chef_environment_cookbooks(sourceEnvObj=None,
-                                      targetEnvObj=None,
-                                      section=None,
-                                      cookbookList=None,):
+def update_chef_environment_cookbooks(sourceEnvFile=None,
+                                      targetEnvFile=None,
+                                      repo=None,
+                                      repoName='chef-environment',
+                                      workspace='/tmp',):
     '''
 update_chef_environment_cookbooks is a function that perform the update 
 chef enviornment file for mismatch cookbooks (missing cookbooks or
@@ -167,26 +168,25 @@ version mismatch).  The function takes the following parameters,
 
 upon execute successfully, the update python object will be returned
     '''
-    for cookbook in cookbookList:
-        targetEnvObj[section][cookbook] = sourceEnvObj[section][cookbook]
-
-    return targetEnvObj
-
-
-if __name__ == '__main__':
-    import json
     (missingCookbooks,
      mismatchCookbookVersions,
      source,
      target,
      sourcePath,
-     targetPath) = compare_env_cookbook_versions(target='stage1.json')
+     targetPath) = compare_env_cookbook_versions(source=sourceEnvFile,
+                                                 target=targetEnvFile,
+                                                 repo=repo,
+                                                 repoName=repoName,
+                                                 workspace=workspace)
 
+    # add missing cookbooks to target environment file
     if missingCookbooks:
-        dreambox.utils.print_structure(missingCookbooks)
+        for key in missingCookbooks:
+            target['cookbook_versions'][key] = source['cookbook_versions'][key]
     else:
         print('no difference found')
 
+    # update mismatch cookbook version for target 
     if mismatchCookbookVersions:
         print('found values of element are different')
         print('--- list different ---')
@@ -198,5 +198,42 @@ if __name__ == '__main__':
             print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
             print('updating mismatch cookbook versions now ...', file=sys.stderr)
             target['cookbook_versions'][key] = source['cookbook_versions'][key]
-        with open(targetPath, 'w') as updateh:
-            updateh.write(json.dumps(target, sort_keys=True, indent=2, separators=(',', ': ')))
+
+    return target
+
+
+if __name__ == '__main__':
+    (missingCookbooks,
+     mismatchCookbookVersions,
+     source,
+     target,
+     sourcePath,
+     targetPath) = compare_env_cookbook_versions(target='stage1.json')
+    
+    sourceEnvFile = '/tmp/chef-environments/production.json'
+    targetEnvFile = '/tmp/chef-environments/stage1.json'
+    repo='git@github.com:dreamboxlearning/chef-environments.git'
+    repoName = 'chef-environments'
+    target = update_chef_environment_cookbooks(sourceEnvFile=sourceEnvFile,
+                                               targetEnvFile=targetEnvFile,
+                                               repo='git@github.com:dreamboxlearning/chef-environments.git',
+                                               repoName='chef-envirnment')
+    # dreambox.utils.print_structure(target)
+    # if missingCookbooks:
+    #     dreambox.utils.print_structure(missingCookbooks)
+    # else:
+    #     print('no difference found')
+
+    # if mismatchCookbookVersions:
+    #     print('found values of element are different')
+    #     print('--- list different ---')
+    #     print('total elements need to update: %s' % len(mismatchCookbookVersions), file=sys.stderr)
+    #     print('--- mismatch cookbook versions ---', file=sys.stderr)
+    #     dreambox.utils.print_structure(mismatchCookbookVersions)
+    #     for key in mismatchCookbookVersions:
+    #         print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]), file=sys.stderr)
+    #         print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]), file=sys.stderr)
+    #         print('updating mismatch cookbook versions now ...', file=sys.stderr)
+    #         target['cookbook_versions'][key] = source['cookbook_versions'][key]
+    #     with open(targetPath, 'w') as updateh:
+    #         updateh.write(json.dumps(target, sort_keys=True, indent=2, separators=(',', ': ')))
