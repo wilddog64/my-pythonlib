@@ -4,6 +4,7 @@ from sh import git
 import os
 import shutil
 import sys
+import dreambox.utils
 
 def __git(subcmd, **kwargs):
     git_object = None
@@ -92,6 +93,11 @@ def diff_files(**kwargs):
     output = __git('diff-files',**kwargs)()
     return output.exit_code
 
+def ls_files(*args, **kwargs):
+    output = __git('ls-files', **kwargs)(*args)
+
+    return output
+
 
 if __name__ == '__main__':
     print("testing __git('status', s=True)")
@@ -161,3 +167,9 @@ if __name__ == '__main__':
     rc = diff_files(_cwd='/tmp/environments', q=True)
     print('is workspace dirty %d' % rc)
     print('-- end test diff_files ---')
+    print()
+    print('--- testing ls_files() ---')
+    output = ls_files(_cwd='.', other=True)
+    if output:
+        print('return code is %d' % output.exit_code % output.exit_code)
+        print('found untracked files in current repo %s' % output, file=sys.stderr)
