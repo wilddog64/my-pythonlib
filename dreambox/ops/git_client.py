@@ -114,6 +114,7 @@ def diff_env_cookbook_pinned_versions(args=None):
      targetPath) = chef_env.compare_env_cookbook_versions(source=sourceEnv,
                                                           target=targetEnv,
                                                           repo=repo,
+                                                          repoName=repoName,
                                                           workspace=workspace)
     if missingCookbooks:
         dreambox.utils.print_structure(missingCookbooks)
