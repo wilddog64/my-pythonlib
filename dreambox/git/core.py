@@ -150,8 +150,9 @@ if __name__ == '__main__':
     print("end testing diff() -- git diff")
 
     print("testing commit(None, dry_run=True, n=True, m='testing') -- git commit -n -m 'testing', .")
-    commit_output = commit(None, a=True, dry_run=True, m='testing commit')
-    print(commit_output)
+    if diff_files(_cwd='.'):
+        commit_output = commit(None, a=True, dry_run=True, m='testing commit')
+        print(commit_output)
     print("end testing commit(None, dry_run=True, n=True, m='testing') -- git commit -n -m 'testing', .")
     print()
     print('--- testing rev_parse ---', file=sys.stderr)
