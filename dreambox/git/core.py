@@ -150,8 +150,9 @@ if __name__ == '__main__':
     print("end testing diff() -- git diff")
 
     print("testing commit(None, dry_run=True, n=True, m='testing') -- git commit -n -m 'testing', .")
-    commit_output = commit(None, a=True, dry_run=True, m='testing commit')
-    print(commit_output)
+    if diff_files(_cwd='.'):
+        commit_output = commit(None, a=True, dry_run=True, m='testing commit')
+        print(commit_output)
     print("end testing commit(None, dry_run=True, n=True, m='testing') -- git commit -n -m 'testing', .")
     print()
     print('--- testing rev_parse ---', file=sys.stderr)
@@ -171,5 +172,5 @@ if __name__ == '__main__':
     print('--- testing ls_files() ---')
     output = ls_files(_cwd='.', other=True)
     if output:
-        print('return code is %d' % output.exit_code % output.exit_code)
+        print('return code is %d' % output.exit_code)
         print('found untracked files in current repo %s' % output, file=sys.stderr)
