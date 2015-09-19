@@ -4,6 +4,7 @@ from sh import git
 import os
 import shutil
 import sys
+import dreambox.utils
 
 def __git(subcmd, **kwargs):
     git_object = None
@@ -92,6 +93,11 @@ def diff_files(**kwargs):
     output = __git('diff-files',**kwargs)()
     return output.exit_code
 
+def ls_files(*args, **kwargs):
+    output = __git('ls-files', **kwargs)(*args)
+
+    return output
+
 
 if __name__ == '__main__':
     print("testing __git('status', s=True)")
@@ -144,8 +150,9 @@ if __name__ == '__main__':
     print("end testing diff() -- git diff")
 
     print("testing commit(None, dry_run=True, n=True, m='testing') -- git commit -n -m 'testing', .")
-    commit_output = commit(None, a=True, dry_run=True, m='testing commit')
-    print(commit_output)
+    if diff_files(_cwd='.'):
+        commit_output = commit(None, a=True, dry_run=True, m='testing commit')
+        print(commit_output)
     print("end testing commit(None, dry_run=True, n=True, m='testing') -- git commit -n -m 'testing', .")
     print()
     print('--- testing rev_parse ---', file=sys.stderr)
@@ -161,3 +168,9 @@ if __name__ == '__main__':
     rc = diff_files(_cwd='/tmp/environments', q=True)
     print('is workspace dirty %d' % rc)
     print('-- end test diff_files ---')
+    print()
+    print('--- testing ls_files() ---')
+    output = ls_files(_cwd='.', other=True)
+    if output:
+        print('return code is %d' % output.exit_code)
+        print('found untracked files in current repo %s' % output, file=sys.stderr)
