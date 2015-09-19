@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import dreambox.utils
+import dreambox.json.core as jcore
 
 def load_chef_environment_attributes(json_file, section='default_attributes'):
     dirname = os.path.dirname(json_file)
@@ -156,6 +157,85 @@ def __update_json_object(filename, json_object, key, value):
                 print('current file [{}] value for  default_attributes.{}.{} does not change]'.format(filename, keys[0], keys[1]))
 
     return (json_object, should_write_to_file)
+
+
+def compare_env_cookbook_versions(source='production.json',
+                                  target='stage1.json',
+                                  repo='git@github.com:dreamboxlearning/chef-environments.git',
+                                  repoName='chef-environments',
+                                  workspace='/tmp'):
+    '''
+compare_env_cookbook_versions function compare cookbook versions pin in two environments and
+report the difference between them.  The function takes the following parameters,
+
+* source is a source chef environment file
+* target is a target chef environment file to compare with source
+* repo is a git repository url
+* workspace is where git repository will be cloned to
+    '''
+    fullPath = os.path.join(workspace, repoName)
+    sourcePath = os.path.join(fullPath, source)
+    targetPath = os.path.join(fullPath, target)
+    sourceCookbookJson, sourceDir, sourceFilename = load_chef_environment_attributes(sourcePath, 'cookbook_versions')
+    targetCookbookJson, targetDir, targetFilename = load_chef_environment_attributes(targetPath, 'cookbook_versions')
+    mismatch_key, delta = get_delta_set(sourceCookbookJson, targetCookbookJson)
+
+    sourceObject = load_chef_environment_file(sourcePath)
+    targetObject = load_chef_environment_file(targetPath)
+
+    return mismatch_key, delta, sourceObject, targetObject, sourcePath, targetPath
+
+
+def update_chef_environment_cookbooks(sourceEnvFile=None,
+                                      targetEnvFile=None,
+                                      repo=None,
+                                      repoName='chef-environment',
+                                      workspace='/tmp',):
+    '''
+update_chef_environment_cookbooks is a function that perform the update
+chef enviornment file for mismatch cookbooks (missing cookbooks or
+version mismatch).  The function takes the following parameters,
+
+* sourceEnvObj is a python object that represent source chef envionment json file
+* targetEnvObj is a python object that represent target chef envionment json file
+* section is a json section in environment file that contains attributes to be updated
+* cookbookList is a list of cookbooks that need to update versions or add
+
+upon execute successfully, the update python object will be returned
+    '''
+    (missingCookbooks,
+     mismatchCookbookVersions,
+     source,
+     target,
+     sourcePath,
+     targetPath) = compare_env_cookbook_versions(source=sourceEnvFile,
+                                                 target=targetEnvFile,
+                                                 repo=repo,
+                                                 repoName=repoName,
+                                                 workspace=workspace)
+
+    # add missing cookbooks to target environment file
+    if missingCookbooks:
+        for key in missingCookbooks:
+            target['cookbook_versions'][key] = source['cookbook_versions'][key]
+    else:
+        print('no difference found')
+
+    # update mismatch cookbook version for target
+    if mismatchCookbookVersions:
+        print('found values of element are different')
+        print('--- list different ---')
+        print('total elements need to update: %s' % len(mismatchCookbookVersions))
+        print('--- mismatch cookbook versions ---', file=sys.stderr)
+        dreambox.utils.print_structure(mismatchCookbookVersions)
+        for key in mismatchCookbookVersions:
+            print('%s has cookbook %s version %s' % (sourcePath, key, source['cookbook_versions'][key]))
+            print('%s has cookbook %s version %s' % (targetPath, key, target['cookbook_versions'][key]))
+            print('updating mismatch cookbook versions now ...')
+            target['cookbook_versions'][key] = source['cookbook_versions'][key]
+
+    jcore.write_json_to_file(targetPath, target)
+
 
 if __name__ == '__main__':
     json_file = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'

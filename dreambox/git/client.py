@@ -303,6 +303,15 @@ is actually a git repo or not.  The function takes only one parameter,
 
     return not rc
 
+def repo_is_dirty(repo='.'):
+    '''
+repo_is_dirty is a function to check if current repo has unstaged changes.
+The function takes only one parameter,
+
+* repo is a full path points to a git repo to check
+    '''
+    return Git.diff_files(_cwd=repo, _ok_code=[0, 1])
+
 if __name__ == '__main__':
     repoPath = '/tmp'
     repoName = 'git-testing'
