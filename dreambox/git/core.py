@@ -88,6 +88,10 @@ def rev_parse(*args, **kwargs):
     return output.exit_code
 
 
+def diff_files(**kwargs):
+    output = __git('diff-files',**kwargs)()
+    return output.exit_code
+
 
 if __name__ == '__main__':
     print("testing __git('status', s=True)")
@@ -152,4 +156,8 @@ if __name__ == '__main__':
     return_code = rev_parse(_cwd='/tmp', is_inside_work_tree=True, quiet=True, _ok_code=[0, 128])
     print('return code for check project is git repo is %d' % return_code)
     print('--- end testing rev_parse ---', file=sys.stderr)
-
+    print()
+    print('-- test diff_files ---')
+    rc = diff_files(_cwd='/tmp/environments', q=True)
+    print('is workspace dirty %d' % rc)
+    print('-- end test diff_files ---')
