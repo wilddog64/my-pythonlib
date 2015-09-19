@@ -58,14 +58,17 @@ takes the following parameters,
                                                    repo=repo_url,
                                                    repoName=repo_name,
                                                    workspace=repo_path)
-    Git.commit(repoPath=appPath, commitMessage=commitMessage)
 
-    Git.merge_branch(repo_path=appPath,
-                     from_branch=branchName,
-                     to_branch='master',
-                     merge_message=mergeMessage)
-    Git.push_ref(repo_path=appPath,
-                 dry_run=dry_run)
+    if Git.repo_is_dirty(repo=appPath):
+        Git.commit(repoPath=appPath, commitMessage=commitMessage)
+        Git.merge_branch(repo_path=appPath,
+                         from_branch=branchName,
+                         to_branch='master',
+                         merge_message=mergeMessage)
+        Git.push_ref(repo_path=appPath,
+                     dry_run=dry_run)
+    else:
+        print('no changes in repo, nothing push!')
 
 
 def clone_env_apps(args=None):
