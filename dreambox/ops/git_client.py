@@ -139,7 +139,7 @@ if __name__ == '__main__':
     
     sourceEnvFile = '/tmp/chef-environments/production.json'
     targetEnvFile = '/tmp/chef-environments/stage1.json'
-    repo='git@github.com:dreamboxlearning/chef-environments.git'
+    repo='git@github.com:wilddog64/chef-environments.git'
     repoName = 'chef-environments'
     chef_env.update_chef_environment_cookbooks(sourceEnvFile=sourceEnvFile,
                                                targetEnvFile=targetEnvFile,
