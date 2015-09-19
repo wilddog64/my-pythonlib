@@ -172,5 +172,5 @@ if __name__ == '__main__':
     print('--- testing ls_files() ---')
     output = ls_files(_cwd='.', other=True)
     if output:
-        print('return code is %d' % output.exit_code % output.exit_code)
+        print('return code is %d' % output.exit_code)
         print('found untracked files in current repo %s' % output, file=sys.stderr)
