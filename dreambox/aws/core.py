@@ -16,6 +16,17 @@ ec2 is a aws command that perform a command aws ec2 operations
 
   return ec2_json_obj
 
+
+def autoscaling(*args, **kwargs):
+    '''
+autoscaling is an AWS command that perform autoscaling related
+operations
+    '''
+    output = aws.autoscaling(*args, **kwargs)
+    autoscaling_json_obj = json.loads(output.stdout)
+    return autoscaling_json_obj
+
+
 # base function for all other aws command line function.  this function
 # accepts 5 parameters,
 #
@@ -260,4 +271,10 @@ if __name__ == "__main__":
                             query='Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`].Value]')
     dreambox.utils.print_structure(output_instances)
     print('=== end testing ec2 ===')
-
+    print()
+    print('==== testing autoscaling ===')
+    autoscaling_groups = autoscaling('describe-auto-scaling-groups',
+                                     region='us-west-2',
+                                     query='AutoScalingGroups[].[AutoScalingGroupName,Tags[?Key==`Name`].Value]')
+    dreambox.utils.print_structure(autoscaling_groups)
+    print('==== end testing autoscaling ===')
