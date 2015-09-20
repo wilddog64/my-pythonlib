@@ -52,10 +52,10 @@ profile - aws profile if one exist.  If it is not provided, the function will
 region - which aws region do we want to work on
 filterby - limit result by providing a filter string
     '''
-    stage_stacks, error = aws_cfn_cmd(aws_profile=profile,
-                                      aws_region=region,
-                                      cfn_subcmd='describe-stacks',
-                                      query='Stacks[].StackName')
+    stage_stacks = aws_cfn_cmd(aws_profile=profile,
+                               aws_region=region,
+                               cfn_subcmd='describe-stacks',
+                               query='Stacks[].StackName')
 
     stacks_list = select(lambda x: filterby.lower() in x.lower(), stage_stacks)
     return stacks_list
@@ -139,11 +139,11 @@ environ is a stage environment name, i.e. stage1 ... stage9
 
     stack_infos = {}
     for region in regions:
-        stack_info, error = aws_cfn_cmd(aws_profile=profile,
-                                        aws_region=region,
-                                        dry_run=False,
-                                        cfn_subcmd='describe-stacks',
-                                        query='Stacks[].[StackName,Parameters[]]')
+        stack_info = aws_cfn_cmd(aws_profile=profile,
+                                 aws_region=region,
+                                 dry_run=False,
+                                 cfn_subcmd='describe-stacks',
+                                 query='Stacks[].[StackName,Parameters[]]')
         stack_infos[region] = create_cloudformation_stack_objects(stack_info,
                                                                   environ)
 
