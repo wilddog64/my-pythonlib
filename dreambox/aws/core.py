@@ -1,8 +1,6 @@
 from __future__ import print_function
 import json
-from funcy.strings import str_join
 import subprocess
-import os
 import re
 import sys
 
