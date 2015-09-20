@@ -266,8 +266,7 @@ if __name__ == "__main__":
     print()
     print('=== testing ec2 ===')
     output_instances = ec2('describe-instances',
-                            profile='mgmt',
-                            region='us-east-1',
+                            region='us-west-2',
                             query='Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`].Value]')
     dreambox.utils.print_structure(output_instances)
     print('=== end testing ec2 ===')
