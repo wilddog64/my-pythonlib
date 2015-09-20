@@ -11,13 +11,9 @@ def ec2(*args, **kwargs):
 ec2 is a aws command that perform a command aws ec2 operations
   """
   output = aws.ec2(*args, **kwargs)
-  print(output)
-  rc = output.exit_code
-  ec2_json_obj = None
-  if output:
-    ec2_json_obj = json.loads(output.stdout)
+  ec2_json_obj = json.loads(output.stdout)
 
-  return rc, ec2_json_obj
+  return ec2_json_obj
   
 def get_ec2_hosts_for_stage(profile=None, regions=None, stage=None):
     '''
