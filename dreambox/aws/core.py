@@ -3,7 +3,18 @@ import json
 import subprocess
 import re
 import sys
+import dreambox.utils
+import sh
+from sh import aws
 
+def ec2(*args, **kwargs):
+  """
+ec2 is a aws command that perform a command aws ec2 operations
+  """
+  output = aws.ec2(*args, **kwargs)
+  ec2_json_obj = json.loads(output.stdout)
+
+  return ec2_json_obj
 
 # base function for all other aws command line function.  this function
 # accepts 5 parameters,
@@ -242,3 +253,11 @@ takes the following parameters,
 
 if __name__ == "__main__":
     print()
+    print('=== testing ec2 ===')
+    output_instances = ec2('describe-instances',
+                            profile='mgmt',
+                            region='us-east-1',
+                            query='Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`].Value]')
+    dreambox.utils.print_structure(output_instances)
+    print('=== end testing ec2 ===')
+
