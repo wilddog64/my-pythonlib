@@ -2,7 +2,23 @@ from __future__ import print_function
 from dreambox.aws.core import aws_ec2cmd
 import dreambox.utils
 import types
+import sh
+from sh import aws
+import json
 
+def ec2(*args, **kwargs):
+  """
+ec2 is a aws command that perform a command aws ec2 operations
+  """
+  output = aws.ec2(*args, **kwargs)
+  print(output)
+  rc = output.exit_code
+  ec2_json_obj = None
+  if output:
+    ec2_json_obj = json.loads(output.stdout)
+
+  return rc, ec2_json_obj
+  
 def get_ec2_hosts_for_stage(profile=None, regions=None, stage=None):
     '''
 get_ec2_hosts_for_stage  will return ec2 instance information for a given
@@ -123,6 +139,14 @@ for a given AWS instance.  The function takes the following parameters,
 
 
 if __name__ == '__main__':
+    print('=== testing ec2 ===')
+    output_instances = ec2('describe-instances',
+                            profile='mgmt',
+                            region='us-east-1',
+                            query='Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`].Value]')
+    dreambox.utils.print_structure(output_instances)
+    print('=== end testing ec2 ===')
+
     ec2_instances = get_ec2_hosts_for_stage(stage='stage3')
     dreambox.utils.print_structure(ec2_instances)
 
