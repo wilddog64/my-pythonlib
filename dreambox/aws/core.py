@@ -27,6 +27,12 @@ operations
     return autoscaling_json_obj
 
 
+def elasticache(*args, **kwargs):
+    output = aws.elasticache(*args, **kwargs)
+    elasticache_json_obj = json.loads(output.stdout)
+    return elasticache_json_obj
+
+
 # base function for all other aws command line function.  this function
 # accepts 5 parameters,
 #
@@ -277,3 +283,9 @@ if __name__ == "__main__":
                                      query='AutoScalingGroups[].[AutoScalingGroupName,Tags[?Key==`Name`].Value]')
     dreambox.utils.print_structure(autoscaling_groups)
     print('==== end testing autoscaling ===')
+    print()
+    print('==== testing elasticache ===')
+    elasticache_cluster = elasticache('describe-cache-clusters',
+                                     region='us-west-2',)
+    dreambox.utils.print_structure(elasticache_cluster)
+    print('==== end testing elasticache ===')
