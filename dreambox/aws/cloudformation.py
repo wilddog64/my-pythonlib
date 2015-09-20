@@ -1,10 +1,8 @@
 from __future__ import print_function
 from dreambox.aws.core import aws_cfn_cmd
 from funcy.colls import select
-from StringIO import StringIO
 import dreambox.utils
 import re
-import json
 import sys
 
 
