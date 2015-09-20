@@ -123,17 +123,18 @@ environ is a stage environment name, i.e. stage1 ... stage9
 
     def create_cloudformation_stack_objects(stack_list, environ=None):
         stack_objects = stack_list
-        if not environ is None:
+        if (environ and stack_list) is not None:
             stack_objects = select(lambda x: environ.lower() == x[0].lower(),
                                    stack_list)
 
         stack_table = {}
-        for stack_object in stack_objects:
-            stack_name = stack_object[0].lower()
-            stack_table[stack_name] = {}
-            for parameters in stack_object[1]:
-                dreambox.utils.print_structure(parameters)
-                stack_table[stack_name][parameters['ParameterKey']] = parameters['ParameterValue']
+        if stack_objects:
+            for stack_object in stack_objects:
+               stack_name = stack_object[0].lower()
+               stack_table[stack_name] = {}
+               for parameters in stack_object[1]:
+                   dreambox.utils.print_structure(parameters)
+                   stack_table[stack_name][parameters['ParameterKey']] = parameters['ParameterValue']
 
         return stack_table
 
@@ -144,8 +145,9 @@ environ is a stage environment name, i.e. stage1 ... stage9
                                  dry_run=False,
                                  cfn_subcmd='describe-stacks',
                                  query='Stacks[].[StackName,Parameters[]]')
-        stack_infos[region] = create_cloudformation_stack_objects(stack_info,
-                                                                  environ)
+        if region:
+            stack_infos[region] = create_cloudformation_stack_objects(stack_info,
+                                                                      environ)
 
     return stack_infos
 
