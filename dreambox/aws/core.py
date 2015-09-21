@@ -45,8 +45,7 @@ def elasticache(*args, **kwargs):
     '''
 elasticache is a function that performs aws elasticache function
     '''
-    output = aws.elasticache(*args, **kwargs)
-    elasticache_json_obj = json.loads(output.stdout)
+    elasticache_json_obj = __aws('elasticache', *args, **kwargs)
     return elasticache_json_obj
 
 
