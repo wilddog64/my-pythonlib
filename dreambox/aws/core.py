@@ -55,6 +55,15 @@ operations
 
     return cfn_json_obj
 
+def redshift(*args, **kwargs):
+    '''
+ redshift is a function that performs a command aws redshift coperations 
+    '''
+    output = aws.redshift(*args, **kwargs)
+    redshift_json_obj = json.loads(output.stdout)
+
+    return redshift_json_obj
+
 # base function for all other aws command line function.  this function
 # accepts 5 parameters,
 #
@@ -327,3 +336,9 @@ if __name__ == "__main__":
                             )
     dreambox.utils.print_structure(stacks)
     print('==== end testing cloudformation ====')
+    print()
+    print('==== testing redshift ====')
+    redshift('describe-cluster-security-groups',
+             region='us-west-2')
+    print('==== end testing redshift ====')
+    
