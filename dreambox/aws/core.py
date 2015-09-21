@@ -62,8 +62,7 @@ def cloudformation(*args, **kwargs):
 cloudformation is a function that performs aws cloudformation
 operations
     '''
-    output = aws.cloudformation(*args, **kwargs)
-    cfn_json_obj = json.loads(output.stdout)
+    cfn_json_obj = __aws('cloudformation', *args, **kwargs)
 
     return cfn_json_obj
 
