@@ -50,7 +50,7 @@ stage environment.  This function takes the following parameters,
 
     return instances
 
-def describe_instances(profile=None, region=None, filterby=None, **options):
+def describe_instances(profile=None, region=None, filterby=None, **kwargs):
     '''
 describe_instances is a function that return all the instances for a give region.
 The function takes the following parameters,
@@ -60,12 +60,10 @@ The function takes the following parameters,
 * filterby is a function that filter through a list of instances
 * **options is any valid aws describe-instances command line options
     '''
-
-    instances = aws_ec2cmd(ec2profile=profile,
-                           ec2region=region,
-                           subcmd='describe-instances',
-                           verbose=True,
-                           **options)
+    instances = aws.ec2('describe-instances',
+                        profile=profile,
+                        region=region,
+                        **kwargs)
     if filterby is not None and type(filterby) is types.FunctionType:
         instances = filter(filterby, instances)
 
