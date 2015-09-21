@@ -1,4 +1,5 @@
 from __future__ import print_function
+import dreambox.aws.core as aws
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
 from dreambox.aws.core import aws_cfn_cmd
@@ -12,7 +13,7 @@ import dreambox.utils
 import re
 import sys
 
-def get_all_asgs(ec2profile=None,
+def get_all_asgs(ec2profile='',
                  ec2region='us-east-1',
                  **options):
     '''
@@ -27,10 +28,14 @@ a given region for AWS.  The function takes the following parameters,
 
 this function will return a list of hashes upon a successful call
     '''
-    return aws_asgcmd(aws_profile=ec2profile,
-                      aws_region=ec2region,
-                      asg_subcmd='describe-auto-scaling-groups',
-                      **options)
+    # return aws_asgcmd(aws_profile=ec2profile,
+    #                   aws_region=ec2region,
+    #                   asg_subcmd='describe-auto-scaling-groups',
+    #                   **options)
+    return aws.autoscaling('describe-auto-scaling-groups',
+                           profile=ec2profile,
+                           region=ec2region,
+                           **options)
 
 def get_all_play_asgs(ec2profile=None,
                       ec2region='us-east-1',
