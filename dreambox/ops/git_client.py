@@ -68,7 +68,7 @@ takes the following parameters,
         Git.push_ref(repo_path=appPath,
                      dry_run=dry_run)
     else:
-        print('no changes in repo, nothing push!')
+        print('nothing changes, no push')
 
 
 def clone_env_apps(args=None):
