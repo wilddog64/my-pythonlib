@@ -1,9 +1,7 @@
 from __future__ import print_function
 import dreambox.aws.core as aws
-from dreambox.aws.core import aws_ec2cmd
 import dreambox.utils
 import types
-import json
 import sh
 
   
