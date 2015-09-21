@@ -7,14 +7,28 @@ import dreambox.utils
 import sh
 from sh import aws
 
-def ec2(*args, **kwargs):
-  """
-ec2 is a aws command that perform a command aws ec2 operations
-  """
-  output = aws.ec2(*args, **kwargs)
-  ec2_json_obj = json.loads(output.stdout)
+def __aws(cmd=None, subcmd=None, **kwargs):
+    aws_func = None
+    output = None
+    if hasattr(aws, cmd):
+        aws_func = getattr(aws, cmd)
+    else:
+      raise Exception('cmd %s is not support by awscli' % cmd)
+    
+    output = aws_func(subcmd, **kwargs)
+    json_obj = None
+    if output and output.stdout:
+       json_obj = json.loads(output.stdout) 
 
-  return ec2_json_obj
+    return json_obj
+
+
+def ec2(*args, **kwargs):
+    """
+ec2 is a aws command that perform a command aws ec2 operations
+    """
+    ec2_json_obj = __aws('ec2', *args, **kwargs)
+    return ec2_json_obj
 
 
 def autoscaling(*args, **kwargs):
