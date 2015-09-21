@@ -70,8 +70,7 @@ def redshift(*args, **kwargs):
     '''
  redshift is a function that performs a command aws redshift coperations 
     '''
-    output = aws.redshift(*args, **kwargs)
-    redshift_json_obj = json.loads(output.stdout)
+    redshift_json_obj = __aws('redshift', *args, **kwargs)
 
     return redshift_json_obj
 
