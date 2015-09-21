@@ -79,8 +79,7 @@ def s3api(*args, **kwargs):
     '''
  s3api is a function that performs aws a3api operations 
     '''
-    output = aws.s3api(*args, **kwargs)
-    s3api_json_obj = json.loads(output.stdout)
+    s3api_json_obj = __aws('s3api', *args, **kwargs)
 
     return s3api_json_obj
 
