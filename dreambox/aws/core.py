@@ -45,6 +45,16 @@ rds is a function that perform aws rds operations
 
     return rds_json_obj
 
+def cloudformation(*args, **kwargs):
+    '''
+cloudformation is a function that performs aws cloudformation
+operations
+    '''
+    output = aws.cloudformation(*args, **kwargs)
+    cfn_json_obj = json.loads(output.stdout)
+
+    return cfn_json_obj
+
 # base function for all other aws command line function.  this function
 # accepts 5 parameters,
 #
@@ -309,4 +319,11 @@ if __name__ == "__main__":
                              query=rds_query)
     dreambox.utils.print_structure(db_security_groups)
     print('==== end testing rds ===')
-    
+    print()
+    print('==== testing cloudformation ====')
+    stacks = cloudformation('describe-stacks',
+                            region='us-west-2',
+                            query='Stacks[].StackName',
+                            )
+    dreambox.utils.print_structure(stacks)
+    print('==== end testing cloudformation ====')
