@@ -36,8 +36,8 @@ def autoscaling(*args, **kwargs):
 autoscaling is an AWS command that perform autoscaling related
 operations
     '''
-    output = aws.autoscaling(*args, **kwargs)
-    autoscaling_json_obj = json.loads(output.stdout)
+    autoscaling_json_obj = __aws('autoscaling', *args, **kwargs)
+
     return autoscaling_json_obj
 
 
