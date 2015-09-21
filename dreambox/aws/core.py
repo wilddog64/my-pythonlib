@@ -64,6 +64,17 @@ def redshift(*args, **kwargs):
 
     return redshift_json_obj
 
+
+def s3api(*args, **kwargs):
+    '''
+ s3api is a function that performs aws a3api operations 
+    '''
+    output = aws.s3api(*args, **kwargs)
+    s3api_json_obj = json.loads(output.stdout)
+
+    return s3api_json_obj
+
+
 # base function for all other aws command line function.  this function
 # accepts 5 parameters,
 #
@@ -341,4 +352,8 @@ if __name__ == "__main__":
     redshift('describe-cluster-security-groups',
              region='us-west-2')
     print('==== end testing redshift ====')
-    
+    print()
+    print('==== testing s3api ===')
+    s3buckets = s3api('list-buckets')
+    dreambox.utils.print_structure(s3buckets)
+    print('==== end testing s3api ===')
