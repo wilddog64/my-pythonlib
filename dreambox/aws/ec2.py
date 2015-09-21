@@ -1,11 +1,12 @@
 from __future__ import print_function
+import dreambox.aws.core as aws
 from dreambox.aws.core import aws_ec2cmd
 import dreambox.utils
 import types
 import json
 
   
-def get_ec2_hosts_for_stage(profile=None, regions=None, stage=None):
+def get_ec2_hosts_for_stage(profile='', regions=None, stage=None):
     '''
 get_ec2_hosts_for_stage  will return ec2 instance information for a given
 stage environment.  This function takes the following parameters,
@@ -40,10 +41,10 @@ stage environment.  This function takes the following parameters,
         regions = ['us-east-1', 'us-west-2']
 
     for region in regions:
-        region_instances = aws_ec2cmd(ec2profile=profile,
-                                      ec2region=region,
-                                      subcmd='describe-instances',
-                                      query=inst_qry)
+        region_instances = aws.ec2('describe-instances',
+                                   profile=profile,
+                                   region=region,
+                                   query=inst_qry)
         # dreambox.utils.print_structure(region_instances)
         instances[region] = make_hash_from_ec2tag(region_instances, stage)
 
