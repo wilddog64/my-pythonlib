@@ -53,8 +53,7 @@ def rds(*args, **kwargs):
     '''
 rds is a function that perform aws rds operations
     '''
-    output = aws.rds(*args, **kwargs)
-    rds_json_obj = json.loads(output.stdout)
+    rds_json_obj = __aws('rds', *args, **kwargs)
 
     return rds_json_obj
 
