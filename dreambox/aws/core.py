@@ -33,6 +33,15 @@ def elasticache(*args, **kwargs):
     return elasticache_json_obj
 
 
+def rds(*args, **kwargs):
+    '''
+rds is a function that perform aws rds operations
+    '''
+    output = aws.rds(*args, **kwargs)
+    rds_json_obj = json.loads(output.stdout)
+
+    return rds_json_obj
+
 # base function for all other aws command line function.  this function
 # accepts 5 parameters,
 #
@@ -289,3 +298,12 @@ if __name__ == "__main__":
                                      region='us-west-2',)
     dreambox.utils.print_structure(elasticache_cluster)
     print('==== end testing elasticache ===')
+    print()
+    print('==== testing rds ===')
+    rds_query='DBSecurityGroups[].[DBSecurityGroupName,EC2SecurityGroups[].[EC2SecurityGroupName,EC2SecurityGroupOwnerId]]'
+    db_security_groups = rds('describe-db-security-groups',
+                             region='us-west-2',
+                             query=rds_query)
+    dreambox.utils.print_structure(db_security_groups)
+    print('==== end testing rds ===')
+    
