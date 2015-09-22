@@ -7,6 +7,12 @@ import dreambox.utils
 import sh
 from sh import aws
 
+# a custom error message to handle when aws cli command not taking
+# --dry-run option
+class DryRunError(sh.ErrorReturnCode):
+    def __init__(self, message):
+        super(sh.ErrorReturnCode, self).__init__(message)
+
 def __aws(cmd=None, subcmd=None, **kwargs):
     '''
 __aws is a base function to support all awscli commands, and 
@@ -52,7 +58,7 @@ available.
         output = func()
     except sh.ErrorReturnCode as err:
         if '--dry-run' in err.stderr:
-            print('--dry-run set, executing %s' % full_function_args)
+            raise DryRunError('executing %s' % full_function_args)
         else:
             raise sh.ErrorReturnCode
 
