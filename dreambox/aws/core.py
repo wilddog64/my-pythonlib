@@ -38,6 +38,8 @@ available.
     if 'verbose' in kwargs and kwargs['verbose']:
        verbose = kwargs['verbose']
        del kwargs['verbose']
+    elif 'verbose' in kwargs and not kwargs['verbose']:
+       del kwargs['verbose']
     func = aws_func.bake(subcmd, **kwargs)
     if verbose:
        dreambox.utils.print_structure(func._partial_baked_args)
@@ -360,6 +362,7 @@ if __name__ == "__main__":
     print()
     print('==== testing autoscaling ===')
     autoscaling_groups = autoscaling('describe-auto-scaling-groups',
+                                     verbose=False,
                                      region='us-west-2',
                                      query='AutoScalingGroups[].[AutoScalingGroupName,Tags[?Key==`Name`].Value]')
     dreambox.utils.print_structure(autoscaling_groups)
