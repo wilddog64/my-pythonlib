@@ -52,8 +52,9 @@ def get_all_elasticcache_security_groups(profile='',
     return dreambox.utils.filter_list_by(ecache_result, myfilter=filterby)
 
 
-def get_all_rds_security_groups(ec2profile=None,
+def get_all_rds_security_groups(profile='',
                                 regions=None,
+                                verbose=False,
                                 query=None,
                                 filterby=None):
 
@@ -66,10 +67,11 @@ def get_all_rds_security_groups(ec2profile=None,
     rds_results = []
     rds_result = {}
     for region in regions:
-        rds_result[region] = aws_rdscmd(ec2profile,
-                                        region,
-                                        rds_subcmd='describe-db-security-groups',
-                                        query=query)
+        rds_result[region] = aws.rds('describe-db-security-groups',
+                                     profile=profile,
+                                     region=region,
+                                     verbose=verbose,
+                                     query=query)
         rds_results.extend(rds_result)
 
     return dreambox.utils.filter_list_by(rds_result, myfilter=filterby)
@@ -253,7 +255,7 @@ def get_all_security_groups(my_ec2profile='',
     results['elasticcache'] = get_all_elasticcache_security_groups(profile=my_ec2profile,
                                                                    regions=my_regions,
                                                                    filterby=my_filterby)
-    results['rds'] = get_all_rds_security_groups(ec2profile=my_ec2profile,
+    results['rds'] = get_all_rds_security_groups(profile=my_ec2profile,
                                                  regions=my_regions,
                                                  filterby=my_filterby)
     results['redshift'] = get_all_redshift_security_groups(ec2profile=my_ec2profile,
