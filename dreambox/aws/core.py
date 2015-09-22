@@ -54,6 +54,8 @@ available.
        print('executing %s' % full_function_args)
 
     # execute awscli command, and check if there's any output available
+    # some awscli command will not accept --dry-run flag, so we raise our
+    # custom exception to allow caller to capture and handle it.
     try:
         output = func()
     except sh.ErrorReturnCode as err:
