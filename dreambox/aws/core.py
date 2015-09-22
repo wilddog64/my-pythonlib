@@ -8,13 +8,32 @@ import sh
 from sh import aws
 
 def __aws(cmd=None, subcmd=None, **kwargs):
+    '''
+__aws is a base function to support all awscli commands, and 
+sub-commands.  The function takes the following parameters,
+
+* cmd is any valid awscli command
+* subcmd is any valid awscli command sub-command
+* **kwargs is a valid parameters belongs to any give sub-command
+
+Most of the awscli will return a json text back when execute
+successfully.  This function will check if any json text exists
+in standard output, and return them as python object if text is
+available.
+    '''
     aws_func = None
     output = None
+
+    # check if a given cmd is support by aws; raise an excpetion
+    # if not
     if hasattr(aws, cmd):
         aws_func = getattr(aws, cmd)
     else:
       raise Exception('cmd %s is not support by awscli' % cmd)
   
+    # if verbose is set, print out what is command line constructed.
+    # verbose is not a valid awscli command options, so we have to 
+    # delete it before we pass into awscli ccommand
     verbose = False
     if 'verbose' in kwargs and kwargs['verbose']:
        verbose = kwargs['verbose']
@@ -23,6 +42,8 @@ def __aws(cmd=None, subcmd=None, **kwargs):
     if verbose:
        dreambox.utils.print_structure(func._partial_baked_args)
        print('executing %s' % func._path + ' '.join(func._partial_baked_args))
+
+    # execute awscli command, and check if there's any output available
     output = func()
     json_obj = None
     if output and output.stdout:
