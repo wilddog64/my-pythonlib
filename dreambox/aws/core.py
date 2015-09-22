@@ -14,8 +14,16 @@ def __aws(cmd=None, subcmd=None, **kwargs):
         aws_func = getattr(aws, cmd)
     else:
       raise Exception('cmd %s is not support by awscli' % cmd)
-    
-    output = aws_func(subcmd, **kwargs)
+  
+    verbose = False
+    if 'verbose' in kwargs and kwargs['verbose']:
+       verbose = kwargs['verbose']
+       del kwargs['verbose']
+    func = aws_func.bake(subcmd, **kwargs)
+    if verbose:
+       dreambox.utils.print_structure(func._partial_baked_args)
+       print('executing %s' % func._path + ' '.join(func._partial_baked_args))
+    output = func()
     json_obj = None
     if output and output.stdout:
        json_obj = json.loads(output.stdout) 
@@ -324,7 +332,8 @@ if __name__ == "__main__":
     print('=== testing ec2 ===')
     output_instances = ec2('describe-instances',
                             region='us-west-2',
-                            query='Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`].Value]')
+                            query='Reservations[].Instances[].[InstanceId,Tags[?Key==`Name`].Value]',
+                            verbose=True)
     dreambox.utils.print_structure(output_instances)
     print('=== end testing ec2 ===')
     print()
