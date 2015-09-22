@@ -42,12 +42,20 @@ available.
        del kwargs['verbose']
 
     func = aws_func.bake(subcmd, **kwargs)
+    full_function_args = 'executing %s' % func._path + ' ' + ' '.join(func._partial_baked_args)
     if verbose:
        dreambox.utils.print_structure(func._partial_baked_args)
-       print('executing %s' % func._path + ' '.join(func._partial_baked_args))
+       print('executing %s' % full_function_args)
 
     # execute awscli command, and check if there's any output available
-    output = func()
+    try:
+        output = func()
+    except sh.ErrorReturnCode as err:
+        if '--dry-run' in err.stderr:
+            print('--dry-run set, executing %s' % full_function_args)
+        else:
+            raise sh.ErrorReturnCode
+
     json_obj = None
     if output and output.stdout:
        json_obj = json.loads(output.stdout)
@@ -379,6 +387,7 @@ if __name__ == "__main__":
     rds_query='DBSecurityGroups[].[DBSecurityGroupName,EC2SecurityGroups[].[EC2SecurityGroupName,EC2SecurityGroupOwnerId]]'
     db_security_groups = rds('describe-db-security-groups',
                              region='us-west-2',
+                             dry_run=True,
                              query=rds_query)
     dreambox.utils.print_structure(db_security_groups)
     print('==== end testing rds ===')
