@@ -41,20 +41,11 @@ available.
     elif 'verbose' in kwargs and not kwargs['verbose']:
        del kwargs['verbose']
 
-    want_funcref = False
-    if 'want_funcref' in kwargs and kwargs['want_funcref']:
-        want_funcref = True
-        del kwargs['want_funcref']
-    elif 'want_funcref' in kwargs and not kwargs['want_funcref']:
-        del kwargs['want_funcref']
-
     func = aws_func.bake(subcmd, **kwargs)
     if verbose:
        dreambox.utils.print_structure(func._partial_baked_args)
        print('executing %s' % func._path + ' '.join(func._partial_baked_args))
 
-    if want_funcref:
-        return func
     # execute awscli command, and check if there's any output available
     output = func()
     json_obj = None
