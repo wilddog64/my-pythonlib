@@ -49,7 +49,7 @@ available.
     output = func()
     json_obj = None
     if output and output.stdout:
-       json_obj = json.loads(output.stdout) 
+       json_obj = json.loads(output.stdout)
 
     return json_obj
 
