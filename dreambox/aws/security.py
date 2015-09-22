@@ -30,7 +30,7 @@ def get_all_ec2_security_groups(profile='',
     return dreambox.utils.filter_list_by(ec2_result, myfilter=filterby)
 
 
-def get_all_elasticcache_security_groups(ec2profile=None,
+def get_all_elasticcache_security_groups(profile='',
                                          regions=None,
                                          query=None,
                                          filterby=None):
@@ -43,10 +43,10 @@ def get_all_elasticcache_security_groups(ec2profile=None,
     ecache_results = []
     ecache_result = {}
     for region in regions:
-        ecache_result[region] = aws_ecachecmd(ec2profile,
-                                              region,
-                                              ecache_subcmd='describe-cache-security-groups',
-                                              query=query)
+        ecache_result[region] = aws.elasticache('describe-cache-security-groups',
+                                                profile=profile,
+                                                region=region,
+                                                query=query)
         ecache_results.extend(ecache_result)
 
     return dreambox.utils.filter_list_by(ecache_result, myfilter=filterby)
@@ -250,7 +250,7 @@ def get_all_security_groups(my_ec2profile='',
     results['ec2'] = get_all_ec2_security_groups(profile=my_ec2profile,
                                                  regions=my_regions,
                                                  filterby=my_filterby)
-    results['elasticcache'] = get_all_elasticcache_security_groups(ec2profile=my_ec2profile,
+    results['elasticcache'] = get_all_elasticcache_security_groups(profile=my_ec2profile,
                                                                    regions=my_regions,
                                                                    filterby=my_filterby)
     results['rds'] = get_all_rds_security_groups(ec2profile=my_ec2profile,
