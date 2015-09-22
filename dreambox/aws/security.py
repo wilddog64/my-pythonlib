@@ -1,4 +1,5 @@
 from __future__ import print_function
+import dreambox.aws.core as aws
 from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_rdscmd
 from dreambox.aws.core import aws_redshiftcmd
@@ -7,7 +8,7 @@ import dreambox.utils
 import sys
 
 
-def get_all_ec2_security_groups(ec2profile=None,
+def get_all_ec2_security_groups(profile='',
                                 regions=None,
                                 query=None,
                                 filterby=None):
@@ -20,10 +21,10 @@ def get_all_ec2_security_groups(ec2profile=None,
     ec2_results = []
     ec2_result = {}
     for region in regions:
-        ec2_result[region] = aws_ec2cmd(ec2profile,
-                                        region,
-                                        subcmd='describe-security-groups',
-                                        query=query)
+        ec2_result[region] = aws.ec2('describe-security-groups',
+                                     profile=profile,
+                                     region=region,
+                                     query=query)
         ec2_results.extend(ec2_result)
 
     return dreambox.utils.filter_list_by(ec2_result, myfilter=filterby)
@@ -242,11 +243,11 @@ def get_all_redshift_security_groups(ec2profile=None,
     return dreambox.utils.filter_list_by(redshift_result, myfilter=filterby)
 
 
-def get_all_security_groups(my_ec2profile=None,
+def get_all_security_groups(my_ec2profile='',
                             my_regions=['us-east-1', 'us-west-2'],
                             my_filterby=None):
     results = {}
-    results['ec2'] = get_all_ec2_security_groups(ec2profile=my_ec2profile,
+    results['ec2'] = get_all_ec2_security_groups(profile=my_ec2profile,
                                                  regions=my_regions,
                                                  filterby=my_filterby)
     results['elasticcache'] = get_all_elasticcache_security_groups(ec2profile=my_ec2profile,
