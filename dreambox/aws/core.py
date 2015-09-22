@@ -48,7 +48,7 @@ available.
        del kwargs['verbose']
 
     func = aws_func.bake(subcmd, **kwargs)
-    full_function_args = 'executing %s' % func._path + ' ' + ' '.join(func._partial_baked_args)
+    full_function_args =  func._path + ' ' + ' '.join(func._partial_baked_args)
     if verbose:
        dreambox.utils.print_structure(func._partial_baked_args)
        print('executing %s' % full_function_args)
@@ -58,7 +58,7 @@ available.
         output = func()
     except sh.ErrorReturnCode as err:
         if '--dry-run' in err.stderr:
-            raise DryRunError('executing %s' % full_function_args)
+            raise DryRunError(full_function_args)
         else:
             raise sh.ErrorReturnCode
 
@@ -99,7 +99,11 @@ def rds(*args, **kwargs):
     '''
 rds is a function that perform aws rds operations
     '''
-    rds_json_obj = __aws('rds', *args, **kwargs)
+    rds_json_obj = None
+    try:
+        rds_json_obj = __aws('rds', *args, **kwargs)
+    except DryRunError as dre:
+        print('--dry-run flag set, executing %s' % dre.args[0])
 
     return rds_json_obj
 
