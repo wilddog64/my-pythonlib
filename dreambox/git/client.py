@@ -310,7 +310,7 @@ The function takes only one parameter,
 
 * repo is a full path points to a git repo to check
     '''
-    return Git.diff_files(_cwd=repo, _ok_code=[0, 1])
+    return Git.diff_files(_cwd=repo, quiet=True, _ok_code=[0, 1])
 
 if __name__ == '__main__':
     repoPath = '/tmp'
