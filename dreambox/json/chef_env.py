@@ -124,9 +124,9 @@ def __update_json_object(filename, json_object, key, value):
     should_write_to_file = False
     if type(value) is dict:
         inner_keys = value.keys()
+        new_value1 = value[inner_keys[0]]
+        new_value2 = value[inner_keys[1]]
         if app in json_object['default_attributes']:
-            new_value1 = value[inner_keys[0]]
-            new_value2 = value[inner_keys[1]]
             old_value1 = json_object['default_attributes'][keys[0]][keys[1]][inner_keys[0]]
             old_value2 = json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]]
             if new_value1 != old_value1:
@@ -146,6 +146,14 @@ def __update_json_object(filename, json_object, key, value):
                        json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]]))
                 json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]] = new_value2
                 should_write_to_file = True
+        else:   # key does not present in the target file
+            print('%s is missing from %s' % (app, filename))
+            json_object['default_attributes'][keys[0]] = {}
+            json_object['default_attributes'][keys[0]][keys[1]] = {}
+            json_object['default_attributes'][keys[0]][keys[1]][inner_keys[0]] = new_value1
+            json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]] = new_value2
+            should_write_to_file = True
+
 
     elif type(value) is unicode:
         if app in json_object['default_attributes']:
