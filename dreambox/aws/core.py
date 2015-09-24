@@ -62,11 +62,11 @@ available.
     # custom exception to allow caller to capture and handle it.
     try:
         output = func()
-    except sh.ErrorReturnCode as err:
+    except sh.ErrorReturnCode_255 as err:
         if '--dry-run' in err.stderr:
             raise DryRunError(full_function_args)
-        else:
-            raise sh.ErrorReturnCode
+    except sh.ErrorReturnCode:
+        raise sh.ErrorReturnCode
 
     json_obj = None
     if output and output.stdout:
