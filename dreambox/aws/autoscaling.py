@@ -151,7 +151,7 @@ a filterby parameter.  This function returns nothing.
                         dry_run=dry_run)
 
 
-def resume_autoscaling_group_for_stage(profile=None,
+def resume_autoscaling_group_for_stage(profile='',
                                        region=None,
                                        stage=None,
                                        verbose=True,
