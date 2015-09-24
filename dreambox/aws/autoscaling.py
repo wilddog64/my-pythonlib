@@ -1,6 +1,5 @@
 from __future__ import print_function
 import dreambox.aws.core as aws
-from dreambox.aws.core import aws_asgcmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
 from funcy.colls import select
@@ -172,12 +171,12 @@ groups for a given stage environment.  The function takes the following paramete
       dreambox.utils.print_structure(asg_groups)
     if asg_groups:
         for asg_group in asg_groups:
-           aws_asgcmd(aws_profile=profile,
-                      aws_region=region,
-                      asg_subcmd='resume-processes',
-                      verbose=verbose,
-                      dry_run=dry_run,
-                      auto_scaling_group=asg_group)
+           aws.autoscaling('resume-processes',
+                           profile=profile,
+                           region=region,
+                           verbose=verbose,
+                           dry_run=dry_run,
+                           auto_scaling_group=asg_group)
 
 if __name__ == '__main__':
 
