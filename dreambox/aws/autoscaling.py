@@ -103,32 +103,35 @@ a given ASG group.  This function takes the following parameters,
             results.append(result)
     return chunks(2, list(chain.from_iterable(results)))
 
-def get_all_autoscaling_group_from(profile=None,
-                                   region=None,
+def get_all_autoscaling_group_from(profile='',
+                                   region='',
                                    filterby=None,
                                    verbose=False):
     '''
 get_all_autoscaling_group_from will return all the autoscaling groups for a
 given stage environment
     '''
-    asg_result = aws_asgcmd(aws_profile=profile,
-                            aws_region=region,
-                            verbose=verbose,
-                            asg_subcmd='describe-auto-scaling-groups',
-                            query='AutoScalingGroups[].AutoScalingGroupName')
+    asg_result = aws.autoscaling('describe-auto-scaling-groups',
+                                 profile=profile,
+                                 region=region,
+                                 verbose=verbose,
+                                 query='AutoScalingGroups[].AutoScalingGroupName')
 
     return_result = None
+    if verbose:
+      dreambox.utils.print_structure(asg_result)
     if filterby is None:
         return_result = asg_result
     else:
-        return_result = select(lambda x: filterby.lower() in x.lower(), asg_result)
+        if asg_result:
+            return_result = select(lambda x: filterby.lower() in x.lower(), asg_result)
 
     if verbose:
         dreambox.utils.print_structure(return_result)
     return return_result
 
 
-def suspend_autoscaling_groups_for_stage(profile=None,
+def suspend_autoscaling_groups_for_stage(profile='',
                                          region=None,
                                          filterby=None,
                                          verbose=False,
@@ -167,13 +170,14 @@ groups for a given stage environment.  The function takes the following paramete
                                                 filterby=stage)
     if verbose:
       dreambox.utils.print_structure(asg_groups)
-    for asg_group in asg_groups:
-       aws_asgcmd(aws_profile=profile,
-                  aws_region=region,
-                  asg_subcmd='resume-processes',
-                  verbose=verbose,
-                  dry_run=dry_run,
-                  auto_scaling_group=asg_group)
+    if asg_groups:
+        for asg_group in asg_groups:
+           aws_asgcmd(aws_profile=profile,
+                      aws_region=region,
+                      asg_subcmd='resume-processes',
+                      verbose=verbose,
+                      dry_run=dry_run,
+                      auto_scaling_group=asg_group)
 
 if __name__ == '__main__':
 
