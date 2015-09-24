@@ -144,12 +144,12 @@ a filterby parameter.  This function returns nothing.
                                                 region=region,
                                                 filterby=filterby)
     for asg_group in asg_groups:
-        aws_asgcmd(aws_profile=profile,
-                   aws_region=region,
-                   asg_subcmd='suspend-processes',
-                   auto_scaling_group_name=asg_group,
-                   verbose=verbose,
-                   dry_run=dry_run)
+        aws.autoscaling('suspend-processes',
+                        profile=profile,
+                        region=region,
+                        auto_scaling_group_name=asg_group,
+                        verbose=verbose,
+                        dry_run=dry_run)
 
 
 def resume_autoscaling_group_for_stage(profile=None,
