@@ -1,8 +1,5 @@
 from __future__ import print_function
 import dreambox.aws.core as aws
-from dreambox.aws.core import aws_ec2cmd
-from dreambox.aws.core import aws_rdscmd
-from dreambox.aws.core import aws_redshiftcmd
 import dreambox.utils
 import sys
 
@@ -169,11 +166,11 @@ def get_all_ec2_ingress_rules_for_stage(ec2profile=None,
 
     hashtable = {}
     for region in regions:
-        hashtable[region] = aws_ec2cmd(ec2profile=ec2profile,
-                                       ec2region=region,
-                                       subcmd='describe-security-groups',
-                                       dry_run=dry_run,
-                                       query=ec2_qry)
+        hashtable[region] = aws.ec2('describe-security-groups',
+                                    profile=ec2profile,
+                                    region=region,
+                                    dry_run=dry_run,
+                                    query=ec2_qry)
 
     return dreambox.utils.create_hashtable_from_hashes(hashtable, filterby)
 
@@ -189,14 +186,14 @@ def revoke_all_ec2_ingress_rules_for_stage(ec2profile=None,
     for region, security_groups in ingress_rules_to_delete.items():
         for security_group_name, ingress_rules in security_groups.items():
             for ingress_rule in ingress_rules:
-                aws_ec2cmd(ec2profile=ec2profile,
-                           ec2region=region,
-                           subcmd='revoke-security-group-ingress',
-                           dry_run=dry_run,
-                           verbose=True,
-                           group_name=security_group_name,
-                           port=ingress_rule[0],
-                           protocol=ingress_rule[1])
+                aws.ec2('revoke-security-group-ingress',
+                        profile=ec2profile,
+                        region=region,
+                        dry_run=dry_run,
+                        verbose=True,
+                        group_name=security_group_name,
+                        port=ingress_rule[0],
+                        protocol=ingress_rule[1])
                 print('ingress rule {} for {} is revoked'.format(ingress_rule,
                                                                  security_group_name),
                       file=sys.stderr)
@@ -227,17 +224,17 @@ def get_all_elasticache_ingress_rules_for_stage(ec2profile='',
 
     return return_rst
 
-def get_all_redshift_security_groups(ec2profile=None,
+def get_all_redshift_security_groups(ec2profile='',
                                      regions=['us-east-1', 'us-west-2'],
                                      filterby=None):
 
     redshift_results = []
     redshift_result = {}
     for region in regions:
-        redshift_result[region] = aws_redshiftcmd(ec2profile,
-                                                  region,
-                                                  redshift_subcmd='describe-cluster-security-groups',
-                                                  query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
+        redshift_result[region] = aws.redshift('describe-cluster-security-groups',
+                                               profile=ec2profile,
+                                               region=region,
+                                               query='ClusterSecurityGroups[].EC2SecurityGroups[].EC2SecurityGroupName')
         redshift_results.extend(redshift_result)
 
     return dreambox.utils.filter_list_by(redshift_result, myfilter=filterby)
@@ -278,28 +275,28 @@ def delete_security_groups(ec2profile='',
             for security_group in security_groups:
                 if dry_run:
                     if cmdcat == 'ec2':
-                        aws_ec2cmd(ec2profile=ec2profile,
-                                   ec2region=region,
-                                   subcmd='delete-security-group',
-                                   dry_run=dry_run,
-                                   group_name=security_group)
+                        aws.ec2('delete-security-group',
+                                profile=ec2profile,
+                                region=region,
+                                dry_run=dry_run,
+                                group_name=security_group)
                     elif cmdcat == 'elasticcache':
                         aws.elasticache('delete-cache-security-group',
                                         profile=ec2profile,
                                         region=region,
                                         cache_security_group_name=security_group)
                     elif cmdcat == 'rds':
-                        aws_rdscmd(aws_profile=ec2profile,
-                                   aws_region=region,
-                                   rds_subcmd='delete-db-security-group',
-                                   dry_run=dry_run,
-                                   db_security_group_name=security_group)
+                        aws.rds(profile=ec2profile,
+                                region=region,
+                                rds_subcmd='delete-db-security-group',
+                                dry_run=dry_run,
+                                db_security_group_name=security_group)
                     elif cmdcat == 'redshift':
-                        aws_redshiftcmd(aws_profile=ec2profile,
-                                        aws_region=region,
-                                        subcmd='delete-cluster-security-group',
-                                        dry_run=dry_run,
-                                        cluster_security_group_name=security_group)
+                        aws.redshift('delete-cluster-security-group',
+                                     profile=ec2profile,
+                                     region=region,
+                                     dry_run=dry_run,
+                                     cluster_security_group_name=security_group)
 
 
 def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
