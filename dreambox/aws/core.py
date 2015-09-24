@@ -54,7 +54,7 @@ available.
     func = aws_func.bake(subcmd, **kwargs)
     full_function_args =  func._path + ' ' + ' '.join(func._partial_baked_args)
     if verbose:
-       dreambox.utils.print_structure(func._partial_baked_args)
+       dreambox.utils.print_structure(kwargs)
        print('executing %s' % full_function_args)
 
     # execute awscli command, and check if there's any output available
