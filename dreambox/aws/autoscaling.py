@@ -25,10 +25,6 @@ a given region for AWS.  The function takes the following parameters,
 
 this function will return a list of hashes upon a successful call
     '''
-    # return aws_asgcmd(aws_profile=ec2profile,
-    #                   aws_region=ec2region,
-    #                   asg_subcmd='describe-auto-scaling-groups',
-    #                   **options)
     return aws.autoscaling('describe-auto-scaling-groups',
                            profile=ec2profile,
                            region=ec2region,
