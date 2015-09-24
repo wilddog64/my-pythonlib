@@ -88,7 +88,11 @@ def autoscaling(*args, **kwargs):
 autoscaling is an AWS command that perform autoscaling related
 operations
     '''
-    autoscaling_json_obj = __aws('autoscaling', *args, **kwargs)
+    autoscaling_json_obj = None
+    try:
+        autoscaling_json_obj = __aws('autoscaling', *args, **kwargs)
+    except DryRunError as dre:
+        print('--dry-run flag set, executing %s' % dre.args[0])
 
     return autoscaling_json_obj
 
