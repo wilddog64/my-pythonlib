@@ -77,7 +77,7 @@ def get_all_rds_security_groups(profile='',
     return dreambox.utils.filter_list_by(rds_result, myfilter=filterby)
 
 
-def get_all_rds_ingress_rules_for_stage(ec2profile=None,
+def get_all_rds_ingress_rules_for_stage(ec2profile='',
                                         regions=None,
                                         filterby=None,
                                         dry_run=False):
@@ -87,16 +87,15 @@ def get_all_rds_ingress_rules_for_stage(ec2profile=None,
     rds_qry = 'DBSecurityGroups[].[DBSecurityGroupName,EC2SecurityGroups[].EC2SecurityGroupName]'
     hashtable = {}
     for region in regions:
-        hashtable[region] = aws_rdscmd(aws_profile=ec2profile,
-                                       aws_region=region,
-                                       rds_subcmd='describe-db-security-groups',
-                                       dry_run=dry_run,
-                                       query=rds_qry)
+        hashtable[region] = aws.rds('describe-db-security-groups',
+                                    profile=ec2profile,
+                                    region=region,
+                                    query=rds_qry)
 
     return dreambox.utils.create_hashtable_from_hashes2(hashtable, filterby)
 
 
-def revoke_all_rds_ingress_rules_for_stage(ec2profile=None,
+def revoke_all_rds_ingress_rules_for_stage(ec2profile='',
                                            regions=None,
                                            filterby=None,
                                            dry_run=False):
@@ -328,7 +327,7 @@ def revoke_all_elasticache_ingress_rules_for_stage(ec2profile=None,
                       file=sys.stderr)
 
 
-def revoke_all_ingress_rules(ec2profile=None,
+def revoke_all_ingress_rules(ec2profile='',
                              ec2regions=None,
                              filterby=None,
                              dry_run=False,
