@@ -117,7 +117,7 @@ def revoke_all_rds_ingress_rules_for_stage(ec2profile='',
                       file=sys.stderr)
 
 
-def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
+def get_all_redshift_ingress_rules_for_stage(ec2profile='',
                                              regions=None,
                                              filterby=None,
                                              dry_run=False):
@@ -128,16 +128,16 @@ def get_all_redshift_ingress_rules_for_stage(ec2profile=None,
 
     hashtable = {}
     for region in regions:
-        hashtable[region] = aws_redshiftcmd(aws_profile=ec2profile,
-                                            aws_region=region,
-                                            redshift_subcmd='describe-cluster-security-groups',
-                                            dry_run=dry_run,
-                                            query=redshift_qry)
+        hashtable[region] = aws.redshift('describe-cluster-security-groups',
+                                         profile=ec2profile,
+                                         region=region,
+                                         dry_run=dry_run,
+                                         query=redshift_qry)
 
     return dreambox.utils.create_hashtable_from_hashes2(hashtable, filterby)
 
 
-def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
+def revoke_all_redshift_ingress_rules_for_stage(ec2profile='',
                                                 regions=None,
                                                 filterby=None,
                                                 dry_run=None):
@@ -147,13 +147,13 @@ def revoke_all_redshift_ingress_rules_for_stage(ec2profile=None,
     for region, security_groups in ingress_rules_to_delete.items():
         for security_group_name, ingress_rules in security_groups.items():
             for ingress_rule in ingress_rules:
-                aws_redshiftcmd(aws_profile=ec2profile,
-                                aws_region=region,
-                                redshift_subcmd='revoke-cluster-security-group-ingress',
-                                dry_run=dry_run,
-                                verbose=True,
-                                ec2_security_group_name=security_group_name,
-                                cluster_security_group_name=ingress_rule)
+                aws.redshift('revoke-cluster-security-group-ingress',
+                             profile=ec2profile,
+                             region=region,
+                             dry_run=dry_run,
+                             verbose=True,
+                             ec2_security_group_name=security_group_name,
+                             cluster_security_group_name=ingress_rule)
                 print('ingress rule {} for {} is revoked'.format(ingress_rule,
                                                                  security_group_name),
                       file=sys.stderr)
