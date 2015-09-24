@@ -47,6 +47,10 @@ available.
     elif 'verbose' in kwargs and not kwargs['verbose']:
        del kwargs['verbose']
 
+    # if dry_run flag is set to False, then remove it from the **kwargs
+    if 'dry_run' in kwargs and not kwargs['dry_run']:
+        del kwargs['dry_run']
+
     func = aws_func.bake(subcmd, **kwargs)
     full_function_args =  func._path + ' ' + ' '.join(func._partial_baked_args)
     if verbose:
@@ -399,7 +403,7 @@ if __name__ == "__main__":
     rds_query='DBSecurityGroups[].[DBSecurityGroupName,EC2SecurityGroups[].[EC2SecurityGroupName,EC2SecurityGroupOwnerId]]'
     db_security_groups = rds('describe-db-security-groups',
                              region='us-west-2',
-                             dry_run=True,
+                             dry_run=False,
                              query=rds_query)
     dreambox.utils.print_structure(db_security_groups)
     print('==== end testing rds ===')
