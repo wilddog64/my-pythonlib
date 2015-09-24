@@ -1,6 +1,5 @@
 from __future__ import print_function
 import dreambox.aws.core as aws
-from dreambox.aws.core import aws_ec2cmd
 from dreambox.aws.core import aws_asgcmd
 from funcy.strings import str_join
 from funcy.seqs import chunks
@@ -100,11 +99,11 @@ a given ASG group.  This function takes the following parameters,
     for k, v in asg_group.items():
         if v:
             ids = str_join(' ', v)
-            result = aws_ec2cmd(ec2profile,
-                                ec2region,
-                                subcmd='describe-instances',
-                                instance_ids=ids,
-                                query=qry)
+            result = aws.ec2('describe-instances',
+                             profile=ec2profile,
+                             region=ec2region,
+                             instance_ids=ids,
+                             query=qry)
             results.append(result)
     return chunks(2, list(chain.from_iterable(results)))
 
