@@ -147,11 +147,14 @@ def __update_json_object(filename, json_object, key, value):
                 json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]] = new_value2
                 should_write_to_file = True
         else:   # key does not present in the target file
-            print('%s is missing from %s' % (app, filename))
+            print('%s is missing from %s, adding it now' % (app, filename))
             json_object['default_attributes'][keys[0]] = {}
             json_object['default_attributes'][keys[0]][keys[1]] = {}
+            json_object['default_attributes'][keys[0]]
             json_object['default_attributes'][keys[0]][keys[1]][inner_keys[0]] = new_value1
             json_object['default_attributes'][keys[0]][keys[1]][inner_keys[1]] = new_value2
+            print('adding %s app to %s: ' % (app, filename))
+            dreambox.utils.print_structure(json_object['default_attributes'][keys[0]])
             should_write_to_file = True
 
 
