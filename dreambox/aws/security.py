@@ -105,13 +105,13 @@ def revoke_all_rds_ingress_rules_for_stage(ec2profile='',
     for region, security_groups in ingress_rules_to_delete.items():
         for security_group_name, ingress_rules in security_groups.items():
             for ingress_rule in ingress_rules:
-                aws_rdscmd(aws_profile=ec2profile,
-                           aws_region=region,
-                           rds_subcmd='revoke-db-security-group-ingress',
-                           dry_run=dry_run,
-                           verbose=True,
-                           ec2_security_group_name=security_group_name,
-                           db_security_group_name=ingress_rule)
+                aws.rds('revoke-db-security-group-ingress',
+                        profile=ec2profile,
+                        region=region,
+                        dry_run=dry_run,
+                        verbose=True,
+                        ec2_security_group_name=security_group_name,
+                        db_security_group_name=ingress_rule)
                 print('ingress rule {} for {} is revoked'.format(ingress_rule,
                                                                  security_group_name),
                       file=sys.stderr)
