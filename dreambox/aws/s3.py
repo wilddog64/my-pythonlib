@@ -4,10 +4,10 @@ from funcy.colls import select
 import dreambox.utils
 import sys
 
-from dreambox.aws.core import aws_s3api_cmd
+import dreambox.aws.core as aws
 
-def get_buckets(profile=None,
-                region=None,
+def get_buckets(profile='',
+                region='',
                 filterby=None,
                 dry_run=False,
                 verbose=False):
@@ -25,11 +25,11 @@ takes these parameters,
 
     '''
 
-    s3_buckets = aws_s3api_cmd(aws_profile=profile,
-                               aws_region=region,
-                               s3api_subcmd='list-buckets',
-                               dry_run=dry_run,
-                               verbose=verbose)
+    s3_buckets = aws.s3api('list-buckets',
+                           profile=profile,
+                           region=region,
+                           dry_run=dry_run,
+                           verbose=verbose)
     return_rst = s3_buckets['Buckets']
     if filterby is not None:
        return_rst = select(lambda bucket: filterby.lower() in bucket['Name'],
@@ -45,8 +45,8 @@ takes these parameters,
     return item_table
 
 
-def get_bucket_tags(profile=None,
-                    region=None,
+def get_bucket_tags(profile='',
+                    region='',
                     bucket=None,
                     filterby=None,
                     dry_run=False,
@@ -67,12 +67,12 @@ parameters,
    Otherwise it will be UnauthorizedOperation
     '''
 
-    s3_bucket_tagset = aws_s3api_cmd(aws_profile=profile,
-                                     aws_region=region,
-                                     s3api_subcmd='get-bucket-tagging',
-                                     dry_run=dry_run,
-                                     verbose=verbose,
-                                     bucket=bucket)
+    s3_bucket_tagset = aws.s3api('get-bucket-tagging',
+                                 profile=profile,
+                                 region=region,
+                                 dry_run=dry_run,
+                                 verbose=verbose,
+                                 bucket=bucket)
 
     s3_tagset = {}
     for tagset in s3_bucket_tagset['TagSet']:
@@ -84,8 +84,8 @@ parameters,
     return s3_tagset
 
 
-def create_or_update_s3bucket(profile=None,
-                              region=None,
+def create_or_update_s3bucket(profile='',
+                              region='us-west-2',
                               bucket_name=None,
                               key=None,
                               value=None,
@@ -94,13 +94,13 @@ def create_or_update_s3bucket(profile=None,
 
     print('testing')
     tagset = ''' { "TagSet": { "Key": "%s", "Value": "%s" } }''' % (key, value)
-    aws_s3api_cmd(aws_profile=profile,
-                  aws_region=region,
-                  s3api_subcmd='put-bucket-tagging',
-                  dry_run=dry_run,
-                  verbose=verbose,
-                  bucket=bucket_name,
-                  tagging=tagset)
+    aws.s3api('put-bucket-tagging',
+              profile=profile,
+              region=region,
+              dry_run=dry_run,
+              verbose=verbose,
+              bucket=bucket_name,
+              tagging=tagset)
 
     return tagset
 
@@ -108,14 +108,14 @@ if __name__ == '__main__':
 
     print('testing get_bucket', file=sys.stderr)
     print('------------------')
-    buckets = get_buckets(filterby='backup-databag')
+    buckets = get_buckets(region='us-west-2', filterby='backup-databag')
     dreambox.utils.print_structure(buckets)
     print('end testing get_bucket', file=sys.stderr)
     print('------------------')
 
     print('testing get_bucket_tags', file=sys.stderr)
     print('------------------')
-    bucket_tagset = get_bucket_tags(bucket='03west-backup-databag')
+    bucket_tagset = get_bucket_tags(region='us-west-2', bucket='03west-backup-databag')
     dreambox.utils.print_structure(bucket_tagset)
     print('end testing get_bucket_tags', file=sys.stderr)
     print('------------------')
