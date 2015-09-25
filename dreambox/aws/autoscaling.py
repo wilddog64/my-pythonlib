@@ -58,7 +58,7 @@ get_play_asgs function will get all the play machine instances and store them
     return result
 
 
-def get_only_play_asgs(ec2profile=None,
+def get_only_play_asgs(ec2profile='mgmt',
                        ec2region='us-east-1',
                        env='production',
                        **options):
@@ -79,8 +79,8 @@ the group names. this function accepts the following parameters,
             result[k] = v
     return result
 
-def get_ec2_instances_hostnames_from_asg_groups(ec2profile=None,
-                                                ec2region='us-east-1',
+def get_ec2_instances_hostnames_from_asg_groups(ec2profile='',
+                                                ec2region='us-west-2',
                                                 asg_group={}):
     '''
 get_ec2_instances_hostnames_from_asg_groups will get instance hostnames from
@@ -100,7 +100,10 @@ a given ASG group.  This function takes the following parameters,
                              instance_ids=ids,
                              query=qry)
             results.append(result)
-    return chunks(2, list(chain.from_iterable(results)))
+    if results:
+        results = chunks(2, list(chain.from_iterable(results)))
+
+    return results
 
 def get_all_autoscaling_group_from(profile='',
                                    region='',
@@ -152,7 +155,7 @@ a filterby parameter.  This function returns nothing.
 
 
 def resume_autoscaling_group_for_stage(profile='',
-                                       region=None,
+                                       region='us-west-2',
                                        stage=None,
                                        verbose=True,
                                        dry_run=False):
