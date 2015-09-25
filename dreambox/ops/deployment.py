@@ -179,8 +179,8 @@ if __name__ == '__main__':
     print("script executed: %s and current script directory is: %s" % \
         (__file__, current_directory), file=sys.stderr)
     asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    my_result = dreambox.aws.autoscaling.get_all_play_asgs(ec2profile=None,
-                                                           ec2region='us-east-1',
+    my_result = dreambox.aws.autoscaling.get_all_play_asgs(ec2profile='mgmt-west',
+                                                           ec2region='us-west-2',
                                                            env='production',
                                                            query=asg_query)
     print('result from get_all_play_asgs', file=sys.stderr)
@@ -202,7 +202,8 @@ if __name__ == '__main__':
 
     print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('=======================================================', file=sys.stderr)
-    results = dreambox.aws.autoscaling.get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
+    results = dreambox.aws.autoscaling.get_ec2_instances_hostnames_from_asg_groups(ec2profile='mgmt',
+                                                                                   asg_group=my_result)
     dreambox.utils.print_structure(results)
     print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('==================================================', file=sys.stderr)
