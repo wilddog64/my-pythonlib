@@ -90,7 +90,7 @@ a given ASG group.  This function takes the following parameters,
   ec2region
     '''
     qry='Reservations[].[Instances[].[PublicDnsName,Tags[?Key==`Name`]]][][][]'
-    results = []
+    results = None
     for k, v in asg_group.items():
         if v:
             ids = str_join(' ', v)
@@ -99,7 +99,8 @@ a given ASG group.  This function takes the following parameters,
                              region=ec2region,
                              instance_ids=ids,
                              query=qry)
-            results.append(result)
+            if result is not None:
+               results.append(result)
     if results:
         results = chunks(2, list(chain.from_iterable(results)))
 
