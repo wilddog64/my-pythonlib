@@ -1,6 +1,5 @@
 from __future__ import print_function
 import dreambox.aws.core as aws
-from dreambox.aws.core import aws_cfn_cmd
 from funcy.colls import select
 import dreambox.utils
 import re
@@ -75,11 +74,11 @@ region is an AWS region that this function will work on
 stack_name is a name of stack that contains the event this function is looking
 for
     '''
-    stack_events = aws_cfn_cmd(aws_profile=profile,
-                               aws_region=region,
-                               cfn_subcmd='describe-stack-events',
-                               stack_name=stack_name,
-                               query='StackEvents[]')
+    stack_events = aws.cloudformation('describe-stack-events',
+                                      profile=profile,
+                                      region=region,
+                                      stack_name=stack_name,
+                                      query='StackEvents[]')
     return stack_events
 
 
