@@ -1,4 +1,5 @@
 from __future__ import print_function
+import dreambox.aws.core as aws
 from dreambox.aws.core import aws_cfn_cmd
 from funcy.colls import select
 import dreambox.utils
@@ -28,17 +29,17 @@ number from 1 - 9)
     region_stacks = {}
     m = re.compile(r'^stage\d$', re.IGNORECASE)
     for region in regions:
-        region_stack = [r for r in aws_cfn_cmd(aws_profile=profile,
-                                               aws_region=region,
-                                               cfn_subcmd='describe-stacks',
-                                               query=qry)
+        region_stack = [r for r in aws.cloudformation('describe-stacks',
+                                                      profile=profile,
+                                                      region=region,
+                                                      query=qry)
                         if m.match(r)]
         region_stacks[region] = region_stack
 
     return region_stacks
 
 
-def get_all_stacks_for_stage(profile=None,
+def get_all_stacks_for_stage(profile='',
                              region=None,
                              filterby=None):
     '''
@@ -50,12 +51,14 @@ profile - aws profile if one exist.  If it is not provided, the function will
 region - which aws region do we want to work on
 filterby - limit result by providing a filter string
     '''
-    stage_stacks = aws_cfn_cmd(aws_profile=profile,
-                               aws_region=region,
-                               cfn_subcmd='describe-stacks',
-                               query='Stacks[].StackName')
+    stage_stacks = aws.cloudformation('describe-stacks',
+                                      profile=profile,
+                                      region=region,
+                                      query='Stacks[].StackName')
 
-    stacks_list = select(lambda x: filterby.lower() in x.lower(), stage_stacks)
+    stacks_list = None
+    if stage_stacks:
+      stacks_list = select(lambda x: filterby.lower() in x.lower(), stage_stacks)
     return stacks_list
 
 
@@ -80,7 +83,7 @@ for
     return stack_events
 
 
-def get_all_stackevents_for_stage(profile=None, region=None, filterby=None):
+def get_all_stackevents_for_stage(profile='', region=None, filterby=None):
     '''
 get_all_stackevents_for_stage will collect all cloudformation stack events for a
 given stage environment.  The function takes the following parameters,
@@ -103,7 +106,7 @@ filterby is a stage environment name, i.e. stage1 ... stage9
                                                        stack_name=stack_name)
 
 
-def get_cloudformation_stack_info(profile=None, regions=None, environ=None):
+def get_cloudformation_stack_info(profile='', regions=None, environ=None, dry_run=False):
     '''
 get_cloudformation_stack_info will return cloudformation stack information for a
 given environemnt.  This function takes the following parameters,
@@ -138,11 +141,11 @@ environ is a stage environment name, i.e. stage1 ... stage9
 
     stack_infos = {}
     for region in regions:
-        stack_info = aws_cfn_cmd(aws_profile=profile,
-                                 aws_region=region,
-                                 dry_run=False,
-                                 cfn_subcmd='describe-stacks',
-                                 query='Stacks[].[StackName,Parameters[]]')
+        stack_info = aws.cloudformation('describe-stacks',
+                                        profile=profile,
+                                        region=region,
+                                        dry_run=False,
+                                        query='Stacks[].[StackName,Parameters[]]')
         if region:
             stack_infos[region] = create_cloudformation_stack_objects(stack_info,
                                                                       environ)
@@ -170,12 +173,12 @@ create-stack command.  This function takes the following parameters,
 The function return stackId upon success
     '''
 
-    stack_id = aws_cfn_cmd(aws_profile=profile,
-                           aws_region=region,
-                           cfn_subcmd='create-stack',
-                           dry_run=dry_run,
-                           verbose=verbose,
-                           **stack_options)
+    stack_id = aws.cloudformation('create-stack',
+                                  profile=profile,
+                                  region=region,
+                                  dry_run=dry_run,
+                                  verbose=verbose,
+                                  **stack_options)
 
     return stack_id
 
