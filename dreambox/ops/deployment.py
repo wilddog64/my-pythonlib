@@ -167,6 +167,8 @@ def resume_autoscaling_group_for(args=None):
     stage   = args.stage
     verbose = args.verbose
     dry_run = args.dry_run
+    if profile is None:
+        profile=''
     asg.resume_autoscaling_group_for_stage(profile=profile,
                                            region=region,
                                            stage=stage,
