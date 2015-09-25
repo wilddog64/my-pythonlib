@@ -139,7 +139,11 @@ def s3api(*args, **kwargs):
     '''
  s3api is a function that performs aws a3api operations 
     '''
-    s3api_json_obj = __aws('s3api', *args, **kwargs)
+    s3api_json_obj = None
+    try:
+        s3api_json_obj = __aws('s3api', *args, **kwargs)
+    except DryRunError as dre:
+        print('--dry-run flag set, executing %s' % dre.args[0])
 
     return s3api_json_obj
 
