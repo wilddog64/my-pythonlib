@@ -122,7 +122,11 @@ def cloudformation(*args, **kwargs):
 cloudformation is a function that performs aws cloudformation
 operations
     '''
-    cfn_json_obj = __aws('cloudformation', *args, **kwargs)
+    cfn_json_obj = None
+    try:
+        cfn_json_obj = __aws('cloudformation', *args, **kwargs)
+    except DryRunError as dre:
+        print('--dry-run flag set, executing %s' % dre.args[0])
 
     return cfn_json_obj
 
