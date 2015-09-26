@@ -152,7 +152,7 @@ environ is a stage environment name, i.e. stage1 ... stage9
     return stack_infos
 
 
-def create_stack(profile=None,
+def create_stack(profile='',
                  region=None,
                  dry_run=False,
                  verbose=False,
@@ -200,7 +200,7 @@ if __name__ == '__main__':
     print('testing create_stack', file=sys.stderr)
     stack_id = create_stack(region='us-west-2',
                             dry_run=True,
-                            stack_name='stage3',
+                            stack_name='stage4',
                             template_url='https://s3.amazonaws.com/cfnwest/stage3',
-                            parameters='ParameterKey=stage3,ParameterValue=testing',
+                            parameters='ParameterKey=stage4,ParameterValue=testing',
                             capabilities='CAPABILTY_IAM')
