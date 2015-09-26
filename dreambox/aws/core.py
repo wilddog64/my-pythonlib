@@ -151,6 +151,25 @@ def s3api(*args, **kwargs):
 
     return s3api_json_obj
 
+def json_to_pyobj(json_obj):
+    '''
+json_to_pyobj is a function that converts json object to
+a python object.  This function takes one parameters,
+
+* json_obj is a valid python hash that represents json
+
+when the function executes successfully, a live python object
+returns.
+    '''
+    def hash2obj(hash):
+        if isinstance(hash, dict):
+            return type('jo', (), {
+                k: hash2obj(v) for k, v in hash.iteritems()
+                })
+        else:
+            return hash
+
+    return hash2obj(json_obj)
 
 if __name__ == "__main__":
     print()
@@ -202,3 +221,11 @@ if __name__ == "__main__":
     s3buckets = s3api('list-buckets')
     dreambox.utils.print_structure(s3buckets)
     print('==== end testing s3api ===')
+    print('==== testing json_to_pyobj ====')
+    json_object = json.loads('{"a": 1, "b": {"c": {"d": 2}}}')
+
+    py_json = json_to_pyobj(json_object)
+    dreambox.utils.print_structure(py_json)
+    print('py_json.b.c.d = %s' % py_json.b.c.d)
+    print('==== end testing json_to_pyobj ====')
+
