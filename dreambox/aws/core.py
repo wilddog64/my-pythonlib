@@ -227,5 +227,9 @@ if __name__ == "__main__":
     py_json = json_to_pyobj(json_object)
     dreambox.utils.print_structure(py_json)
     print('py_json.b.c.d = %s' % py_json.b.c.d)
+
+    json_obj = json.loads('[{"a": {"c": {"e": 1}}}, {"b": 2}]')
+    py_json = json_to_pyobj(json_obj)
+    dreambox.utils.print_structure(py_json[0]['a'].c.e)
     print('==== end testing json_to_pyobj ====')
 
