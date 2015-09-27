@@ -128,7 +128,7 @@ def get_all_instances_for(args=None):
         if x[0] is not None and len(x[0]):
           return filter_expression in x[0][0]
 
-    instance_query='Reservations[].Instances[].[Tags[?Key==`Name`].Value,PrivateIpAddress,PrivateDnsName,InstanceId]'
+    instance_query='Reservations[].Instances[].[Tags[?Key==`Name`].Value,PublicDnsName,PrivateIpAddress,PrivateDnsName,InstanceId]'
     instances = ec2.describe_instances(profile=profile,
                                        region=region,
                                        filterby=filterby,
