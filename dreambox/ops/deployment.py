@@ -118,12 +118,14 @@ usage:
     dreambox.utils.print_structure(stage_ec2_instances)
 
 def get_all_instances_for(args=None):
+    if args.profile is None:
+        profile = ''
     profile=args.profile
     region=args.region
     filter_expression = args.expression
 
     def filterby(x):
-        if x[0] is not None:
+        if x[0] is not None and len(x[0]):
           return filter_expression in x[0][0]
 
     instance_query='Reservations[].Instances[].[Tags[?Key==`Name`].Value,PrivateIpAddress,PrivateDnsName,InstanceId]'
