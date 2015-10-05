@@ -44,7 +44,7 @@ clone_env_apps:
       type: !!python/name:types.StringType
       dest: repo_name
       short: o
-      default:
+      default: environments
       help: the name of repo
     repo-url:
       type: !!python/name:types.StringType
@@ -188,7 +188,7 @@ diff_env_cookbook_pinned_versions:
       type: !!python/name:types.StringType
       dest: repo_name
       short: o
-      default: !!python/none
+      default: environments
       help: the name of repo
     repo-url:
       type: !!python/name:types.StringType
