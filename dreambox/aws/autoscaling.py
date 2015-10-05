@@ -1,10 +1,7 @@
 from __future__ import print_function
-from dreambox.aws.core import aws_ec2cmd
-from dreambox.aws.core import aws_asgcmd
-from dreambox.aws.core import aws_cfn_cmd
+import dreambox.aws.core as aws
 from funcy.strings import str_join
 from funcy.seqs import chunks
-from funcy.seqs import pairwise
 from funcy.colls import select
 from itertools import chain
 import dreambox.aws.security
@@ -12,7 +9,7 @@ import dreambox.utils
 import re
 import sys
 
-def get_all_asgs(ec2profile=None,
+def get_all_asgs(ec2profile='',
                  ec2region='us-east-1',
                  **options):
     '''
@@ -27,10 +24,10 @@ a given region for AWS.  The function takes the following parameters,
 
 this function will return a list of hashes upon a successful call
     '''
-    return aws_asgcmd(aws_profile=ec2profile,
-                      aws_region=ec2region,
-                      asg_subcmd='describe-auto-scaling-groups',
-                      **options)
+    return aws.autoscaling('describe-auto-scaling-groups',
+                           profile=ec2profile,
+                           region=ec2region,
+                           **options)
 
 def get_all_play_asgs(ec2profile=None,
                       ec2region='us-east-1',
@@ -61,7 +58,7 @@ get_play_asgs function will get all the play machine instances and store them
     return result
 
 
-def get_only_play_asgs(ec2profile=None,
+def get_only_play_asgs(ec2profile='mgmt',
                        ec2region='us-east-1',
                        env='production',
                        **options):
@@ -82,8 +79,8 @@ the group names. this function accepts the following parameters,
             result[k] = v
     return result
 
-def get_ec2_instances_hostnames_from_asg_groups(ec2profile=None,
-                                                ec2region='us-east-1',
+def get_ec2_instances_hostnames_from_asg_groups(ec2profile='',
+                                                ec2region='us-west-2',
                                                 asg_group={}):
     '''
 get_ec2_instances_hostnames_from_asg_groups will get instance hostnames from
@@ -93,44 +90,51 @@ a given ASG group.  This function takes the following parameters,
   ec2region
     '''
     qry='Reservations[].[Instances[].[PublicDnsName,Tags[?Key==`Name`]]][][][]'
-    results = []
+    results = None
     for k, v in asg_group.items():
         if v:
             ids = str_join(' ', v)
-            result = aws_ec2cmd(ec2profile,
-                                ec2region,
-                                subcmd='describe-instances',
-                                instance_ids=ids,
-                                query=qry)
-            results.append(result)
-    return chunks(2, list(chain.from_iterable(results)))
+            result = aws.ec2('describe-instances',
+                             profile=ec2profile,
+                             region=ec2region,
+                             instance_ids=ids,
+                             query=qry)
+            if result is not None:
+               results.append(result)
+    if results:
+        results = chunks(2, list(chain.from_iterable(results)))
 
-def get_all_autoscaling_group_from(profile=None,
-                                   region=None,
+    return results
+
+def get_all_autoscaling_group_from(profile='',
+                                   region='',
                                    filterby=None,
                                    verbose=False):
     '''
 get_all_autoscaling_group_from will return all the autoscaling groups for a
 given stage environment
     '''
-    asg_result = aws_asgcmd(aws_profile=profile,
-                            aws_region=region,
-                            verbose=verbose,
-                            asg_subcmd='describe-auto-scaling-groups',
-                            query='AutoScalingGroups[].AutoScalingGroupName')
+    asg_result = aws.autoscaling('describe-auto-scaling-groups',
+                                 profile=profile,
+                                 region=region,
+                                 verbose=verbose,
+                                 query='AutoScalingGroups[].AutoScalingGroupName')
 
     return_result = None
+    if verbose:
+      dreambox.utils.print_structure(asg_result)
     if filterby is None:
         return_result = asg_result
     else:
-        return_result = select(lambda x: filterby.lower() in x.lower(), asg_result)
+        if asg_result:
+            return_result = select(lambda x: filterby.lower() in x.lower(), asg_result)
 
     if verbose:
         dreambox.utils.print_structure(return_result)
     return return_result
 
 
-def suspend_autoscaling_groups_for_stage(profile=None,
+def suspend_autoscaling_groups_for_stage(profile='',
                                          region=None,
                                          filterby=None,
                                          verbose=False,
@@ -143,16 +147,16 @@ a filterby parameter.  This function returns nothing.
                                                 region=region,
                                                 filterby=filterby)
     for asg_group in asg_groups:
-        aws_asgcmd(aws_profile=profile,
-                   aws_region=region,
-                   asg_subcmd='suspend-processes',
-                   auto_scaling_group_name=asg_group,
-                   verbose=verbose,
-                   dry_run=dry_run)
+        aws.autoscaling('suspend-processes',
+                        profile=profile,
+                        region=region,
+                        auto_scaling_group_name=asg_group,
+                        verbose=verbose,
+                        dry_run=dry_run)
 
 
-def resume_autoscaling_group_for_stage(profile=None,
-                                       region=None,
+def resume_autoscaling_group_for_stage(profile='',
+                                       region='us-west-2',
                                        stage=None,
                                        verbose=True,
                                        dry_run=False):
@@ -169,13 +173,14 @@ groups for a given stage environment.  The function takes the following paramete
                                                 filterby=stage)
     if verbose:
       dreambox.utils.print_structure(asg_groups)
-    for asg_group in asg_groups:
-       aws_asgcmd(aws_profile=profile,
-                  aws_region=region,
-                  asg_subcmd='resume-processes',
-                  verbose=verbose,
-                  dry_run=dry_run,
-                  auto_scaling_group=asg_group)
+    if asg_groups:
+        for asg_group in asg_groups:
+           aws.autoscaling('resume-processes',
+                           profile=profile,
+                           region=region,
+                           verbose=verbose,
+                           dry_run=dry_run,
+                           auto_scaling_group=asg_group)
 
 if __name__ == '__main__':
 

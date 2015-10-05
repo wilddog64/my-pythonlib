@@ -118,15 +118,17 @@ usage:
     dreambox.utils.print_structure(stage_ec2_instances)
 
 def get_all_instances_for(args=None):
+    if args.profile is None:
+        profile = ''
     profile=args.profile
     region=args.region
     filter_expression = args.expression
 
     def filterby(x):
-        if x[0] is not None:
+        if x[0] is not None and len(x[0]):
           return filter_expression in x[0][0]
 
-    instance_query='Reservations[].Instances[].[Tags[?Key==`Name`].Value,PrivateIpAddress,PrivateDnsName,InstanceId]'
+    instance_query='Reservations[].Instances[].[Tags[?Key==`Name`].Value,PublicDnsName,PrivateIpAddress,PrivateDnsName,InstanceId]'
     instances = ec2.describe_instances(profile=profile,
                                        region=region,
                                        filterby=filterby,
@@ -167,6 +169,8 @@ def resume_autoscaling_group_for(args=None):
     stage   = args.stage
     verbose = args.verbose
     dry_run = args.dry_run
+    if profile is None:
+        profile=''
     asg.resume_autoscaling_group_for_stage(profile=profile,
                                            region=region,
                                            stage=stage,
@@ -179,8 +183,8 @@ if __name__ == '__main__':
     print("script executed: %s and current script directory is: %s" % \
         (__file__, current_directory), file=sys.stderr)
     asg_query = 'AutoScalingGroups[*].[Tags[?Key==`Name`].Value,Instances[].InstanceId][]'
-    my_result = dreambox.aws.autoscaling.get_all_play_asgs(ec2profile=None,
-                                                           ec2region='us-east-1',
+    my_result = dreambox.aws.autoscaling.get_all_play_asgs(ec2profile='mgmt-west',
+                                                           ec2region='us-west-2',
                                                            env='production',
                                                            query=asg_query)
     print('result from get_all_play_asgs', file=sys.stderr)
@@ -202,7 +206,8 @@ if __name__ == '__main__':
 
     print('result from get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('=======================================================', file=sys.stderr)
-    results = dreambox.aws.autoscaling.get_ec2_instances_hostnames_from_asg_groups(asg_group=my_result)
+    results = dreambox.aws.autoscaling.get_ec2_instances_hostnames_from_asg_groups(ec2profile='mgmt',
+                                                                                   asg_group=my_result)
     dreambox.utils.print_structure(results)
     print('end of get_ec2_instances_hostnames_from_asg_groups', file=sys.stderr)
     print('==================================================', file=sys.stderr)
