@@ -1,9 +1,11 @@
 from __future__ import print_function
-from dreambox.aws.core import aws_ec2cmd
+import dreambox.aws.core as aws
 import dreambox.utils
 import types
+import sh
 
-def get_ec2_hosts_for_stage(profile=None, regions=None, stage=None):
+  
+def get_ec2_hosts_for_stage(profile='', regions=None, stage=None):
     '''
 get_ec2_hosts_for_stage  will return ec2 instance information for a given
 stage environment.  This function takes the following parameters,
@@ -38,16 +40,16 @@ stage environment.  This function takes the following parameters,
         regions = ['us-east-1', 'us-west-2']
 
     for region in regions:
-        region_instances = aws_ec2cmd(ec2profile=profile,
-                                      ec2region=region,
-                                      subcmd='describe-instances',
-                                      query=inst_qry)
+        region_instances = aws.ec2('describe-instances',
+                                   profile=profile,
+                                   region=region,
+                                   query=inst_qry)
         # dreambox.utils.print_structure(region_instances)
         instances[region] = make_hash_from_ec2tag(region_instances, stage)
 
     return instances
 
-def describe_instances(profile=None, region=None, filterby=None, **options):
+def describe_instances(profile=None, region=None, filterby=None, **kwargs):
     '''
 describe_instances is a function that return all the instances for a give region.
 The function takes the following parameters,
@@ -57,12 +59,10 @@ The function takes the following parameters,
 * filterby is a function that filter through a list of instances
 * **options is any valid aws describe-instances command line options
     '''
-
-    instances = aws_ec2cmd(ec2profile=profile,
-                           ec2region=region,
-                           subcmd='describe-instances',
-                           verbose=True,
-                           **options)
+    instances = aws.ec2('describe-instances',
+                        profile=profile,
+                        region=region,
+                        **kwargs)
     if filterby is not None and type(filterby) is types.FunctionType:
         instances = filter(filterby, instances)
 
@@ -101,8 +101,6 @@ with security groups
 
 def modify_instance_attribute(profile=None,
                               region=None,
-                              dry_run=False,
-                              verbose=True,
                               **kwargs):
     '''
 modify_instance_attribute is a function that allows to modify attributes
@@ -114,12 +112,15 @@ for a given AWS instance.  The function takes the following parameters,
 * region is an AWS region that this function will work on
 * **kwargs is any valid aws ec2 modify_instance_attributes options
     '''
-    aws_ec2cmd(ec2profile=profile,
-               ec2region=region,
-               subcmd='modify-instance-attribute',
-               dry_run=dry_run,
-               verbose=verbose,
-               **kwargs)
+    try:
+        aws.ec2('modify-instance-attribute',
+                profile=profile,
+                region=region,
+                **kwargs)
+    except sh.ErrorReturnCode_255:
+        pass
+    except sh.ErrorReturnCode:
+        raise sh.ErrorReturnCode
 
 
 if __name__ == '__main__':
@@ -159,7 +160,6 @@ if __name__ == '__main__':
     print('--- testing modify_instance_attribute ---')
     modify_instance_attribute(profile='dreamboxdev',
                               region='us-east-1',
-                              dry_run=True,
-                              verbose=True,
+                              dry_run=False,
                               instance_id='i-7ddc1081',
                               group='sg-a132cfc6')

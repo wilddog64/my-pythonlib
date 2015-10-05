@@ -71,7 +71,7 @@ get_all_instances_for:
       type: !!python/name:types.StringType
       dest: profile
       short: P
-      default: !!python/none
+      default: ''
       help: an AWS profile
     region:
       type: !!python/name:types.StringType
@@ -147,7 +147,7 @@ resume_autoscaling_group_for:
       type: !!python/name:types.StringType
       dest: region
       short: R
-      default: us-east-1
+      default: us-west-2
       help: an AWS region
     dry-run:  # name of the argument
       type: !!python/name:types.BooleanType
