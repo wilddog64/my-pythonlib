@@ -12,6 +12,7 @@ def __merge_updated_chef_environment_file(from_env='production.json',
                                           repo_path='/tmp',
                                           repo_name='chef-environments',
                                           repo_url='git@github.com:wilddog64/chef-environments.git',
+                                          sync_cookbook_version=True,
                                           dry_run=False):
     '''
 merge_updated_chef_environment_file is a function taht will update chef envirnoment file from
@@ -23,6 +24,8 @@ takes the following parameters,
 * repo_path is a path that repo will be created at
 * repo_name is a name of repo
 * repo_url is a git url that this function will clone repo from
+* sync_cookbook_version is a flag that tells if function should sync two environments.  Default
+  is True.  Set to False if you don't want to sync two environments' cookbook versions
     '''
     currentUser = dreambox.utils.get_current_user()
     currentTimestamp = dreambox.utils.current_timestamp()
@@ -52,12 +55,15 @@ takes the following parameters,
                                                                   currentTimestamp)
     mergeMessage = 'merge branch %s to master via automation process' % branchName
     update_environments(from_file=envFilePath, to=to_list)
-    for env in to_list:
-        chef_env.update_chef_environment_cookbooks(sourceEnvFile=envFilePath,
-                                                   targetEnvFile=env,
-                                                   repo=repo_url,
-                                                   repoName=repo_name,
-                                                   workspace=repo_path)
+    if sync_cookbook_version:
+        for env in to_list:
+            chef_env.update_chef_environment_cookbooks(sourceEnvFile=envFilePath,
+                                                       targetEnvFile=env,
+                                                       repo=repo_url,
+                                                       repoName=repo_name,
+                                                       workspace=repo_path)
+    else:
+        print('sync_cookbook_version is set to false, no cookbook versions synced')
 
     if Git.repo_is_dirty(repo=appPath):
         Git.commit(repoPath=appPath, commitMessage=commitMessage)
@@ -78,6 +84,8 @@ def clone_env_apps(args=None):
     repo_name = args.repo_name
     repo_url = args.repo_url
     dry_run = args.dry_run
+    sync_cookbook_version = dreambox.utils.to_bool(args.sync_cookbook_version)
+    
     message = '''
 clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
     ''' % (from_env, to_env, repo_path, repo_name, repo_url, dry_run)
@@ -89,6 +97,7 @@ clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
                                           args.repo_path,
                                           args.repo_name,
                                           args.repo_url,
+                                          sync_cookbook_version,
                                           args.dry_run)
 
 
