@@ -3,6 +3,7 @@ from __future__ import print_function
 from funcy.colls import select
 import dreambox.utils
 import sys
+import re
 
 import dreambox.aws.core as aws
 
@@ -115,9 +116,14 @@ def get_s3nexus_artifacts(bucket='dreambox-deployment-files',
     else:
        path = 's3://%s/%s/%s/com/dreambox/dbl-%s-main/%s/' % (bucket, key, type, branch, version)
 
+    pattern = re.compile('/\s+PRE\s/')
+    def filter_output(line, stdin):
+        if pattern.match(line):
+           return True
+
     output = None
     if path is not None:
-       output = aws.s3('ls', path)
+       output = aws.s3('ls', path, _out=filter_output)
     return output
 
 if __name__ == '__main__':
