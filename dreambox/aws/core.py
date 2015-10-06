@@ -244,7 +244,7 @@ if __name__ == "__main__":
     print('==== end testing json_to_pyobj ====')
     print()
     print('==== testing s3 function ===')
-    # print(s3('ls', 's3://dreambox-deployment-files/'))
     for line in s3('ls', 's3://dreambox-deployment-files/Nexus/releases/com/dreambox/dbl-galactus-main/2.2/'):
         print(line)
+    print('==== end testing s3 function ===')
 
