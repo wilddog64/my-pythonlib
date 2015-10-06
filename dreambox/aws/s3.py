@@ -104,6 +104,22 @@ def create_or_update_s3bucket(profile='',
 
     return tagset
 
+def get_s3nexus_artifacts(bucket='dreambox-deployment-files',
+                          type='releases',
+                          key='Nexus',
+                          branch=None,
+                          version=None):
+    path = None
+    if version is None:
+       path = 's3://%s/%s/%s/com/dreambox/dbl-%s-main/' % (bucket, key, type, branch)
+    else:
+       path = 's3://%s/%s/%s/com/dreambox/dbl-%s-main/%s/' % (bucket, key, type, branch, version)
+
+    output = None
+    if path is not None:
+       output = aws.s3('ls', path)
+    return output
+
 if __name__ == '__main__':
 
     print('testing get_bucket', file=sys.stderr)
@@ -127,4 +143,12 @@ if __name__ == '__main__':
                               value='testing',
                               dry_run=True)
     print('end testing create_or_update_s3bucket', file=sys.stderr)
+    print('------------------')
+    print()
+    print('testing get_s3nexus_artifacts without version')
+    print(get_s3nexus_artifacts(branch='galactus'))
+    print('------------------')
+    print('testing get_s3nexus_artifacts with version')
+    print(get_s3nexus_artifacts(branch='galactus', version='2.2'))
+    print('end testing get_s3nexus_artifacts')
     print('------------------')
