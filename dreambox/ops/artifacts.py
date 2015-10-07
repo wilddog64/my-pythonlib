@@ -3,6 +3,27 @@ from distutils.version import LooseVersion
 import re
 import dreambox.aws.s3 as s3
 import dreambox.utils
+import sh
+
+class NexusVersionError(sh.ErrorReturnCode):
+    def __init__(self, message):
+       super(sh.ErrorReturnCode, self).__init__(message)
+
+
+class NexusBranchError(sh.ErrorReturnCode):
+    def __init__(self, message):
+       super(sh.ErrorReturnCode, self).__init__(message)
+
+
+class NexusTypeError(sh.ErrorReturnCode):
+    def __init__(self, message):
+       super(sh.ErrorReturnCode, self).__init__(message)
+
+
+class NexusInvalidPath(sh.ErrorReturnCode):
+    def __init__(self, message):
+       super(sh.ErrorReturnCode, self).__init__(message)
+
 
 def list_s3nexus_versions(bucket='dreambox-deployment-files',
                           type='releases',
@@ -25,9 +46,74 @@ def list_s3nexus_versions(bucket='dreambox-deployment-files',
    # return a sorted versions in descending order
    return sorted([LooseVersion(v).vstring for v in versions], reverse=True)
 
+
+def get_s3nexus_artifacts(bucket='dreambox-deployment-files',
+                          type='snapshots',
+                          pkg='.zip',
+                          branch=None,
+                          version=None):
+    '''
+get_s3nexus_artifacts is a function that will return a list of nexus artifacts
+that stores at AWS s3 bucket.  This function takes the folloiwng parameters,
+
+* bucket an s3 bucket that stores nexus artifacts
+* type can be either releases or snapshots
+* pkg is a package type that this function is looking for.  by default, this is .zip
+* branch is a build branch to look for. i.e. galactus, edex, ...
+* version is a particular version for a given branch
+    '''
+
+    if not type in ['releases', 'snapshots']:
+       error = 'unsupprt type.  type can be either releases or snapshots, but [%s] is given' % type
+       raise NexusTypeError(error)
+
+    if branch is None:
+       raise NexusBranchError('branch is a required parameter')
+
+    if version is None:
+       raise NexusVersionError('version is a required parameter')
+
+    if type == 'snapshots':
+       version = "%s-SNAPSHOT" % version
+
+    # s3 path
+    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s-main/%s/' % (
+          bucket,
+          type,
+          branch,
+          version
+          )
+
+    # grab everything that ends with what specifies in pkg and stores
+    # it in artifacts array
+    artifacts = []
+    try:
+      lines = s3.ls(path)
+    except sh.ErrorReturnCode_1:
+       raise NexusInvalidPath('un-known s3 path: %s' % path)
+    except sh.ErrorReturnCode:
+       raise sh.ErrorReturnCode
+
+    for line in lines:
+       line = line.rstrip()
+       if line.endswith(pkg):
+          artifacts.append(line.split()[-1])
+
+    # return a sorted versions in descending order
+    return sorted([LooseVersion(v).vstring for v in artifacts], reverse=True)
+
 if __name__ == '__main__':
     print('=== testing list_s3nexus_versions ===')
     versions = list_s3nexus_versions(branch='galactus')
     dreambox.utils.print_structure(versions)
     print('=== end testing list_s3nexus_versions without version ===')
-
+    print()
+    print('=== testing get_s3nexus_artifacts ===')
+    print('get artifacts for snapshot build')
+    artifacts = get_s3nexus_artifacts(branch='galactus', version='2.2')
+    dreambox.utils.print_structure(artifacts)
+    print('-------------------------------')
+    print('get artifact for release build')
+    artifacts = get_s3nexus_artifacts(type='snapshots', branch='galactusa', version='2.2')
+    dreambox.utils.print_structure(artifacts)
+    print('=== end testing get_s3nexus_artifact ===')
