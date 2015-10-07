@@ -1,6 +1,6 @@
 from __future__ import print_function
 import json
-mport dreambox.utils
+import dreambox.utils
 import sh
 from sh import aws
 
