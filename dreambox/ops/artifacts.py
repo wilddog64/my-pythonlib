@@ -28,6 +28,14 @@ class S3NexusInvalidPath(sh.ErrorReturnCode):
 def list_s3nexus_versions(bucket='dreambox-deployment-files',
                           type='releases',
                           branch=None,):
+    '''
+list_s3nexus_versions is a function that return a list versions for a given branch.  The
+function takes the following parameters,
+
+* bucket is a valid s3 bucket
+* type is a type of a build.  this can be either snapshots or releases
+* branch is a product branch to look at
+    '''
     # construct an s3 path toward the valid s3 bucket
     path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s-main/' % (bucket, type, branch)
 
