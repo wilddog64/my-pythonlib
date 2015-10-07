@@ -36,6 +36,14 @@ function takes the following parameters,
 * type is a type of a build.  this can be either snapshots or releases
 * branch is a product branch to look at
     '''
+
+    if not type in ['snapshots', 'releases']:
+       error = 'unsupprt type.  type can be either releases or snapshots, but [%s] is given' % type
+       raise S3NexusTypeError(error)
+
+    if branch is None:
+       raise S3NexusBranchError('branch is a required parameter')
+
     # construct an s3 path toward the valid s3 bucket
     path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s-main/' % (bucket, type, branch)
 
