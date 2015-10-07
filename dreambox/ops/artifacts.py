@@ -27,10 +27,9 @@ class S3NexusInvalidPath(sh.ErrorReturnCode):
 
 def list_s3nexus_versions(bucket='dreambox-deployment-files',
                           type='releases',
-                          key='Nexus',
                           branch=None,):
    # construct an s3 path toward the valid s3 bucket
-   path = 's3://%s/%s/%s/com/dreambox/dbl-%s-main/' % (bucket, key, type, branch)
+   path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s-main/' % (bucket, type, branch)
 
     # filter out all the noise strings and grab only version numbers to store in versions array
    output = None
