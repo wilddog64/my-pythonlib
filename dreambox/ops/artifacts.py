@@ -25,11 +25,11 @@ class S3NexusInvalidPath(sh.ErrorReturnCode):
        super(sh.ErrorReturnCode, self).__init__(message)
 
 
-def list_s3nexus_versions(bucket='dreambox-deployment-files',
+def get_s3nexus_versions(bucket='dreambox-deployment-files',
                           type='releases',
                           branch=None,):
     '''
-list_s3nexus_versions is a function that return a list versions for a given branch.  The
+get_s3nexus_versions is a function that return a list versions for a given branch.  The
 function takes the following parameters,
 
 * bucket is a valid s3 bucket
@@ -118,10 +118,10 @@ that stores at AWS s3 bucket.  This function takes the folloiwng parameters,
     return sorted([LooseVersion(v).vstring for v in artifacts], reverse=True)
 
 if __name__ == '__main__':
-    print('=== testing list_s3nexus_versions ===')
-    versions = list_s3nexus_versions(branch='galactus')
+    print('=== testing get_s3nexus_versions ===')
+    versions = get_s3nexus_versions(branch='galactus')
     dreambox.utils.print_structure(versions)
-    print('=== end testing list_s3nexus_versions without version ===')
+    print('=== end testing get_s3nexus_versions without version ===')
     print()
     print('=== testing get_s3nexus_artifacts ===')
     print('get artifacts for snapshot build')
