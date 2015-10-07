@@ -5,22 +5,22 @@ import dreambox.aws.s3 as s3
 import dreambox.utils
 import sh
 
-class NexusVersionError(sh.ErrorReturnCode):
+class S3NexusVersionError(sh.ErrorReturnCode):
     def __init__(self, message):
        super(sh.ErrorReturnCode, self).__init__(message)
 
 
-class NexusBranchError(sh.ErrorReturnCode):
+class S3NexusBranchError(sh.ErrorReturnCode):
     def __init__(self, message):
        super(sh.ErrorReturnCode, self).__init__(message)
 
 
-class NexusTypeError(sh.ErrorReturnCode):
+class S3NexusTypeError(sh.ErrorReturnCode):
     def __init__(self, message):
        super(sh.ErrorReturnCode, self).__init__(message)
 
 
-class NexusInvalidPath(sh.ErrorReturnCode):
+class S3NexusInvalidPath(sh.ErrorReturnCode):
     def __init__(self, message):
        super(sh.ErrorReturnCode, self).__init__(message)
 
@@ -65,13 +65,13 @@ that stores at AWS s3 bucket.  This function takes the folloiwng parameters,
 
     if not type in ['releases', 'snapshots']:
        error = 'unsupprt type.  type can be either releases or snapshots, but [%s] is given' % type
-       raise NexusTypeError(error)
+       raise S3NexusTypeError(error)
 
     if branch is None:
-       raise NexusBranchError('branch is a required parameter')
+       raise S3NexusBranchError('branch is a required parameter')
 
     if version is None:
-       raise NexusVersionError('version is a required parameter')
+       raise S3NexusVersionError('version is a required parameter')
 
     if type == 'snapshots':
        version = "%s-SNAPSHOT" % version
@@ -90,7 +90,7 @@ that stores at AWS s3 bucket.  This function takes the folloiwng parameters,
     try:
       lines = s3.ls(path)
     except sh.ErrorReturnCode_1:
-       raise NexusInvalidPath('un-known s3 path: %s' % path)
+       raise S3NexusInvalidPath('un-known s3 path: %s' % path)
     except sh.ErrorReturnCode:
        raise sh.ErrorReturnCode
 
