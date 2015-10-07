@@ -106,6 +106,9 @@ def create_or_update_s3bucket(profile='',
 
     return tagset
 
+def ls(*args, **kwargs):
+    return aws.s3('ls', *args, **kwargs)
+
 def get_s3nexus_artifacts(bucket='dreambox-deployment-files',
                           type='releases',
                           key='Nexus',
@@ -122,7 +125,7 @@ def get_s3nexus_artifacts(bucket='dreambox-deployment-files',
     output = None
     versions = []
     if path is not None:
-       output = aws.s3('ls', path)
+       output = ls(path)
        m = re.compile(r'\s+PRE\s|\/$')
        for line in output:
           if m.match(line):
