@@ -2,7 +2,6 @@ from __future__ import print_function
 import json
 import os
 import sys
-import glob
 import dreambox.utils
 
 def load_chef_environment_attributes(json_file):
