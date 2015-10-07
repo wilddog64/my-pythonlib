@@ -107,9 +107,18 @@ def create_or_update_s3bucket(profile='',
     return tagset
 
 def ls(*args, **kwargs):
+    '''
+ls is an s3 subcommand to list all objects for a given bucket.  The function takes
+the following arguments
+
+* *args is a variant arguments, aka positional argument
+* **kwargs is a list of key/value pairs arguments
+
+Note: *args has to come before **kwargs
+    '''
     return aws.s3('ls', *args, **kwargs)
 
-def get_s3nexus_artifacts(bucket='dreambox-deployment-files',
+def list_s3nexus_versions(bucket='dreambox-deployment-files',
                           type='releases',
                           key='Nexus',
                           branch=None,
@@ -161,8 +170,8 @@ if __name__ == '__main__':
     print('end testing create_or_update_s3bucket', file=sys.stderr)
     print('------------------')
     print()
-    print('testing get_s3nexus_artifacts without version')
-    versions = get_s3nexus_artifacts(branch='galactus')
+    print('testing list_s3nexus_versions without version')
+    versions = list_s3nexus_versions(branch='galactus')
     dreambox.utils.print_structure(versions)
     print('------------------')
     # print('testing get_s3nexus_artifacts with version')
