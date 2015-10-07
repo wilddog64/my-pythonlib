@@ -3,6 +3,7 @@ import json
 import dreambox.utils
 import sh
 from sh import aws
+import sys
 
 # a custom error message to handle when aws cli command not taking
 # --dry-run option
@@ -242,6 +243,6 @@ if __name__ == "__main__":
     print()
     print('==== testing s3 function ===')
     for line in s3('ls', 's3://dreambox-deployment-files/Nexus/releases/com/dreambox/dbl-galactus-main/2.2/'):
-        print(line)
+        sys.stdout.write(line)
     print('==== end testing s3 function ===')
 
