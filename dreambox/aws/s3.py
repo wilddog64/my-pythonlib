@@ -118,32 +118,6 @@ Note: *args has to come before **kwargs
     '''
     return aws.s3('ls', *args, **kwargs)
 
-def list_s3nexus_versions(bucket='dreambox-deployment-files',
-                          type='releases',
-                          key='Nexus',
-                          branch=None,
-                          version=None):
-   # construct an s3 path toward the valid s3 bucket
-    path = None
-    if version is None: # if version is not pass in then points to the branch
-       path = 's3://%s/%s/%s/com/dreambox/dbl-%s-main/' % (bucket, key, type, branch)
-    else:  # otherwise return what's in side a specific version
-       path = 's3://%s/%s/%s/com/dreambox/dbl-%s-main/%s/' % (bucket, key, type, branch, version)
-
-    # filter out all the noise strings and grab only version numbers to store in versions array
-    output = None
-    versions = []
-    if path is not None:
-       output = ls(path)
-       m = re.compile(r'\s+PRE\s|\/$')
-       for line in output:
-          if m.match(line):
-             line = m.sub('', line).rstrip()
-             versions.append(line)
-
-    # return a sorted versions in descending order
-    return sorted([LooseVersion(v).vstring for v in versions], reverse=True)
-
 
 if __name__ == '__main__':
 
