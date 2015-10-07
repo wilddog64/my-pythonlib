@@ -4,6 +4,7 @@ from funcy.colls import select
 import dreambox.utils
 import sys
 import re
+from distutils.version import LooseVersion
 
 import dreambox.aws.core as aws
 
@@ -110,21 +111,27 @@ def get_s3nexus_artifacts(bucket='dreambox-deployment-files',
                           key='Nexus',
                           branch=None,
                           version=None):
+   # construct an s3 path toward the valid s3 bucket
     path = None
-    if version is None:
+    if version is None: # if version is not pass in then points to the branch
        path = 's3://%s/%s/%s/com/dreambox/dbl-%s-main/' % (bucket, key, type, branch)
-    else:
+    else:  # otherwise return what's in side a specific version
        path = 's3://%s/%s/%s/com/dreambox/dbl-%s-main/%s/' % (bucket, key, type, branch, version)
 
-    pattern = re.compile('/\s+PRE\s/')
-    def filter_output(line, stdin):
-        if pattern.match(line):
-           return True
-
+    # filter out all the noise strings and grab only version numbers to store in versions array
     output = None
+    versions = []
     if path is not None:
-       output = aws.s3('ls', path, _out=filter_output)
-    return output
+       output = aws.s3('ls', path)
+       m = re.compile(r'\s+PRE\s|\/$')
+       for line in output:
+          if m.match(line):
+             line = m.sub('', line).rstrip()
+             versions.append(line)
+
+    # return a sorted versions in descending order
+    return sorted([LooseVersion(v).vstring for v in versions], reverse=True)
+
 
 if __name__ == '__main__':
 
@@ -152,9 +159,10 @@ if __name__ == '__main__':
     print('------------------')
     print()
     print('testing get_s3nexus_artifacts without version')
-    print(get_s3nexus_artifacts(branch='galactus'))
+    versions = get_s3nexus_artifacts(branch='galactus')
+    dreambox.utils.print_structure(versions)
     print('------------------')
-    print('testing get_s3nexus_artifacts with version')
-    print(get_s3nexus_artifacts(branch='galactus', version='2.2'))
-    print('end testing get_s3nexus_artifacts')
-    print('------------------')
+    # print('testing get_s3nexus_artifacts with version')
+    # print(get_s3nexus_artifacts(branch='galactus', version='2.2'))
+    # print('end testing get_s3nexus_artifacts')
+    # print('------------------')
