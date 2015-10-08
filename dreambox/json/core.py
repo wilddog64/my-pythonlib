@@ -2,7 +2,6 @@ from __future__ import print_function
 import json
 import os
 import sys
-import glob
 import dreambox.utils
 
 def load_chef_environment_attributes(json_file):
@@ -142,6 +141,12 @@ function takes two parameters,
                                     indent=2,
                                     separators=(',', ': ')))
 
+
+def py2json(pyobj=None):
+    return json.dumps(pyobj,
+                      sort_keys=True,
+                      indent=2,
+                      separators=(',', ': '))
 
 if __name__ == '__main__':
     json_file = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'

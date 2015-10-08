@@ -1,11 +1,9 @@
 from __future__ import print_function
 import json
-import subprocess
-import re
-import sys
 import dreambox.utils
 import sh
 from sh import aws
+import sys
 
 # a custom error message to handle when aws cli command not taking
 # --dry-run option
@@ -171,6 +169,19 @@ returns.
 
     return hash2obj(json_obj)
 
+
+def s3(cmd, *args, **kwargs):
+    '''
+ s3 is a function that performs aws a3 operations 
+    '''
+    output = None
+    try:
+        output = aws.s3(cmd, *args, **kwargs)
+    except DryRunError as dre:
+        print('--dry-run flag set, executing %s' % dre.args[0])
+
+    return output
+
 if __name__ == "__main__":
     print()
     print('=== testing ec2 ===')
@@ -228,8 +239,10 @@ if __name__ == "__main__":
     dreambox.utils.print_structure(py_json)
     print('py_json.b.c.d = %s' % py_json.b.c.d)
 
-    json_obj = json.loads('[{"a": {"c": {"e": 1}}}, {"b": 2}]')
-    py_json = json_to_pyobj(json_obj)
-    dreambox.utils.print_structure(py_json[0]['a'].c.e)
     print('==== end testing json_to_pyobj ====')
+    print()
+    print('==== testing s3 function ===')
+    for line in s3('ls', 's3://dreambox-deployment-files/Nexus/releases/com/dreambox/dbl-galactus-main/2.2/'):
+        sys.stdout.write(line)
+    print('==== end testing s3 function ===')
 

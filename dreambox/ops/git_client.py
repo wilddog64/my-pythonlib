@@ -115,6 +115,18 @@ def diff_env_cookbook_pinned_versions(args=None):
     print('repo url %s' % repo)
     print('repo name %s' % repoName)
     print('workspace %s' % workspace)
+
+    repoPath = os.path.join(workspace, repoName)
+    if not os.path.exists(repoPath):
+        print('repo exists at %s' % repoPath)
+        Git.clone_repo_to_local(git_url=repo,
+                                repo_path=workspace,
+                                app_name=repoName,
+                                recurse_submodules=False,
+                                force_remove_repo=True)
+    elif Git.project_isa_gitrepo(project_path=repoPath):
+        Git.pull(repoPath)
+
     (missingCookbooks,
      mismatchCookbookVersions,
      source,
@@ -146,7 +158,7 @@ if __name__ == '__main__':
      target,
      sourcePath,
      targetPath) = chef_env.compare_env_cookbook_versions(target='stage1.json')
-    
+
     sourceEnvFile = '/tmp/chef-environments/production.json'
     targetEnvFile = '/tmp/chef-environments/stage1.json'
     repo='git@github.com:wilddog64/chef-environments.git'
