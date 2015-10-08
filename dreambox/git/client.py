@@ -289,6 +289,10 @@ following parameters
     return not rc
 
 
+def pull(repoPath='.'):
+    Git.pull(_cwd=repoPath)
+
+
 def project_isa_gitrepo(project_path='.'):
     '''
 project_isa_gitrepo is a function to verify if a given project (directory)
