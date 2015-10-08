@@ -4,6 +4,7 @@ import re
 import dreambox.aws.s3 as s3
 import dreambox.utils
 import sh
+import dreambox.json.core as json
 
 class S3NexusVersionError(sh.ErrorReturnCode):
     def __init__(self, message):
@@ -116,6 +117,13 @@ that stores at AWS s3 bucket.  This function takes the folloiwng parameters,
 
     # return a sorted versions in descending order
     return sorted([LooseVersion(v).vstring for v in artifacts], reverse=True)
+
+def list_s3nexus_versions(args=None):
+    bucket = args.bucket
+    type = args.type
+    branch = args.branch
+    print(json.py2json(get_s3nexus_versions(bucket, type, branch)))
+
 
 if __name__ == '__main__':
     print('=== testing get_s3nexus_versions ===')

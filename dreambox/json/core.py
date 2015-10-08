@@ -142,6 +142,12 @@ function takes two parameters,
                                     separators=(',', ': ')))
 
 
+def py2json(pyobj=None):
+    return json.dumps(pyobj,
+                      sort_keys=True,
+                      indent=2,
+                      separators=(',', ': '))
+
 if __name__ == '__main__':
     json_file = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'
 

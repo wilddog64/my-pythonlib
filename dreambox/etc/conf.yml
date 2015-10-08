@@ -197,3 +197,25 @@ diff_env_cookbook_pinned_versions:
       default: git@github.com:dreamboxlearning/chef-environments.git
       help: a git repo url where we can clone from
   func: !!python/name:dreambox.ops.git_client.diff_env_cookbook_pinned_versions
+
+list_s3nexus_versions:
+  help: list versions for a particular build stores at a particuar branch. this
+        function will return a json blob back.
+  position:
+    -
+      branch:
+        help: a branch to list versions
+  key-values:
+    bucket:
+      type: !!python/name:types.StringType
+      short: b
+      dest: bucket
+      default: dreambox-deployment-files
+      help: an S3 bucket that contains Nexus artifacts information
+    type:
+      type: !!python/name:types.StringType
+      short: t
+      dest: type
+      default: snapshots
+      help: a type of artifacts, can be either snapshots or releases.  default to snapshots
+  func: !!python/name:dreambox.ops.artifacts.list_s3nexus_versions
