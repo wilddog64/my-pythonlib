@@ -44,7 +44,7 @@ clone_env_apps:
       type: !!python/name:types.StringType
       dest: repo_name
       short: o
-      default:
+      default: environments
       help: the name of repo
     repo-url:
       type: !!python/name:types.StringType
@@ -52,6 +52,12 @@ clone_env_apps:
       dest: repo_url
       default: git@github.com:dreamboxlearning/chef-environments.git
       help: a git repo url where we can clone from
+    sync-cookbook-version:
+      type: !!python/name:types.StringType
+      short: s
+      dest: sync_cookbook_version
+      default: True
+      help: a boolean flag to determine if pinned cookbook versions should sync from one environment to another
     dry-run:  # name of the argument
       type: !!python/name:types.BooleanType
       dest: dry_run
@@ -188,7 +194,7 @@ diff_env_cookbook_pinned_versions:
       type: !!python/name:types.StringType
       dest: repo_name
       short: o
-      default: !!python/none
+      default: environments
       help: the name of repo
     repo-url:
       type: !!python/name:types.StringType
