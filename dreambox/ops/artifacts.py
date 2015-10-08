@@ -125,6 +125,16 @@ def list_s3nexus_versions(args=None):
     print(json.py2json(get_s3nexus_versions(bucket, type, branch)))
 
 
+def list_s3nexus_artifacts(args=None):
+    bucket = args.bucket
+    type = args.type
+    pkg_type = args.pkg_type
+    branch = args.branch
+    version = args.version
+    print('type looking for is %s' % type)
+    print(json.py2json(get_s3nexus_artifacts(bucket, type, pkg_type, branch, version)))
+
+
 if __name__ == '__main__':
     print('=== testing get_s3nexus_versions ===')
     versions = get_s3nexus_versions(branch='galactus')
