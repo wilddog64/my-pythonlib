@@ -46,7 +46,7 @@ function takes the following parameters,
        raise S3NexusBranchError('branch is a required parameter')
 
     # construct an s3 path toward the valid s3 bucket
-    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s-main/' % (bucket, type, branch)
+    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s/' % (bucket, type, branch)
 
      # filter out all the noise strings and grab only version numbers to store in versions array
     output = None
@@ -93,7 +93,7 @@ that stores at AWS s3 bucket.  This function takes the folloiwng parameters,
        version = "%s-SNAPSHOT" % version
 
     # s3 path
-    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s-main/%s/' % (
+    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s/%s/' % (
           bucket,
           type,
           branch,
