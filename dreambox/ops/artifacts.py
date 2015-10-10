@@ -27,8 +27,8 @@ class S3NexusInvalidPath(sh.ErrorReturnCode):
 
 
 def get_s3nexus_versions(bucket='dreambox-deployment-files',
-                          type='releases',
-                          branch=None,):
+                         type='releases',
+                         branch=None,):
     '''
 get_s3nexus_versions is a function that return a list versions for a given branch.  The
 function takes the following parameters,
