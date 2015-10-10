@@ -85,7 +85,7 @@ def clone_env_apps(args=None):
     repo_url = args.repo_url
     dry_run = dreambox.utils.to_bool(args.dry_run)
     sync_cookbook_version = dreambox.utils.to_bool(args.sync_cookbook_version)
-    
+
     message = '''
 clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
     ''' % (from_env, to_env, repo_path, repo_name, repo_url, dry_run)
@@ -146,7 +146,7 @@ if __name__ == '__main__':
      target,
      sourcePath,
      targetPath) = chef_env.compare_env_cookbook_versions(target='stage1.json')
-    
+
     sourceEnvFile = '/tmp/chef-environments/production.json'
     targetEnvFile = '/tmp/chef-environments/stage1.json'
     repo='git@github.com:wilddog64/chef-environments.git'
