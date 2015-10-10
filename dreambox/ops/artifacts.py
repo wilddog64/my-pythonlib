@@ -47,6 +47,7 @@ function takes the following parameters,
 
     # construct an s3 path toward the valid s3 bucket
     path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s/' % (bucket, type, branch)
+    print('command executes: aws s3 ls %s' % path)
 
      # filter out all the noise strings and grab only version numbers to store in versions array
     output = None
@@ -99,6 +100,7 @@ that stores at AWS s3 bucket.  This function takes the folloiwng parameters,
           branch,
           version
           )
+    print('command executes: aws s3 ls %s' % path)
 
     # grab everything that ends with what specifies in pkg and stores
     # it in artifacts array
