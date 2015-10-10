@@ -83,7 +83,7 @@ def clone_env_apps(args=None):
     repo_path = args.repo_path
     repo_name = args.repo_name
     repo_url = args.repo_url
-    dry_run = args.dry_run
+    dry_run = dreambox.utils.to_bool(args.dry_run)
     sync_cookbook_version = dreambox.utils.to_bool(args.sync_cookbook_version)
     
     message = '''
@@ -98,7 +98,7 @@ clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
                                           args.repo_name,
                                           args.repo_url,
                                           sync_cookbook_version,
-                                          args.dry_run)
+                                          dry_run)
 
 
 def diff_env_cookbook_pinned_versions(args=None):

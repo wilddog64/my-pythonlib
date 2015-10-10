@@ -59,7 +59,7 @@ clone_env_apps:
       default: True
       help: a boolean flag to determine if pinned cookbook versions should sync from one environment to another
     dry-run:  # name of the argument
-      type: !!python/name:types.BooleanType
+      type: !!python/name:types.StringType
       dest: dry_run
       default: False
       short: n
