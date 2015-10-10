@@ -92,11 +92,11 @@ clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
 
     print(message, file=sys.stderr)
 
-    __merge_updated_chef_environment_file(args.from_env,
-                                          args.to_env,
-                                          args.repo_path,
-                                          args.repo_name,
-                                          args.repo_url,
+    __merge_updated_chef_environment_file(from_env,
+                                          to_env,
+                                          repo_path,
+                                          repo_name,
+                                          repo_url,
                                           sync_cookbook_version,
                                           dry_run)
 
