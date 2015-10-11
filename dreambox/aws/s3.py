@@ -3,8 +3,6 @@ from __future__ import print_function
 from funcy.colls import select
 import dreambox.utils
 import sys
-import re
-from distutils.version import LooseVersion
 
 import dreambox.aws.core as aws
 
