@@ -27,8 +27,8 @@ class S3NexusInvalidPath(sh.ErrorReturnCode):
 
 
 def get_s3nexus_versions(bucket='dreambox-deployment-files',
-                          type='releases',
-                          branch=None,):
+                         type='releases',
+                         branch=None,):
     '''
 get_s3nexus_versions is a function that return a list versions for a given branch.  The
 function takes the following parameters,
@@ -46,7 +46,8 @@ function takes the following parameters,
        raise S3NexusBranchError('branch is a required parameter')
 
     # construct an s3 path toward the valid s3 bucket
-    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s-main/' % (bucket, type, branch)
+    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s/' % (bucket, type, branch)
+    print('command executes: aws s3 ls %s' % path)
 
      # filter out all the noise strings and grab only version numbers to store in versions array
     output = None
@@ -93,12 +94,13 @@ that stores at AWS s3 bucket.  This function takes the folloiwng parameters,
        version = "%s-SNAPSHOT" % version
 
     # s3 path
-    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s-main/%s/' % (
+    path = 's3://%s/Nexus/%s/com/dreambox/dbl-%s/%s/' % (
           bucket,
           type,
           branch,
           version
           )
+    print('command executes: aws s3 ls %s' % path)
 
     # grab everything that ends with what specifies in pkg and stores
     # it in artifacts array

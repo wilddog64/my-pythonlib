@@ -3,8 +3,6 @@ from __future__ import print_function
 from funcy.colls import select
 import dreambox.utils
 import sys
-import re
-from distutils.version import LooseVersion
 
 import dreambox.aws.core as aws
 
@@ -117,6 +115,13 @@ the following arguments
 Note: *args has to come before **kwargs
     '''
     return aws.s3('ls', *args, **kwargs)
+
+
+def cp(*args, **kwargs):
+    '''
+cp is a function to copy object from or to s3 bucket   
+    '''
+    return aws.s3('cp', *args, **kwargs)
 
 
 if __name__ == '__main__':
