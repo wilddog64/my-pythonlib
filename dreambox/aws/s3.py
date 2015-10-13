@@ -35,14 +35,14 @@ takes these parameters,
        return_rst = select(lambda bucket: filterby.lower() in bucket['Name'],
                            return_rst)
 
-    item_table = {}
+    items = []
     for item in return_rst:
         Key = item['Name']
         Value = item['CreationDate']
         if Key:
-            item_table[Key] = Value
+           items.append({ 'Name': Key, 'Value': Value})
 
-    return item_table
+    return items
 
 
 def get_bucket_tagging(profile='',
