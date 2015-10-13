@@ -6,13 +6,13 @@ import sys
 
 import dreambox.aws.core as aws
 
-def get_buckets(profile='',
+def list_buckets(profile='',
                 region='',
                 filterby=None,
                 dry_run=False,
                 verbose=False):
     '''
-get_buckets will return all the buckets exists in AWS s3 storage.  The function
+list_buckets will return all the buckets exists in AWS s3 storage.  The function
 takes these parameters,
 
 *  profile: a profile that aws command will reference
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
     print('testing get_bucket', file=sys.stderr)
     print('------------------')
-    buckets = get_buckets(region='us-west-2', filterby='backup-databag')
+    buckets = list_buckets(region='us-west-2', filterby='backup-databag')
     dreambox.utils.print_structure(buckets)
     print('end testing get_bucket', file=sys.stderr)
     print('------------------')
