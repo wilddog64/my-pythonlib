@@ -84,13 +84,13 @@ parameters,
     return s3_tagset
 
 
-def create_or_update_s3bucket(profile='',
-                              region='us-west-2',
-                              bucket_name=None,
-                              key=None,
-                              value=None,
-                              dry_run=False,
-                              verbose=False):
+def put_bucket_tagging(profile='',
+                       region='us-west-2',
+                       bucket_name=None,
+                       key=None,
+                       value=None,
+                       dry_run=False,
+                       verbose=False):
 
     print('testing')
     tagset = ''' { "TagSet": { "Key": "%s", "Value": "%s" } }''' % (key, value)
@@ -140,11 +140,11 @@ if __name__ == '__main__':
     print('end testing get_bucket_tagging', file=sys.stderr)
     print('------------------')
 
-    print('testing create_or_update_s3bucket', file=sys.stderr)
+    print('testing put_bucket_tagging', file=sys.stderr)
     print('------------------')
-    create_or_update_s3bucket(bucket_name='03west-backup-databag',
+    put_bucket_tagging(bucket_name='03west-backup-databag',
                               key='s3bucket',
                               value='testing',
                               dry_run=True)
-    print('end testing create_or_update_s3bucket', file=sys.stderr)
+    print('end testing put_bucket_tagging', file=sys.stderr)
     print('------------------')
