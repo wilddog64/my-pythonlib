@@ -45,14 +45,14 @@ takes these parameters,
     return item_table
 
 
-def get_bucket_tags(profile='',
-                    region='',
-                    bucket=None,
-                    filterby=None,
-                    dry_run=False,
-                    verbose=False):
+def get_bucket_tagging(profile='',
+                       region='',
+                       bucket=None,
+                       filterby=None,
+                       dry_run=False,
+                       verbose=False):
     '''
-get_bcuket_tags will return tag sets for all the s3 bucket or if filterby is
+get_bucket_tagging will return tag sets for all the s3 bucket or if filterby is
 provided, return filtered bucket tags back to caller.  The function takes these
 parameters,
 
@@ -133,11 +133,11 @@ if __name__ == '__main__':
     print('end testing get_bucket', file=sys.stderr)
     print('------------------')
 
-    print('testing get_bucket_tags', file=sys.stderr)
+    print('testing get_bucket_tagging', file=sys.stderr)
     print('------------------')
-    bucket_tagset = get_bucket_tags(region='us-west-2', bucket='03west-backup-databag')
+    bucket_tagset = get_bucket_tagging(region='us-west-2', bucket='03west-backup-databag')
     dreambox.utils.print_structure(bucket_tagset)
-    print('end testing get_bucket_tags', file=sys.stderr)
+    print('end testing get_bucket_tagging', file=sys.stderr)
     print('------------------')
 
     print('testing create_or_update_s3bucket', file=sys.stderr)
