@@ -31,13 +31,13 @@ tagging value is UPDATED.  The function takes the following parameters,
                 for tag in tags:
                     if tag and tag['Key'] == 'UPDATED':
                         updated = tag['Value']
-                    if tag and tag['Key'] == 'ONWER':
+                    if tag and tag['Key'] == 'OWNER':
                         owner = tag['Value']
                     if owner and ownerroot in owner or ownerroot == '':
                         tagsets.append({'bucket': bucket['Name'], 'owner': owner, 'updated': updated})
     
-    tagsets = [x for x in tagsets if x['updated'] != 'NA' ]
     dreambox.utils.print_structure(tagsets)
+
 
 if __name__ == '__main__':
     get_backupset_bucketnames(verbose=False)
