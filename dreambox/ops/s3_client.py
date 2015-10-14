@@ -19,7 +19,7 @@ tagging value is UPDATED.  The function takes the following parameters,
     if verbose:
         dreambox.utils.print_structure(buckets)
 
-    tagsets = []
+    backuplist = []
     owner, updated = ('', '')
     for bucket in buckets:
         if bucket:
@@ -36,9 +36,9 @@ tagging value is UPDATED.  The function takes the following parameters,
                         owner = tag['Value']
 
                 if owner and ownerroot in owner or ownerroot == '':
-                    tagsets.append({'bucket': bucket['Name'], 'owner': owner, 'updated': updated})
-    tagsets = sorted(tagsets, key=lambda bucket: bucket['updated']) 
-    return tagsets
+                    backuplist.append({'bucket': bucket['Name'], 'owner': owner, 'updated': updated})
+    backuplist = sorted(backuplist, key=lambda bucket: bucket['updated']) 
+    return backuplist
 
 
 if __name__ == '__main__':
