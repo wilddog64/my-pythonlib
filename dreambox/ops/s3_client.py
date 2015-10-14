@@ -28,15 +28,17 @@ tagging value is UPDATED.  The function takes the following parameters,
                                         verbose=verbose)
             if tags:
                 tags = tags['TagSet']
+                # dreambox.utils.print_structure(tags)
                 for tag in tags:
                     if tag and tag['Key'] == 'UPDATED':
                         updated = tag['Value']
                     if tag and tag['Key'] == 'OWNER':
                         owner = tag['Value']
-                    if owner and ownerroot in owner or ownerroot == '':
-                        tagsets.append({'bucket': bucket['Name'], 'owner': owner, 'updated': updated})
-    
-    dreambox.utils.print_structure(tagsets)
+
+                if owner and ownerroot in owner or ownerroot == '':
+                    tagsets.append({'bucket': bucket['Name'], 'owner': owner, 'updated': updated})
+    tagsets = sorted(tagsets, key=lambda bucket: bucket['updated']) 
+    return tagsets
 
 
 if __name__ == '__main__':
