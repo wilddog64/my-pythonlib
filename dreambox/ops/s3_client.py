@@ -42,4 +42,7 @@ tagging value is UPDATED.  The function takes the following parameters,
 
 
 if __name__ == '__main__':
-    get_backupset_bucketnames(verbose=False)
+    backup_list = get_backupset_bucketnames(verbose=False)
+    dreambox.utils.print_structure(backup_list)
+    for backup in backup_list:
+        print("%s\t%s\t%s" % (backup['bucket'], backup['owner'], backup['updated']))
