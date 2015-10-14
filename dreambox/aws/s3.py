@@ -74,14 +74,7 @@ parameters,
                                  verbose=verbose,
                                  bucket=bucket)
 
-    s3_tagset = {}
-    for tagset in s3_bucket_tagset['TagSet']:
-        Key = tagset['Key']
-        Value = tagset['Value']
-        if Key:
-            s3_tagset[Key] = Value
-
-    return s3_tagset
+    return s3_bucket_tagset
 
 
 def put_bucket_tagging(profile='',
