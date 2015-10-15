@@ -41,8 +41,31 @@ tagging value is UPDATED.  The function takes the following parameters,
     return backuplist
 
 
+def get_backupsets_from_all_regions(ownerroot='', regions=None, verbose=False):
+    '''
+get_backupsets_from_all_regions is a function
+    '''
+    # if regions is None, then we create a dict object where
+    # key is an AWS region, and value is region's databag
+    if regions is None:
+        regions = {'us-east-1': 'east-backup-databag',
+                   'us-west-2': 'west-backup-databag',}
+
+    bucket_backupsets = {}
+    for region, envroot in regions.items():
+        bucket_backupsets[region] = get_backupset_bucketnames(envroot=envroot,
+                                                              ownerroot=ownerroot,
+                                                              region=region,
+                                                              verbose=verbose)
+    return bucket_backupsets
+
 if __name__ == '__main__':
     backup_list = get_backupset_bucketnames(verbose=False)
     dreambox.utils.print_structure(backup_list)
     for backup in backup_list:
         print("%s\t%s\t%s" % (backup['bucket'], backup['owner'], backup['updated']))
+
+    print('==== testing get_backupsets_from_all_regions ===')
+    backupsets = get_backupsets_from_all_regions()
+    dreambox.utils.print_structure(backupsets)
+    print('==== end testing get_backupsets_from_all_regions ===')
