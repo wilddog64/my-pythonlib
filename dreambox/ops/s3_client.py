@@ -57,7 +57,13 @@ from all known region.  The function takes the following parameters,
     where region is a valid AWS region and
           envroot is a s3 bucket suffix
 
-when function call is successful, a dictionary object is return
+when function call is successful, a dictionary object is return with the following formation
+
+    region: [
+      { 'bucket': bucket_name,
+        'owner': stage_environment,
+        'update': last_time_backupset_was_made}
+    ]
     '''
     # if regions is None, then we create a dict object where
     # key is an AWS region, and value is region's databag
