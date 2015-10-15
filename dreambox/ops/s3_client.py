@@ -43,7 +43,21 @@ tagging value is UPDATED.  The function takes the following parameters,
 
 def get_backupsets_from_all_regions(ownerroot='', regions=None, verbose=False):
     '''
-get_backupsets_from_all_regions is a function
+get_backupsets_from_all_regions is a function that will return all the backup sets
+from all known region.  The function takes the following parameters,
+
+* ownerroot is an owner of the backup sets
+* regions is a hash that describes the backup set regions. This is a python dictionary object
+  that has the following format
+
+    {
+       region: envroot
+    }
+
+    where region is a valid AWS region and
+          envroot is a s3 bucket suffix
+
+when function call is successful, a dictionary object is return
     '''
     # if regions is None, then we create a dict object where
     # key is an AWS region, and value is region's databag
