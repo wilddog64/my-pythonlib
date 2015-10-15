@@ -147,6 +147,11 @@ def py2json(pyobj=None):
                       indent=2,
                       separators=(',', ': '))
 
+
+def json2py(json_blob=None):
+    return json.loads(json_blob)
+
+
 if __name__ == '__main__':
     json_file = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'
 
@@ -163,3 +168,9 @@ if __name__ == '__main__':
     # dreambox.utils.print_structure(search_info)
     print('end testing update_environment', file=sys.stderr)
     print('------------------------------', file=sys.stderr)
+    print('testing json2py', file=sys.stderr)
+    print('---------------', file=sys.stderr)
+    py_result = json2py('{"us-east-1": "east-databag"}')
+    dreambox.utils.print_structure(py_result)
+    print('end testing json2py', file=sys.stderr)
+    print('---------------', file=sys.stderr)
