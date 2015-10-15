@@ -42,9 +42,8 @@ def update_environments(from_file='production.json', search_key=None, to='all'):
                       'product.build_key']
     # if to is all, then list all known environment json files
     if to.lower() == 'all':
-        to = ['stage1.json', 'stage2.json', 'stage3.json',
-              'stage4.json', 'stage5.json', 'stage6.json',
-              'stage7.json', 'stage8.json', 'stage9.json',
+        to = ['stage1.json', 'stage3.json', 'stage4.json',
+              'stage5.json', 'stage6.json', 'stage8.json',
               'production.json']
     # filter out from_file
     to_list = filter(lambda x: x.lower() != from_file.lower(), to)
