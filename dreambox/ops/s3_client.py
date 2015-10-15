@@ -57,7 +57,7 @@ from all known region.  The function takes the following parameters,
     where region is a valid AWS region and
           envroot is a s3 bucket suffix
 
-when function call is successful, a dictionary object is return with the following formation
+when function call is successful, a dictionary object is return with the following format
 
     region: [
       { 'bucket': bucket_name,
