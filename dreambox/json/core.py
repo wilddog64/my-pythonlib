@@ -42,9 +42,8 @@ def update_environments(from_file='production.json', search_key=None, to='all'):
                       'product.build_key']
     # if to is all, then list all known environment json files
     if to.lower() == 'all':
-        to = ['stage1.json', 'stage2.json', 'stage3.json',
-              'stage4.json', 'stage5.json', 'stage6.json',
-              'stage7.json', 'stage8.json', 'stage9.json',
+        to = ['stage1.json', 'stage3.json', 'stage4.json',
+              'stage5.json', 'stage6.json', 'stage8.json',
               'production.json']
     # filter out from_file
     to_list = filter(lambda x: x.lower() != from_file.lower(), to)
@@ -148,6 +147,11 @@ def py2json(pyobj=None):
                       indent=2,
                       separators=(',', ': '))
 
+
+def json2py(json_blob=None):
+    return json.loads(json_blob)
+
+
 if __name__ == '__main__':
     json_file = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'
 
@@ -164,3 +168,9 @@ if __name__ == '__main__':
     # dreambox.utils.print_structure(search_info)
     print('end testing update_environment', file=sys.stderr)
     print('------------------------------', file=sys.stderr)
+    print('testing json2py', file=sys.stderr)
+    print('---------------', file=sys.stderr)
+    py_result = json2py('{"us-east-1": "east-databag"}')
+    dreambox.utils.print_structure(py_result)
+    print('end testing json2py', file=sys.stderr)
+    print('---------------', file=sys.stderr)

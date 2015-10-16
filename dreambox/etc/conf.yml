@@ -26,7 +26,9 @@ clone_env_apps:
   help: clone chef application settings from one chef environment to another (normally from production
         to one of the 9 stage environment).  this operation assume all chef environment files are stored
         in a git repository.  It will create a branch, update the desired chef environment file, commit
-        the update, merge changes into master, and push to remote git repository.
+        the update, merge changes into master, and push to remote git repository. Due to argparse stores
+        arguments and values in a hash, the positional argument to_env and from_env is swaped. the <from_env>
+        has to be in front of <to_env>
   position:
     -
       to_env:
@@ -59,7 +61,7 @@ clone_env_apps:
       default: True
       help: a boolean flag to determine if pinned cookbook versions should sync from one environment to another
     dry-run:  # name of the argument
-      type: !!python/name:types.BooleanType
+      type: !!python/name:types.StringType
       dest: dry_run
       default: False
       short: n
@@ -170,7 +172,7 @@ resume_autoscaling_group_for:
   func: !!python/name:dreambox.ops.deployment.resume_autoscaling_group_for
 
 diff_env_cookbook_pinned_versions:
-  help: Compare two chef environment pinned cookbooks and report differences bwtween them. 
+  help: Compare two chef environment pinned cookbooks and report differences bwtween them.
         By default this compares bwtween production.json any one of the 9 stage environments.
         Yet you can override the source and destination to compare with.
   position:
@@ -259,3 +261,24 @@ list_s3nexus_artifacts:
       default:
       help: branch to look for, i.e. galactus (this will transfer to dbl-galactus-main)
   func: !!python/name:dreambox.ops.artifacts.list_s3nexus_artifacts
+
+show_all_backupsets:
+  help: display all the backupsets across organizational AWS regions
+  position:
+    -
+      regions:
+        help: a json block that contains region and envroot as the following format, {"us-east-1":"east-backup-databag","us-west-2":"west-backup-databag"}
+  key-values:
+    owner:
+      type: !!python/name:types.StringType
+      short: o
+      dest: owner
+      default:
+      help: look for all backup sets belongs to a given owner
+    verbose:
+      type: !!python/name:types.StringType
+      short: v
+      dest: verbose
+      default: false
+      help: pass in true or false to enable or disable verbose output from this operation
+  func: !!python/name:dreambox.ops.s3_client.show_regional_backupsets

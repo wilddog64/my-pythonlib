@@ -83,22 +83,22 @@ def clone_env_apps(args=None):
     repo_path = args.repo_path
     repo_name = args.repo_name
     repo_url = args.repo_url
-    dry_run = args.dry_run
+    dry_run = dreambox.utils.to_bool(args.dry_run)
     sync_cookbook_version = dreambox.utils.to_bool(args.sync_cookbook_version)
-    
+
     message = '''
 clone from %s to %s --repo-path %s --repo-name %s --repo-url %s --dry-run %s
     ''' % (from_env, to_env, repo_path, repo_name, repo_url, dry_run)
 
     print(message, file=sys.stderr)
 
-    __merge_updated_chef_environment_file(args.from_env,
-                                          args.to_env,
-                                          args.repo_path,
-                                          args.repo_name,
-                                          args.repo_url,
+    __merge_updated_chef_environment_file(from_env,
+                                          to_env,
+                                          repo_path,
+                                          repo_name,
+                                          repo_url,
                                           sync_cookbook_version,
-                                          args.dry_run)
+                                          dry_run)
 
 
 def diff_env_cookbook_pinned_versions(args=None):
