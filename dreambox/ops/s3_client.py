@@ -1,5 +1,6 @@
 import dreambox.aws.s3 as s3
 import dreambox.utils
+import dreambox.json.core as json
 
 def get_backupset_bucketnames(envroot='west-backup-databag',
                               ownerroot='',
@@ -78,6 +79,20 @@ when function call is successful, a dictionary object is return with the followi
                                                               region=region,
                                                               verbose=verbose)
     return bucket_backupsets
+
+
+def show_regional_backupsets(args=None):
+    owner = args.owner
+    regions = json.json2py(args.regions)
+    verbose = dreambox.utils.to_bool(args.verbose)
+
+    if owner is None:
+       owner = ''
+
+    backupsets = get_backupsets_from_all_regions(ownerroot=owner,
+                                                 regions=regions,
+                                                 verbose=verbose)
+    dreambox.utils.print_structure(backupsets)
 
 if __name__ == '__main__':
     backup_list = get_backupset_bucketnames(verbose=False)
