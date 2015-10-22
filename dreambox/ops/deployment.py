@@ -76,26 +76,6 @@ available stack and return it as a hash of array back to caller
     sys.stdout.write("region slot -> {0}:{1}".format(my_region, my_slot))
     return region_available_slot
 
-def delete_all_security_groups(argv=None):
-    """
-usage:
-    ops delete_all_security_groups <stage>...
-    ops delete_all_security_groups <stage> [--dry-run=<no|yes>]
-
-options:
-ops delete_all_security_groups [options] # delete all security group for a given
-environment
-    """
-    # print('pass in parameters: {}'.format(argv), file=sys.stderr)
-    from dreambox.aws.security import delete_security_groups
-    arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
-    stage = arguments['<stage>'][0]
-    dry_run = arguments['--dry-run']
-    print('stage to work on is {}'.format(stage), file=sys.stderr)
-    print('--dry-run: {}'.format(dry_run), file=sys.stdout)
-    delete_security_groups(my_filterby=stage, dry_run=dry_run)
-
-
 def revoke_all_ingress_rules_for_stage(args=None):
     from dreambox.aws.security import revoke_all_ingress_rules
     revoke_all_ingress_rules(filterby=args.stage, verbose=args.verbose, dry_run=args.dry_run)
