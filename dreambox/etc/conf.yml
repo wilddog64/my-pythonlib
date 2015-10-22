@@ -282,3 +282,24 @@ show_all_backupsets:
       default: false
       help: pass in true or false to enable or disable verbose output from this operation
   func: !!python/name:dreambox.ops.s3_client.show_regional_backupsets
+
+get_all_ec2_instances_from_tag:
+  help: search all AWS regions for a given tag.  
+  position:
+    -
+      partial_tag:
+        help: tag that apply to instances. this can be complete tag or just a part of tag
+  key-values:
+    profile:
+      type: !!python/name:types.StringType
+      dest: profile
+      short: P
+      default: ''
+      help: an AWS profile
+    region:
+      type: !!python/name:types.StringType
+      dest: region
+      short: R
+      default: us-east-1
+      help: an AWS region
+  func: !!python/name:dreambox.ops.deployment.get_all_ec2_instances_from_tag
