@@ -5,7 +5,6 @@ import dreambox.aws.cloudformation
 import os
 import dreambox.utils
 import re
-from docopt import docopt
 import sys
 
 import dreambox.aws.autoscaling as asg
@@ -76,45 +75,24 @@ available stack and return it as a hash of array back to caller
     sys.stdout.write("region slot -> {0}:{1}".format(my_region, my_slot))
     return region_available_slot
 
-def delete_all_security_groups(argv=None):
-    """
-usage:
-    ops delete_all_security_groups <stage>...
-    ops delete_all_security_groups <stage> [--dry-run=<no|yes>]
-
-options:
-ops delete_all_security_groups [options] # delete all security group for a given
-environment
-    """
-    # print('pass in parameters: {}'.format(argv), file=sys.stderr)
-    from dreambox.aws.security import delete_security_groups
-    arguments = docopt(delete_all_security_groups.__doc__, argv=argv)
-    stage = arguments['<stage>'][0]
-    dry_run = arguments['--dry-run']
-    print('stage to work on is {}'.format(stage), file=sys.stderr)
-    print('--dry-run: {}'.format(dry_run), file=sys.stdout)
-    delete_security_groups(my_filterby=stage, dry_run=dry_run)
-
-
 def revoke_all_ingress_rules_for_stage(args=None):
     from dreambox.aws.security import revoke_all_ingress_rules
     revoke_all_ingress_rules(filterby=args.stage, verbose=args.verbose, dry_run=args.dry_run)
 
 
-def get_all_ec2_instances_from_tag(argv=None):
+def get_all_ec2_instances_from_tag(args=None):
     '''
 usage:
     ops get_all_ec2_instances_from_tag <partial_tag>
     '''
 
-    from dreambox.aws.ec2 import get_ec2_hosts_for_stage
-    arguments = docopt(get_all_ec2_instances_from_tag.__doc__, argv=argv)
-    partial_tag = arguments['<partial_tag>']
+    profile=args.profile
+    partial_tag = args.partial_tag
     if partial_tag.lower() == 'all':
       partial_tag=None
 
     print('query stage environment: {}'.format(partial_tag))
-    stage_ec2_instances = get_ec2_hosts_for_stage(stage=partial_tag)
+    stage_ec2_instances = ec2.get_ec2_hosts_for_stage(profile=profile, stage=partial_tag)
     dreambox.utils.print_structure(stage_ec2_instances)
 
 def get_all_instances_for(args=None):
