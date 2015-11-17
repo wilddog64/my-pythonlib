@@ -284,7 +284,7 @@ show_all_backupsets:
   func: !!python/name:dreambox.ops.s3_client.show_regional_backupsets
 
 get_all_ec2_instances_from_tag:
-  help: search all AWS regions for a given tag.  
+  help: search all AWS regions for a given tag.
   position:
     -
       partial_tag:
