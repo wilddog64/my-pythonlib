@@ -27,16 +27,8 @@ two; otherwise, return None
     '''
     # find out what cookbooks are not in the target json file
     key_mismatch = from_json_env.viewkeys() - to_json_env.viewkeys()
-    # if key_difference:
-    #     print('keys are different: ', file=sys.stderr)
-    #     dreambox.utils.print_structure(key_difference)
-    #     to_json_env.update((key, from_json_env)
-    #        for key in from_json_env.viewkeys() - to_json_env.viewkeys())
-    #     key_mismatch = to_json_env
 
     # find different values in target hash by comparsion with source one
-    # delta = [elem for elem in from_json_env
-    #             if not (from_json_env[elem] == to_json_env[elem])]
     delta = {}
     for elem in from_json_env:
         if elem in to_json_env and not (from_json_env[elem] == to_json_env[elem]):
