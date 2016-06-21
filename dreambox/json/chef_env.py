@@ -35,8 +35,14 @@ two; otherwise, return None
     #     key_mismatch = to_json_env
 
     # find different values in target hash by comparsion with source one
-    delta = [elem for elem in from_json_env
-                if not (from_json_env[elem] == to_json_env[elem])]
+    # delta = [elem for elem in from_json_env
+    #             if not (from_json_env[elem] == to_json_env[elem])]
+    delta = {}
+    for elem in from_json_env:
+        if elem in to_json_env and not (from_json_env[elem] == to_json_env[elem]):
+            delta[elem] = to_json_env[elem]
+        else:
+            delta[elem] = from_json_env[elem]
 
     return key_mismatch, delta
 
