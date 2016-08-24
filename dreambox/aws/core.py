@@ -13,7 +13,7 @@ class DryRunError(sh.ErrorReturnCode):
 
 def __aws(cmd=None, subcmd=None, **kwargs):
     '''
-__aws is a base function to support all awscli commands, and 
+__aws is a base function to support all awscli commands, and
 sub-commands.  The function takes the following parameters,
 
 * cmd is any valid awscli command
@@ -34,9 +34,9 @@ available.
         aws_func = getattr(aws, cmd)
     else:
       raise Exception('cmd %s is not support by awscli' % cmd)
-  
+
     # if verbose is set, print out what is command line constructed.
-    # verbose is not a valid awscli command options, so we have to 
+    # verbose is not a valid awscli command options, so we have to
     # delete it before we pass into awscli ccommand
     verbose = False
     if 'verbose' in kwargs and kwargs['verbose']:
@@ -130,7 +130,7 @@ operations
 
 def redshift(*args, **kwargs):
     '''
- redshift is a function that performs a command aws redshift coperations 
+ redshift is a function that performs a command aws redshift coperations
     '''
     redshift_json_obj = __aws('redshift', *args, **kwargs)
 
@@ -139,7 +139,7 @@ def redshift(*args, **kwargs):
 
 def s3api(*args, **kwargs):
     '''
- s3api is a function that performs aws a3api operations 
+ s3api is a function that performs aws a3api operations
     '''
     s3api_json_obj = None
     try:
@@ -172,7 +172,7 @@ returns.
 
 def s3(cmd, *args, **kwargs):
     '''
- s3 is a function that performs aws a3 operations 
+ s3 is a function that performs aws a3 operations
     '''
     output = None
     try:
