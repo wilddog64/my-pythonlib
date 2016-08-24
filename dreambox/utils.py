@@ -145,7 +145,7 @@ def chunk_list(seq=None, chunk_size=2):
     return list(chunks(chunk_size, seq))
 
 
-def get_epoch_time():
+def get_epoch_time(expiration):
     '''
 get_epoch_time return current epoch time
     '''
