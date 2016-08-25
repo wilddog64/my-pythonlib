@@ -271,11 +271,11 @@ if __name__ == '__main__':
     print()
     print('testing get_delta_set', file=sys.stderr)
     print('---------------------------', file=sys.stderr)
-    prod_json = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'
-    stage1_json =  '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/stage1.json'
-    prod_json, prod_dirname, prod_filename = load_chef_environment_attributes(prod_json, section='cookbook_versions')
+    prod_json                                    = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/production.json'
+    stage1_json                                  = '/Users/chengkai.liang/src/gitrepo/dreambox/chef/environments/stage1.json'
+    prod_json, prod_dirname, prod_filename       = load_chef_environment_attributes(prod_json, section='cookbook_versions')
     stage1_json, stage1_dirname, stage1_filename = load_chef_environment_attributes(stage1_json, section='cookbook_versions')
-    missing_cookbooks, mismatch_values = get_delta_set(prod_json, stage1_json)
+    missing_cookbooks, mismatch_values           = get_delta_set(prod_json, stage1_json)
     if missing_cookbooks:
         print('keys looks different are: ', file=sys.stderr)
         dreambox.utils.print_structure(missing_cookbooks)
