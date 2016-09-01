@@ -92,12 +92,12 @@ def product_disable_maintenance_mode():
 
 
 def product_get_config_value(config_key):
-    result = run('''sudo bash -l -c "cd /home/mongrel/Product/current ; source %s ; export RAILS_ENV=production ; bundle exec ruby script/runner 'puts Setup.get_config(\\\\\"%s\\\\\") ' " ''' % (RVM_ENV, config_key ) )
+    result = run('''sudo bash -l -c "cd /home/mongrel/Product/current ; source %s ; export RAILS_ENV=production ; bundle exec rails runner 'puts Setup.get_config(\\\\\"%s\\\\\") ' " ''' % (RVM_ENV, config_key ) )
     return result
 
 
 def product_set_config_value(config_key, config_value):
-    run('''sudo bash -l -c "cd /home/mongrel/Product/current ; source %s ; export RAILS_ENV=production ; bundle exec ruby script/runner 'Setup.set_config(\\\\\"%s\\\\\", \\\\\"%s\\\\\") ' " ''' % (RVM_ENV, config_key, str(config_value)) )
+    run('''sudo bash -l -c "cd /home/mongrel/Product/current ; source %s ; export RAILS_ENV=production ; bundle exec rails runner 'Setup.set_config(\\\\\"%s\\\\\", \\\\\"%s\\\\\") ' " ''' % (RVM_ENV, config_key, str(config_value)) )
     if product_get_config_value(config_key) == str(config_value):
         logger.info("New value for config key %s is %s" % (config_key, config_value))
         return True
@@ -121,11 +121,11 @@ def api_migrate():
 
 
 def setup_sequencing():
-    run('sudo bash -l -c "cd /home/mongrel/Product/current ; source %s ; env RAILS_ENV=production bundle exec ruby script/runner SetupSequences.setup_sequencing"' % RVM_ENV)
+    run('sudo bash -l -c "cd /home/mongrel/Product/current ; source %s ; env RAILS_ENV=production bundle exec rails runner SetupSequences.setup_sequencing"' % RVM_ENV)
 
 
 def import_email_templates():
-    run('sudo bash -l -c "cd /home/mongrel/Product/current ; source %s ; env RAILS_ENV=production bundle exec ruby script/runner Templates.import"' % RVM_ENV)
+    run('sudo bash -l -c "cd /home/mongrel/Product/current ; source %s ; env RAILS_ENV=production bundle exec rails runner Templates.import"' % RVM_ENV)
 
 
 def import_all_intermediate_items():
