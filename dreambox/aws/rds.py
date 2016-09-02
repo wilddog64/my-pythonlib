@@ -42,10 +42,24 @@ base on the SnapshotCreateTime. This function takes the following parameters,
     db_snapshots = describe_rds_snapshots(profile=profile,
                                           region=region,
                                           env_prefix=env_prefix)
-    return sorted(db_snapshots, key=)
+    sort_key = 'SnapshotCreateTime'
+    decorated = []
+    try:
+        decorated = [(dateutil.parser.parse(dict_[sort_key]), dict_) for dict_ in db_snapshots]
+        decorated.sort(reverse=True)
+    except ValueError as ve:
+        print(ve)
+    return [dict_ for (key, dict_) in decorated]
+
+    return db_snapshots
 
 if __name__ == '__main__':
     print('--- testing describe_rds_snapshots ---')
     rds_db_snapshots = describe_rds_snapshots(env_prefix='playbackup')
     dreambox.utils.print_structure(rds_db_snapshots)
     print('--- testing describe_rds_snapshots ---')
+    print('')
+    print('--- testing get_latest_rds_snapshot')
+    rds_snapshots = get_latest_rds_snapshot(env_prefix='playbackup')
+    dreambox.utils.print_structure(rds_snapshots)
+    print('--- testing get_latest_rds_snapshot')
