@@ -49,7 +49,7 @@ base on the SnapshotCreateTime. This function takes the following parameters,
         decorated.sort(reverse=True)
     except ValueError as ve:
         print(ve)
-    return [dict_ for (key, dict_) in decorated]
+    return [dict_ for (key, dict_) in decorated][0]
 
     return db_snapshots
 
