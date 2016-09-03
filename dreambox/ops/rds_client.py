@@ -16,15 +16,8 @@ base on the SnapshotCreateTime. This function takes the following parameters,
 	    None, it will search for us-east-1 and us-west-2.
 * env_prefix - an environment prefix like stage1, ..., stage9
     '''
-    db_snapshots = rds.describe_rds_snapshots(profile=profile,
-					      region=region,
-					      env_prefix=env_prefix)
-    sort_key = 'SnapshotCreateTime'
-    decorated = []
-    decorated = [(dateutil.parser.parse(dict_[sort_key]), dict_) for dict_ in db_snapshots]
-    decorated.sort(reverse=True)
 
-    return [dict_ for (key, dict_) in decorated][0]
+    return get_sorted_rds_snapshots(profile=profile, region=region, env_prefix=env_prefix)[0]
 
 def get_sorted_rds_snapshots(profile='', region='us-east-1', env_prefix=''):
     '''
