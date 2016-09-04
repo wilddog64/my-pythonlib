@@ -22,7 +22,8 @@ base on the SnapshotCreateTime. This function takes the following parameters,
 
 def get_sorted_rds_snapshots(profile='', region='us-east-1', env_prefix=''):
     '''
-get_sorted_rds_snapshots is a function return a list of ordered rds snapshots based on their creatioin time (base on SnapshotCreateTime). The function takes the following parameters
+get_sorted_rds_snapshots is a function return a list of ordered rds snapshots based on their creatioin time 
+(base on SnapshotCreateTime). The function takes the following parameters
 
 * profile - an aws profile that provide credential information.  If this is
 	    None, it will first look at a default profile setting at
