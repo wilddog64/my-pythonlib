@@ -2,6 +2,7 @@ from __future__ import print_function
 import dreambox.aws.rds as rds
 import dreambox.utils
 import dateutil.parser
+import datetime
 
 def get_latest_rds_snapshot(profile='', region='us-east-1', env_prefix=''):
     '''
@@ -41,6 +42,16 @@ get_sorted_rds_snapshots is a function return a list of ordered rds snapshots ba
 
     return [dict_ for (key, dict_) in decorated]
 
+def sort_g2_rds_snapshot_by_second_key(profile='', region='us-east-1', env_prefix='', sort_key='DBInstanceIdentifier'):
+    '''
+sort_g2_rds_snapshot_by_second_key is a function that return a sorted list bases second key in the same list
+    '''
+    snapshopts = get_sorted_rds_snapshots(profile=profile, region=region, env_prefix=env_prefix)
+    decorated = [(dict_[sort_key][-1], dict_) for dict_ in snapshopts]
+    sorted_list = [dict_ for (key, dict_) in decorated]
+
+    return sorted_list
+
 if __name__ == '__main__':
     print('--- testing get_latest_rds_snapshot')
     rds_snapshots = get_latest_rds_snapshot(env_prefix='playbackup')
@@ -51,4 +62,9 @@ if __name__ == '__main__':
     sorted_snapshots = get_sorted_rds_snapshots(region='us-east-1', env_prefix='production-g2')
     dreambox.utils.print_structure(sorted_snapshots)
     print('--- testing get_sorted_rds_snaphots')
+    print('')
+    print('--- testing sort_g2_rds_snapshot_by_second_key')
+    g2_rds_snapshots = sort_g2_rds_snapshot_by_second_key(region='us-east-1', env_prefix='production-g2')
+    dreambox.utils.print_structure(g2_rds_snapshots[0:5])
+    print('--- testing sort_g2_rds_snapshot_by_second_key')
 
