@@ -1,8 +1,6 @@
 from __future__ import print_function
 import dreambox.aws.core as aws
 import dreambox.utils
-import datetime
-import dateutil.parser 
 
 def describe_rds_snapshots(profile='', region='us-east-1', env_prefix=''):
     '''
