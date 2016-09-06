@@ -69,6 +69,29 @@ get_g2_rds_snapshots is a function that returns a hash of arrays whose key is a 
 
     return hash_table
 
+def get_latest_g2_snapshot_older_than_play(profile='', region=''):
+    '''
+get_latest_g2_snapshot_older_than_play is a function that will return a list of g2 rds snapshots
+that the latest one but older then current play rds backup. The function takes the following
+parameters,
+
+* profile - an aws profile that provide credential information.  If this is
+	    None, it will first look at a default profile setting at
+	    ~/.aws/config. If it cannot find default profile, it will use node
+	    IAM profile if there's one exist for a given node.
+* regions - a list of regions to search for a target environment. If this is
+	    None, it will search for us-east-1 and us-west-2.
+    '''
+    latest_playbackup = get_latest_rds_snapshot(profile=profile, region=region, env_prefix='playbackup')
+    playbackup_create_time = dateutil.parser.parse(latest_playbackup['SnapshotCreateTime'])
+    g2_rds_snapshots = get_g2_rds_snapshots(profile=profile, region=region)
+    g2_timestamp_key = str((playbackup_create_time - datetime.timedelta(hours=24)).date())
+    latest_g2_snapshot = None
+    if g2_timestamp_key in g2_rds_snapshots:
+        latest_g2_snapshot = g2_rds_snapshots[g2_timestamp_key]
+
+    return latest_g2_snapshot
+
 if __name__ == '__main__':
     print('--- testing get_latest_rds_snapshot')
     rds_snapshots = get_latest_rds_snapshot(env_prefix='playbackup')
@@ -84,8 +107,8 @@ if __name__ == '__main__':
     rds_snapshots = get_latest_rds_snapshot(region='us-west-2', env_prefix='apibackup')
     dreambox.utils.print_structure(rds_snapshots)
     print('--- testing get apibackup_snapshot')
-    print('--- testing get_sorted_rds_snaphots')
     print('')
+    print('--- testing get_sorted_rds_snaphots')
     sorted_snapshots = get_sorted_rds_snapshots(region='us-east-1', env_prefix='production-g2')
     dreambox.utils.print_structure(sorted_snapshots)
     print('--- testing get_sorted_rds_snaphots')
@@ -94,4 +117,9 @@ if __name__ == '__main__':
     g2_rds_snapshots = get_g2_rds_snapshots(region='us-east-1')
     dreambox.utils.print_structure(g2_rds_snapshots)
     print('--- testing get_g2_rds_snapshots')
+    print('')
+    print('--- testing get_latest_g2_snapshot_older_than_play ---')
+    latest_g2_snapshot = get_latest_g2_snapshot_older_than_play(region='us-east-1')
+    dreambox.utils.print_structure(latest_g2_snapshot)
+    print('--- testing get_latest_g2_snapshot_older_than_play ---')
 
