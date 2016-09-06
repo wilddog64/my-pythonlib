@@ -19,10 +19,11 @@ caller. The function takes the following parameters:
     '''
     db_snapshots = []
     if env_prefix != '':
-        db_snapshots = [s for s in aws.rds('describe-db-snapshots', profile=profile, region='us-east-1')['DBSnapshots'] 
-                if env_prefix.lower() in s['DBSnapshotIdentifier'].lower()]
+        for db_snapshot in aws.rds('describe-db-snapshots', profile=profile, region=region)['DBSnapshots']:
+            if env_prefix.lower() in db_snapshot['DBSnapshotIdentifier']:
+                db_snapshots.append(db_snapshot)
     else:
-        db_snapshots = [s for s in aws.rds('describe-db-snapshots', profile=profile, region='us-east-1')['DBSnapshots']]
+        db_snapshots = [s for s in aws.rds('describe-db-snapshots', profile=profile, region=region)['DBSnapshots']]
 
     return db_snapshots
 
