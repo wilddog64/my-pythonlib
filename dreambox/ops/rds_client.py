@@ -82,11 +82,11 @@ parameters,
 * regions - a list of regions to search for a target environment. If this is
 	    None, it will search for us-east-1 and us-west-2.
     '''
-    latest_playbackup = get_latest_rds_snapshot(profile=profile, region=region, env_prefix='playbackup')
-    playbackup_create_time = dateutil.parser.parse(latest_playbackup['SnapshotCreateTime'])
-    g2_rds_snapshots = get_g2_rds_snapshots(profile=profile, region=region)
-    g2_timestamp_key = str((playbackup_create_time - datetime.timedelta(hours=24)).date())
-    latest_g2_snapshot = None
+    latest_playbackup       = get_latest_rds_snapshot(profile=profile, region=region, env_prefix='playbackup')
+    playbackup_create_time  = dateutil.parser.parse(latest_playbackup['SnapshotCreateTime'])
+    g2_rds_snapshots        = get_g2_rds_snapshots(profile=profile, region=region)
+    g2_timestamp_key        = str((playbackup_create_time - datetime.timedelta(hours=24)).date())
+    latest_g2_snapshot      = None
     while True:
         if g2_timestamp_key in g2_rds_snapshots:
             latest_g2_snapshot = g2_rds_snapshots[g2_timestamp_key]
