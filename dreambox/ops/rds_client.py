@@ -85,7 +85,7 @@ parameters,
     latest_playbackup       = get_latest_rds_snapshot(profile=profile, region=region, env_prefix='playbackup')
     playbackup_create_time  = dateutil.parser.parse(latest_playbackup['SnapshotCreateTime'])
     g2_rds_snapshots        = get_g2_rds_snapshots(profile=profile, region=region)
-    g2_timestamp_key        = str((playbackup_create_time - datetime.timedelta(hours=24)).date())
+    g2_timestamp_key        = str((playbackup_create_time - datetime.timedelta(days=1)).date())
     latest_g2_snapshot      = None
     while True:
         if g2_timestamp_key in g2_rds_snapshots:
