@@ -50,7 +50,7 @@ class Jenkins(object):
                     for job in self._server.get_all_jobs()}
         return self._jobs
     
-    def job_info(self, job_name=''):
+    def _get_job_info(self, job_name=''):
         return self._server.get_job_info(job_name)
 
 if __name__ == '__main__':
@@ -61,4 +61,4 @@ if __name__ == '__main__':
     dreambox.utils.print_structure(devops_jenkins.jobs)
     if 'build_terraform' in devops_jenkins.jobs:
         print('job url: %s' % devops_jenkins.jobs['build_terraform'])
-        dreambox.utils.print_structure(devops_jenkins.job_info('build_terraform'))
+        dreambox.utils.print_structure(devops_jenkins._get_job_info('build_terraform'))
