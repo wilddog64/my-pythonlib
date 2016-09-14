@@ -12,6 +12,7 @@ class Jenkins(object):
         self._user    = self._config['user']
         self._passwd  = self._config['password']
         self._url     = self._config['url']
+        self._jobs    = None
         self._server = jenkins.Jenkins(self._url, self._user, self._passwd)
 
     @property
@@ -42,7 +43,18 @@ class Jenkins(object):
     def server(self):
         return self._server.server
 
+    @property
+    def jobs(self):
+        if self._jobs is None:
+            self._jobs = {job['fullname']: job['url'] 
+                    for job in self._server.get_all_jobs()}
+        return self._jobs
+
 if __name__ == '__main__':
+    import dreambox.utils
     devops_jenkins = Jenkins('jenkins.ini', 'stage-devops-jenkins')
     print('jenkins server url: %s' % devops_jenkins.server)
     print('jenkins server user: %s' % devops_jenkins.user)
+    dreambox.utils.print_structure(devops_jenkins.jobs)
+    if 'build_terraform' in devops_jenkins.jobs:
+        print('job url: %s' % devops_jenkins.jobs['build_terraform'])
