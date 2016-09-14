@@ -7,13 +7,24 @@ class Jenkins(object):
     def __init__(self, jenkins_config_file='', section=''):
         self._config = None
         if jenkins_config_file == '':
-            jenkins_config_file = 'jenkins.ini'
-        self._config = inifile.config_section_map(jenkins_config_file, section)
+            self._jenkins_config_file = 'jenkins.ini'
+        else:
+            self._jenkins_config_file = jenkins_config_file
+        self._section = section
+        self._config = inifile.config_section_map(self._jenkins_config_file, section)
         self._user    = self._config['user']
         self._passwd  = self._config['password']
         self._url     = self._config['url']
         self._jobs    = None
         self._server = jenkins.Jenkins(self._url, self._user, self._passwd)
+
+    @property
+    def config_file(self):
+        return self._jenkins_config_file
+
+    @property
+    def section(self):
+        return self._section
 
     @property
     def user(self):
@@ -56,6 +67,7 @@ class Jenkins(object):
 if __name__ == '__main__':
     import dreambox.utils
     devops_jenkins = Jenkins('jenkins.ini', 'stage-devops-jenkins')
+    print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
     print('jenkins server user: %s' % devops_jenkins.user)
     dreambox.utils.print_structure(devops_jenkins.jobs)
