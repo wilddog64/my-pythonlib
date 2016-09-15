@@ -1,4 +1,5 @@
 from __future__ import print_function
+from collections import namedtuple
 import jenkins
 import dreambox.config.core as inifile
 
@@ -17,6 +18,7 @@ class Jenkins(object):
         self._url     = self._config['url']
         self._jobs    = None
         self._server = jenkins.Jenkins(self._url, self._user, self._passwd)
+        self._job = namedtuple('Job', ['name', 'url'])
 
     @property
     def config_file(self):
@@ -57,7 +59,7 @@ class Jenkins(object):
     @property
     def jobs(self):
         if self._jobs is None:
-            self._jobs = {job['fullname']: job['url'] 
+            self._jobs = {job['name']: (self._job(job['name'], job['url']) )
                     for job in self._server.get_all_jobs()}
         return self._jobs
     
@@ -72,5 +74,5 @@ if __name__ == '__main__':
     print('jenkins server user: %s' % devops_jenkins.user)
     dreambox.utils.print_structure(devops_jenkins.jobs)
     if 'build_terraform' in devops_jenkins.jobs:
-        print('job url: %s' % devops_jenkins.jobs['build_terraform'])
+        print('job url: %s' % devops_jenkins.jobs['build_terraform'].url)
         dreambox.utils.print_structure(devops_jenkins._get_job_info('build_terraform'))
