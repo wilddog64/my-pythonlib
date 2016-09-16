@@ -60,7 +60,7 @@ class Jenkins(object):
     @property
     def jobs(self):
         if self._jobs is None:
-            self._jobs = {job['name']: (self._job(job['name'], job['url'], self._get_job_info(job['name'])))
+            self._jobs = {job['name']: (self._job(job['name'], job['url'], self._get_job_parameters(job['name'])))
                     for job in self._server.get_all_jobs()}
         return self._jobs
     
@@ -68,7 +68,16 @@ class Jenkins(object):
         return self._server.get_job_info(job_name)
 
     def _get_job_parameters(self, job_name=''):
-        return self._get_job_info(job_name=job_name)['actions'][0]['parameterDefinitions']
+        params = {}
+        for p in self._get_job_info(job_name=job_name)['property'][0]['parameterDefinitions']:
+            params['name'] = p['name']
+            params['type'] = p['type']
+            if 'defaultParameterValue' in p and 'value' in p['defaultParameterValue']:
+                params[p['name']] = p['defaultParameterValue']['value']
+            else:
+                params[p['name']] = ''
+
+        return params
 
 if __name__ == '__main__':
     import dreambox.utils
@@ -76,8 +85,8 @@ if __name__ == '__main__':
     print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
     print('jenkins server user: %s' % devops_jenkins.user)
-    dreambox.utils.print_structure(devops_jenkins.jobs)
-    if 'build_terraform' in devops_jenkins.jobs:
+    # dreambox.utils.print_structure(devops_jenkins.jobs)
+    if 'environment_create' in devops_jenkins.jobs:
         print('job url: %s' % devops_jenkins.jobs['build_terraform'].url)
         print('---- job info ---')
         build_terraform_info = devops_jenkins._get_job_info('build_terraform')
@@ -86,3 +95,8 @@ if __name__ == '__main__':
         dreambox.utils.print_structure(build_terraform_info['actions'][0]['parameterDefinitions'])
         print('')
         print('--- job parameters ---')
+        dreambox.utils.print_structure(devops_jenkins._get_job_info('build_terraform'))
+        print('')
+        print('--- job info ---')
+        dreambox.utils.print_structure(devops_jenkins.jobs['environment_create'])
+        print('')
