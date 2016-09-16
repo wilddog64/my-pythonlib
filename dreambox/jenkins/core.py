@@ -60,16 +60,15 @@ class Jenkins(object):
     @property
     def jobs(self):
         if self._jobs is None:
-            self._jobs = {job['name']: (self._job(job['name'], job['url'], '') )
+            self._jobs = {job['name']: (self._job(job['name'], job['url'], self._get_job_info(job['name'])))
                     for job in self._server.get_all_jobs()}
-
         return self._jobs
     
     def _get_job_info(self, job_name=''):
         return self._server.get_job_info(job_name)
 
     def _get_job_parameters(self, job_name=''):
-        return self._get_job_info(job_name=job_name)['actions']['parameterDefinitions']
+        return self._get_job_info(job_name=job_name)['actions'][0]['parameterDefinitions']
 
 if __name__ == '__main__':
     import dreambox.utils
@@ -80,4 +79,10 @@ if __name__ == '__main__':
     dreambox.utils.print_structure(devops_jenkins.jobs)
     if 'build_terraform' in devops_jenkins.jobs:
         print('job url: %s' % devops_jenkins.jobs['build_terraform'].url)
-        dreambox.utils.print_structure(devops_jenkins._get_job_info('build_terraform'))
+        print('---- job info ---')
+        build_terraform_info = devops_jenkins._get_job_info('build_terraform')
+        dreambox.utils.print_structure(build_terraform_info)
+        print('')
+        dreambox.utils.print_structure(build_terraform_info['actions'][0]['parameterDefinitions'])
+        print('')
+        print('--- job parameters ---')
