@@ -11,14 +11,15 @@ class Jenkins(object):
             self._jenkins_config_file = 'jenkins.ini'
         else:
             self._jenkins_config_file = jenkins_config_file
-        self._section = section
-        self._config = inifile.config_section_map(self._jenkins_config_file, section)
-        self._user    = self._config['user']
-        self._passwd  = self._config['password']
-        self._url     = self._config['url']
-        self._jobs    = None
-        self._server = jenkins.Jenkins(self._url, self._user, self._passwd)
-        self._job = namedtuple('Job', ['name', 'url'])
+        self._section        = section
+        self._config         = inifile.config_section_map(self._jenkins_config_file, section)
+        self._user           = self._config['user']
+        self._passwd         = self._config['password']
+        self._url            = self._config['url']
+        self._jobs           = None
+        self._server         = jenkins.Jenkins(self._url, self._user, self._passwd)
+        self._job            = namedtuple('Job', ['name', 'url', 'parameters'])
+        self._job_parameters = namedtuple('Parameters', ['name', 'value'])
 
     @property
     def config_file(self):
@@ -59,12 +60,16 @@ class Jenkins(object):
     @property
     def jobs(self):
         if self._jobs is None:
-            self._jobs = {job['name']: (self._job(job['name'], job['url']) )
+            self._jobs = {job['name']: (self._job(job['name'], job['url'], '') )
                     for job in self._server.get_all_jobs()}
+
         return self._jobs
     
     def _get_job_info(self, job_name=''):
         return self._server.get_job_info(job_name)
+
+    def _get_job_parameters(self, job_name=''):
+        return self._get_job_info(job_name=job_name)['actions']['parameterDefinitions']
 
 if __name__ == '__main__':
     import dreambox.utils
