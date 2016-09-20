@@ -1,10 +1,10 @@
 from __future__ import print_function
 from collections import Sequence
-import dreambox.jenkins.core
+from dreambox.jenkins import core
 
-class JobInfo(dreambox.jenkins.core.Jenkins):
-    def __init__(self, jenkins_config_file='', section='', job_name=''):
-        super(JobInfo, self).__init__(jenkins_config_file=jenkins_config_file, section=section)
+class JobInfo(core):
+    def __init__(self, jenkins_config_file='', section=''):
+        super(self).__init__(jenkins_config_file=jenkins_config_file, section=section)
         self._name        = ''
         self._url         = ''
         self._parameters  = []
