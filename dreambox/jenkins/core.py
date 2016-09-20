@@ -1,6 +1,5 @@
 from __future__ import print_function
 from collections import namedtuple
-import jenkins
 import dreambox.config.core as inifile
 
 class Jenkins(object):
@@ -12,12 +11,12 @@ class Jenkins(object):
         else:
             self._jenkins_config_file = jenkins_config_file
         self._section        = section
+        self._name           = self._section
         self._config         = inifile.config_section_map(self._jenkins_config_file, section)
         self._user           = self._config['user']
         self._passwd         = self._config['password']
         self._url            = self._config['url']
         self._jobs           = None
-        self._server         = jenkins.Jenkins(self._url, self._user, self._passwd)
         self._job            = namedtuple('Job', ['name', 'url', 'parameters'])
         self._job_parameters = namedtuple('Parameters', ['name', 'value'])
 
@@ -63,6 +62,13 @@ class Jenkins(object):
             self._jobs = {job['name']: (self._job(job['name'], job['url'], self._get_job_parameters(job['name'])))
                     for job in self._server.get_all_jobs()}
         return self._jobs
+
+    @property
+    def name(self):
+        '''
+        an alias for the self.section property
+        '''
+        return self._name
     
     def _get_job_info(self, job_name=''):
         return self._server.get_job_info(job_name)
