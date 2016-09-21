@@ -80,7 +80,7 @@ class JobInfos(Sequence):
         # the list values will raise the error
         if index > len(self):
             raise IndexError('index %s is out of range' % index)
-        return self._cells[index]
+        return self._jobinfos[index]
     
     def __setitem__(self, index, value):
         '''
@@ -88,7 +88,7 @@ class JobInfos(Sequence):
         exception if value is not a type of Cell
         '''
         if type(value) is JobInfo:
-            self._cells[index] = value
+            self._jobinfos[index] = value
         else:
             raise TypeError('invalid type. it has to be a type of Cell')
     
@@ -97,7 +97,7 @@ class JobInfos(Sequence):
         delete a element for a given index. The allow us to do
         del row[0], where row is a type of Row
         '''
-        del self._cells[index]
+        del self._jobinfos[index]
     
     def __iter__(self):
         '''
@@ -105,7 +105,7 @@ class JobInfos(Sequence):
         for cell in row:  # row is a type of Row
           ...
         '''
-        return iter(self._cells)
+        return iter(self._jobinfos)
    
     def __iadd__(self, other):
         '''
@@ -114,7 +114,7 @@ class JobInfos(Sequence):
 
         * other is a instance of Cell object
         '''
-        self._cells.append(self._add_cell(other))
+        self._jobinfos.append(self._add_cell(other))
         return self
 
     def append(self, other):
@@ -126,22 +126,22 @@ class JobInfos(Sequence):
 
         An TypeError exception will be thrown if other is not a type of Cell
         '''
-        self._cells.append(self._add_cell(other))
+        self._jobinfos.append(self._add_cell(other))
 
     @property
     def head(self):
         # get the first element
-        return self._cells[0]
+        return self._jobinfos[0]
 
     @property
     def tail(self):
         # get all elements after the first
-        return self._cells[1:]
+        return self._jobinfos[1:]
 
     @property
     def last(self):
         # get last element
-        return self._cells[-1]
+        return self._jobinfos[-1]
 
     @property
     def columns(self):
@@ -175,11 +175,11 @@ class JobInfos(Sequence):
 
     def drop(self, n):
         # get all elements except first n
-        return self._cells[n:]
+        return self._jobinfos[n:]
 
     def take(self, n):
         # get first n elements
-        return self._cells[:n]
+        return self._jobinfos[:n]
 
     def range(self, start=0, end=0, row_abs=False, col_abs=False):
         '''
@@ -220,7 +220,7 @@ class JobInfos(Sequence):
                 if other.column == 0:
                     other.column = self._column
             else:
-                if len(self._cells) > 0:
+                if len(self._jobinfos) > 0:
                     if other.column == 0:
                         other.column = self.last.column + 1
                     other.row = self._row
