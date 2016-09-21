@@ -2,9 +2,11 @@ from __future__ import print_function
 from collections import Sequence
 from dreambox.jenkins import core
 
-class JobInfo(core):
-    def __init__(self, jenkins_config_file='', section=''):
-        super(self).__init__(jenkins_config_file=jenkins_config_file, section=section)
+class JobInfo(object):
+    def __init__(self, object):
+        if not type(object) is core:
+            raise TypeError('%s has to be a type of Jenkins' % object.__class__)
+        self._server = object
         self._name        = ''
         self._url         = ''
         self._parameters  = []
@@ -58,7 +60,7 @@ class JobInfo(core):
         what's defined in a given jenkins server.
         '''
         pass
-        # self._server.build_job(self.name, )
+        self._server.build_job(self.name, )
 
 class JobInfos(Sequence):
     '''A Row class wrapping a list with some extra functional magic, like head,
