@@ -101,11 +101,11 @@ class Jenkins(object):
 
         jobinfos = dreambox.jenkins.JobInfo.JobInfos()
         for job in object.jobs:
-            jobinfo = dreambox.jenkins.JobInfo.JobInfo(object)
+            jobinfo      = dreambox.jenkins.JobInfo.JobInfo(object)
             jobinfo.name = job
             jobinfo.url  = object.jobs[job].url
-            params = {}
-            parameters = object._get_job_info(jobinfo.name)
+            params       = {}
+            parameters   = object._get_job_info(jobinfo.name)
             for p in parameters['property'][0]['parameterDefinitions']:
                 params['name'] = p['name']
                 params['type'] = p['type']
