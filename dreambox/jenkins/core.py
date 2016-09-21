@@ -2,6 +2,7 @@ from __future__ import print_function
 from collections import namedtuple
 import dreambox.config.core as inifile
 import jenkins
+import dreambox.jenkins
 
 class Jenkins(object):
 
@@ -86,6 +87,38 @@ class Jenkins(object):
                 params[p['name']] = ''
 
         return params
+
+    @classmethod
+    def create_jobinfos(self, object):
+        '''
+        is a static method that create a JobInfos collection. This
+        method takes one parameter
+
+        object is an object of type dreambox.jenkins.core.Jenkins
+        '''
+        if type(object) is not Jenkins:
+            raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
+
+        jobinfos = dreambox.jenkins.JobInfo.JobInfos()
+        for job in object.jobs:
+            print('job name %s' % job)
+            jobinfo = dreambox.jenkins.JobInfo.JobInfo(object)
+            jobinfo.name = job
+            jobinfo.url  = object.jobs[job].url
+            params = {}
+            for p in object._get_job_info(jobinfo.name)['property'][0]['parameterDefinitions']:
+                params['name'] = p['name']
+                params['type'] = p['type']
+                if 'defaultParameterValue' in p and 'value' in p['defaultParameterValue']:
+                    params[p['name']] = p['defaultParameterValue']['value']
+                else:
+                    params[p['name']] = ''
+                jobinfo.parameters.append(params)
+            jobinfos += jobinfo
+
+        return jobinfos
+
+
 
 if __name__ == '__main__':
     import dreambox.utils
