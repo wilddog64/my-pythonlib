@@ -59,7 +59,6 @@ class JobInfo(object):
         takes a keyword parameters that should match
         what's defined in a given jenkins server.
         '''
-        pass
         self._server.build_job(self.name, params)
 
 class JobInfos(Sequence):
