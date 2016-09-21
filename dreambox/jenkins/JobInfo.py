@@ -103,7 +103,7 @@ class JobInfos(Sequence):
     def __iter__(self):
         '''
         return an iterable object back. This allow us to do
-        for jobinfo in jobinfos:  jobinfor is a type of JobInfo
+        for jobinfo in jobinfos:  jobinfo is a type of JobInfo
           ...
         '''
         return iter(self._jobinfos)
