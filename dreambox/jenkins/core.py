@@ -101,7 +101,6 @@ class Jenkins(object):
 
         jobinfos = dreambox.jenkins.JobInfo.JobInfos()
         for job in object.jobs:
-            print('job name %s' % job)
             jobinfo = dreambox.jenkins.JobInfo.JobInfo(object)
             jobinfo.name = job
             jobinfo.url  = object.jobs[job].url
