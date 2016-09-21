@@ -1,6 +1,7 @@
 from __future__ import print_function
 from collections import namedtuple
 import dreambox.config.core as inifile
+import jenkins
 
 class Jenkins(object):
 
@@ -17,6 +18,7 @@ class Jenkins(object):
         self._passwd         = self._config['password']
         self._url            = self._config['url']
         self._jobs           = None
+        self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
         self._job            = namedtuple('Job', ['name', 'url', 'parameters'])
         self._job_parameters = namedtuple('Parameters', ['name', 'value'])
 
