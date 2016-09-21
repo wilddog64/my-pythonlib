@@ -106,7 +106,8 @@ class Jenkins(object):
             jobinfo.name = job
             jobinfo.url  = object.jobs[job].url
             params = {}
-            for p in object._get_job_info(jobinfo.name)['property'][0]['parameterDefinitions']:
+            parameters = object._get_job_info(jobinfo.name)
+            for p in parameters['property'][0]['parameterDefinitions']:
                 params['name'] = p['name']
                 params['type'] = p['type']
                 if 'defaultParameterValue' in p and 'value' in p['defaultParameterValue']:
