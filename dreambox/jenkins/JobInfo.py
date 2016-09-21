@@ -4,7 +4,7 @@ from dreambox.jenkins import core
 
 class JobInfo(object):
     def __init__(self, object):
-        if not type(object) is core:
+        if not type(object) is core.Jenkins:
             raise TypeError('%s has to be a type of Jenkins' % object.__class__)
         self._server = object
         self._name        = ''
@@ -60,7 +60,7 @@ class JobInfo(object):
         what's defined in a given jenkins server.
         '''
         pass
-        self._server.build_job(self.name, )
+        self._server.build_job(self.name, params)
 
 class JobInfos(Sequence):
     '''A Row class wrapping a list with some extra functional magic, like head,
@@ -235,3 +235,5 @@ class JobInfos(Sequence):
 
         return other
 
+if __name__ == '__main__':
+    jenkins_svr = core.Jenkins('jenkins.ini', 'stage-jenkins-ng')
