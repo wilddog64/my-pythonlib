@@ -146,4 +146,6 @@ if __name__ == '__main__':
     jobinfos = Jenkins.create_jobinfos(devops_jenkins)
     for jobinfo in sorted(jobinfos, key=lambda j: j.name):
         print('job name: %s' % jobinfo.name)
+        print('job parameters:')
+        dreambox.utils.print_structure(jobinfo.parameters)
     print('--- testing Jenkins.create_jobinfos class method ---')
