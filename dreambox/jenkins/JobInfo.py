@@ -63,6 +63,30 @@ class JobInfo(object):
             params = self.parameters
         self._server.build_job(self.name, params)
 
+    def disable_job(self):
+        '''
+        disable a jenkins job
+        '''
+        self._server.disable_job(self.name)
+
+    def enable_job(self):
+        '''
+        enable a jenkins job
+        '''
+        self._server.enable_job(self.name)
+
+    def copy_job(self, new_job_name):
+        '''
+        copy a given job with different name
+        '''
+        self.copy_job(self.name, new_job_name)
+
+    def delete_job(self):
+        '''
+        delete a jenkins job
+        '''
+        self._server.delete_job(self.name)
+
 class JobInfos(Sequence):
     '''A Row class wrapping a list with some extra functional magic, like head,
     tail, init, last, drop, and take. This allow ups to handle Excel JobInfos more
