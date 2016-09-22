@@ -6,10 +6,10 @@ class JobInfo(object):
     def __init__(self, object):
         if not type(object) is dreambox.jenkins.core.Jenkins:
             raise TypeError('%s has to be a type of Jenkins' % object.__class__)
-        self._server = object
-        self._name        = ''
-        self._url         = ''
-        self._parameters  = {}
+        self._server     = object
+        self._name       = ''
+        self._url        = ''
+        self._parameters = {}
 
     @property
     def name(self):
