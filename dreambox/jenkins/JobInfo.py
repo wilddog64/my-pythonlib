@@ -69,7 +69,7 @@ class JobInfos(Sequence):
     easily'''
     
     def __init__(self, jobinfo=None):
-        self._jobinfos   = []
+        self._jobinfos = []
 
     def __len__(self):
         '''
