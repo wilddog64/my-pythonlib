@@ -1,10 +1,10 @@
 from __future__ import print_function
 from collections import Sequence
-from dreambox.jenkins import core
+import dreambox.jenkins.core
 
 class JobInfo(object):
     def __init__(self, object):
-        if not type(object) is core.Jenkins:
+        if not type(object) is dreambox.jenkins.core.Jenkins:
             raise TypeError('%s has to be a type of Jenkins' % object.__class__)
         self._server = object
         self._name        = ''

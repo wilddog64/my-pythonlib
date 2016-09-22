@@ -3,6 +3,7 @@ from collections import namedtuple
 import dreambox.config.core as inifile
 import jenkins
 import dreambox.jenkins
+import dreambox.jenkins.JobInfo
 
 class Jenkins(object):
 
@@ -96,7 +97,7 @@ class Jenkins(object):
 
         object is an object of type dreambox.jenkins.core.Jenkins
         '''
-        if type(object) is not Jenkins:
+        if type(object) is not dreambox.jenkins.core.Jenkins:
             raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
 
         jobinfos = dreambox.jenkins.JobInfo.JobInfos()
@@ -122,7 +123,8 @@ class Jenkins(object):
 
 if __name__ == '__main__':
     import dreambox.utils
-    devops_jenkins = Jenkins('jenkins.ini', 'stage-devops-jenkins')
+    devops_jenkins = dreambox.jenkins.core.Jenkins('jenkins.ini', 'stage-devops-jenkins')
+    print('object type for devops_jenkins is %s' % type(devops_jenkins))
     print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
     print('jenkins server user: %s' % devops_jenkins.user)
@@ -141,3 +143,8 @@ if __name__ == '__main__':
         print('--- job info ---')
         dreambox.utils.print_structure(devops_jenkins.jobs['environment_create'])
         print('')
+    print('--- testing Jenkins.create_jobinfos class method ---')
+    jobinfos = Jenkins.create_jobinfos(devops_jenkins)
+    for jobinfo in sorted(jobinfos, key=lambda j: j.name):
+        print('job name: %s' % jobinfo.name)
+    print('--- testing Jenkins.create_jobinfos class method ---')
