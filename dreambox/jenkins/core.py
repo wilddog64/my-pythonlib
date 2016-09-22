@@ -101,12 +101,12 @@ class Jenkins(object):
 
         jobinfos = dreambox.jenkins.JobInfo.JobInfos()
         for job in object.jobs:
-            jobinfo      = dreambox.jenkins.JobInfo.JobInfo(object)
-            jobinfo.name = job
-            jobinfo.url  = object.jobs[job].url
-            parameters   = object.jobs[job].parameters
+            jobinfo            = dreambox.jenkins.JobInfo.JobInfo(object)
+            jobinfo.name       = job
+            jobinfo.url        = object.jobs[job].url
+            parameters         = object.jobs[job].parameters
             jobinfo.parameters = parameters
-            jobinfos += jobinfo
+            jobinfos          += jobinfo
 
         return jobinfos
 
