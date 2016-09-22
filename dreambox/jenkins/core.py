@@ -81,7 +81,6 @@ class Jenkins(object):
         params = {}
         for p in self._get_job_info(job_name=job_name)['property'][0]['parameterDefinitions']:
             params['name'] = p['name']
-            params['type'] = p['type']
             if 'defaultParameterValue' in p and 'value' in p['defaultParameterValue']:
                 params[p['name']] = p['defaultParameterValue']['value']
             else:
@@ -105,16 +104,8 @@ class Jenkins(object):
             jobinfo      = dreambox.jenkins.JobInfo.JobInfo(object)
             jobinfo.name = job
             jobinfo.url  = object.jobs[job].url
-            params       = {}
-            parameters   = object._get_job_info(jobinfo.name)
-            for p in parameters['property'][0]['parameterDefinitions']:
-                params['name'] = p['name']
-                params['type'] = p['type']
-                if 'defaultParameterValue' in p and 'value' in p['defaultParameterValue']:
-                    params[p['name']] = p['defaultParameterValue']['value']
-                else:
-                    params[p['name']] = ''
-                jobinfo.parameters.append(params)
+            parameters   = object.jobs[job].parameters
+            jobinfo.parameters = parameters
             jobinfos += jobinfo
 
         return jobinfos
@@ -137,15 +128,15 @@ if __name__ == '__main__':
         dreambox.utils.print_structure(build_terraform_info['actions'][0]['parameterDefinitions'])
         print('')
         print('--- job parameters ---')
-        dreambox.utils.print_structure(devops_jenkins._get_job_info('build_terraform'))
+        dreambox.utils.print_structure(devops_jenkins._get_job_parameters('build_terraform'))
         print('')
         print('--- job info ---')
         dreambox.utils.print_structure(devops_jenkins.jobs['environment_create'])
         print('')
     print('--- testing Jenkins.create_jobinfos class method ---')
     jobinfos = Jenkins.create_jobinfos(devops_jenkins)
-    for jobinfo in sorted(jobinfos, key=lambda j: j.name):
-        print('job name: %s' % jobinfo.name)
-        print('job parameters:')
-        dreambox.utils.print_structure(jobinfo.parameters)
+    jobs = [job for job in jobinfos if job.name == 'environment_create']
+    for job in jobs:
+        print('job name %s' % job.name)
+        dreambox.utils.print_structure(job.parameters)
     print('--- testing Jenkins.create_jobinfos class method ---')

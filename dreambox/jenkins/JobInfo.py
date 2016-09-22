@@ -9,7 +9,7 @@ class JobInfo(object):
         self._server = object
         self._name        = ''
         self._url         = ''
-        self._parameters  = []
+        self._parameters  = {}
 
     @property
     def name(self):
