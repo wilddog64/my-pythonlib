@@ -168,7 +168,3 @@ class JobInfos(Sequence):
     def last(self):
         # get last element
         return self._jobinfos[-1]
-
-
-if __name__ == '__main__':
-    jenkins_svr = core.Jenkins('jenkins.ini', 'stage-jenkins-ng')
