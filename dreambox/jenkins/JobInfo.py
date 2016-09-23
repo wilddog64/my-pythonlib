@@ -10,6 +10,7 @@ class JobInfo(object):
         self._name       = ''
         self._url        = ''
         self._parameters = {}
+        self._dry_run    = False
 
     @property
     def name(self):
@@ -52,6 +53,15 @@ class JobInfo(object):
         a property to set the job parameters
         '''
         self._parameters = value
+
+    @property
+    def dry_run(self):
+        return self._dry_run
+
+    @dry_run.setter
+    def dry_run(self, value):
+        self._dry_run = value
+
 
     def build_job(self, **params):
         '''
