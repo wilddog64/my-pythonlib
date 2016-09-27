@@ -20,13 +20,6 @@ class JobInfo(object):
         '''
         return self._name
 
-    @name.setter
-    def name(self, value):
-        '''
-        a property set the name of the job
-        '''
-        self._name = value
-
     @property
     def url(self):
         '''
@@ -34,26 +27,12 @@ class JobInfo(object):
         '''
         return self._url
 
-    @url.setter
-    def url(self, value):
-        '''
-        a property allow to set the job url
-        '''
-        self._url = value
-
     @property
     def parameters(self):
         '''
         a property to return the job parameters
         '''
         return self._parameters
-
-    @parameters.setter
-    def parameters(self, value):
-        '''
-        a property to set the job parameters
-        '''
-        self._parameters = value
 
     @property
     def dry_run(self):
