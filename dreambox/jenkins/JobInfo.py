@@ -72,19 +72,19 @@ class JobInfo(object):
         '''
         if not params:
             params = self.parameters
-        self._server.build_job(self.name, params)
+        self._jenkins.build_job(self.name, params)
 
     def disable_job(self):
         '''
         disable a jenkins job
         '''
-        self._server.disable_job(self.name)
+        self._jenkins.disable_job(self.name)
 
     def enable_job(self):
         '''
         enable a jenkins job
         '''
-        self._server.enable_job(self.name)
+        self._jenkins.enable_job(self.name)
 
     def copy_job(self, new_job_name):
         '''
