@@ -116,12 +116,12 @@ class JobInfos(Sequence):
     def __setitem__(self, index, value):
         '''
         overwrite element for a given index. It will raise an TypeError
-        exception if value is not a type of Cell
+        exception if value is not a type of JobInfo
         '''
         if type(value) is JobInfo:
             self._jobinfos[index] = value
         else:
-            raise TypeError('invalid type. it has to be a type of Cell')
+            raise TypeError('invalid type. it has to be a type of JobInfo')
     
     def __delitem__(self, index):
         '''
@@ -142,19 +142,19 @@ class JobInfos(Sequence):
         '''
         allow us to do JobInfos += cell. 
 
-        * other is a instance of Cell object
+        * other is a instance of JobInfo object
         '''
         self._jobinfos.append(other)
         return self
 
     def append(self, other):
         '''
-        appends an Cell into a JobInfos. This method will calcuate current columns
+        appends an JobInfo into a JobInfos. This method will calcuate current columns
         in a JobInfos and update new cell.JobInfos property. It takes one parameter,
 
-        * other is a type of Cell
+        * other is a type of JobInfo
 
-        An TypeError exception will be thrown if other is not a type of Cell
+        An TypeError exception will be thrown if other is not a type of JobInfo
         '''
         self._jobinfos.append(other)
 
