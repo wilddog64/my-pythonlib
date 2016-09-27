@@ -7,6 +7,7 @@ class JobInfo(object):
         if not type(object) is dreambox.jenkins.core.Jenkins:
             raise TypeError('%s has to be a type of Jenkins' % object.__class__)
         self._server     = object
+        self._jenkins    = object._server
         self._name       = ''
         self._url        = ''
         self._parameters = {}
@@ -95,7 +96,11 @@ class JobInfo(object):
         '''
         delete a jenkins job
         '''
-        self._server.delete_job(self.name)
+        self._jenkins.delete_job(self.name)
+
+    def get_job_config(self):
+        job_config = self._jenkins.get_job_config(self.name)
+        return self._server._load_xml(job_config)
 
 class JobInfos(Sequence):
     '''A Row class wrapping a list with some extra functional magic, like head,

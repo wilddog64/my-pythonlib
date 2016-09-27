@@ -1,9 +1,12 @@
 from __future__ import print_function
 from collections import namedtuple
+from collections import OrderedDict
 import dreambox.config.core as inifile
 import jenkins
 import dreambox.jenkins
 import dreambox.jenkins.JobInfo
+from xmljson import BadgerFish
+from xml.etree.ElementTree import fromstring
 
 class Jenkins(object):
 
@@ -23,6 +26,7 @@ class Jenkins(object):
         self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
         self._job            = namedtuple('Job', ['name', 'url', 'parameters'])
         self._job_parameters = namedtuple('Parameters', ['name', 'value'])
+        self._bf             = BadgerFish()
 
     @property
     def config_file(self):
@@ -77,6 +81,9 @@ class Jenkins(object):
     def _get_job_info(self, job_name=''):
         return self._server.get_job_info(job_name)
 
+    def _get_job_config(self, job_name=''):
+        return self._server.get_job_config(job_name)
+
     def _get_job_parameters(self, job_name=''):
         params = {}
         for p in self._get_job_info(job_name=job_name)['property'][0]['parameterDefinitions']:
@@ -87,6 +94,9 @@ class Jenkins(object):
                 params[p['name']] = ''
 
         return params
+
+    def _load_xml(self, xmlstring=''):
+       return self._bf.data(fromstring(xmlstring))
 
     @classmethod
     def create_jobinfos(self, object):
@@ -109,8 +119,6 @@ class Jenkins(object):
             jobinfos          += jobinfo
 
         return jobinfos
-
-
 
 if __name__ == '__main__':
     import dreambox.utils
