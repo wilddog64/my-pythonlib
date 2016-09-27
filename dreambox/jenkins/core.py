@@ -1,6 +1,5 @@
 from __future__ import print_function
 from collections import namedtuple
-from collections import OrderedDict
 import dreambox.config.core as inifile
 import jenkins
 import dreambox.jenkins
