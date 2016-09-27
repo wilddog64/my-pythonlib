@@ -78,15 +78,9 @@ class Jenkins(object):
         '''
         return self._name
     
-    def _get_job_info(self, job_name=''):
-        return self._server.get_job_info(job_name)
-
-    def _get_job_config(self, job_name=''):
-        return self._server.get_job_config(job_name)
-
     def _get_job_parameters(self, job_name=''):
         params = {}
-        for p in self._get_job_info(job_name=job_name)['property'][0]['parameterDefinitions']:
+        for p in self._server.get_job_info(job_name)['property'][0]['parameterDefinitions']:
             params['name'] = p['name']
             if 'defaultParameterValue' in p and 'value' in p['defaultParameterValue']:
                 params[p['name']] = p['defaultParameterValue']['value']
