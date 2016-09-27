@@ -172,3 +172,7 @@ class JobInfos(Sequence):
     def last(self):
         # get last element
         return self._jobinfos[-1]
+
+    @property
+    def length(self):
+        return len(self)
