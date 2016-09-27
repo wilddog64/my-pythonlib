@@ -42,6 +42,13 @@ class JobInfo(object):
     def dry_run(self, value):
         self._dry_run = value
 
+    @property
+    def next_build_number(self):
+        return self._jenkins.get_job_info(self.name)['nextBuildNumber']
+
+    @next_build_number.setter
+    def next_build_number(self, value):
+        self._jenkins.set_next_build_number(self.name, value)
 
     def build_job(self, **params):
         '''
