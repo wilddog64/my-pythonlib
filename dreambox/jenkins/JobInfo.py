@@ -102,6 +102,9 @@ class JobInfo(object):
         job_config = self._jenkins.get_job_config(self.name)
         return self._parent._load_xml(job_config)
 
+    def get_job_info(self):
+        return self._jenkins.get_job_info(self.name)
+
 class JobInfos(Sequence):
     '''A container class wrapping a list with some extra functional magic, like head,
     tail, init, last, drop, and take. This allow us to handle JobInfos more
