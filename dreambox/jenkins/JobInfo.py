@@ -6,8 +6,8 @@ class JobInfo(object):
     def __init__(self, object):
         if not type(object) is dreambox.jenkins.core.Jenkins:
             raise TypeError('%s has to be a type of Jenkins' % object.__class__)
-        self._server     = object
-        self._jenkins    = object._server
+        self._parent     = object
+        self._jenkins    = self._parent._server
         self._name       = ''
         self._url        = ''
         self._parameters = {}
@@ -100,7 +100,7 @@ class JobInfo(object):
 
     def get_job_config(self):
         job_config = self._jenkins.get_job_config(self.name)
-        return self._server._load_xml(job_config)
+        return self._parent._load_xml(job_config)
 
 class JobInfos(Sequence):
     '''A container class wrapping a list with some extra functional magic, like head,
