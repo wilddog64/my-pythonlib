@@ -90,7 +90,7 @@ class JobInfo(object):
         '''
         copy a given job with different name
         '''
-        self.copy_job(self.name, new_job_name)
+        self._jenkins.copy_job(self.name, new_job_name)
 
     def delete_job(self):
         '''
