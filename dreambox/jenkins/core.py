@@ -6,6 +6,7 @@ import dreambox.jenkins
 import dreambox.jenkins.JobInfo
 from xmljson import BadgerFish
 from xml.etree.ElementTree import fromstring
+import json
 
 class Jenkins(object):
 
@@ -89,7 +90,7 @@ class Jenkins(object):
         return params
 
     def _load_xml(self, xmlstring=''):
-       return self._bf.data(fromstring(xmlstring))
+       return json.loads(json.dumps(self._bf.data(fromstring(xmlstring))))
 
     @classmethod
     def create_jobinfos(self, object):
