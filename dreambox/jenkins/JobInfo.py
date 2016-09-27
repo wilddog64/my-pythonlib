@@ -103,8 +103,8 @@ class JobInfo(object):
         return self._server._load_xml(job_config)
 
 class JobInfos(Sequence):
-    '''A Row class wrapping a list with some extra functional magic, like head,
-    tail, init, last, drop, and take. This allow ups to handle Excel JobInfos more
+    '''A container class wrapping a list with some extra functional magic, like head,
+    tail, init, last, drop, and take. This allow us to handle JobInfos more
     easily'''
     
     def __init__(self, jobinfo=None):
