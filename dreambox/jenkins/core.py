@@ -160,4 +160,7 @@ if __name__ == '__main__':
     print('')
     print('environment_create job parameters')
     dreambox.utils.print_structure(jobinfomap['environment_create'].parameters)
+    print('')
+    print('environment_create job next build number %s' % jobinfomap['environment_create'].next_build_number)
+    print('')
     print('--- testing Jenkins.create_jobinfomap class method ---')
