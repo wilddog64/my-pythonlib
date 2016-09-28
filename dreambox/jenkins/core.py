@@ -64,8 +64,7 @@ class Jenkins(object):
     def server(self):
         return self._server.server
 
-    @property
-    def jobs(self):
+    def _get_jobs(self):
         if self._jobs is None:
             self._jobs = {job['name']: (self._job(job['name'], job['url'], self._get_job_parameters(job['name'])))
                     for job in self._server.get_all_jobs()}
@@ -104,11 +103,11 @@ class Jenkins(object):
             raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
 
         jobinfos = dreambox.jenkins.JobInfo.JobInfos()
-        for job in object.jobs:
+        for job in object._get_jobs():
             jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
             jobinfo._name       = job
-            jobinfo._url        = object.jobs[job].url
-            parameters          = object.jobs[job].parameters
+            jobinfo._url        = object._get_jobs()[job].url
+            parameters          = object._get_jobs()[job].parameters
             jobinfo._parameters = parameters
             jobinfos           += jobinfo
 
@@ -124,11 +123,11 @@ class Jenkins(object):
         if type(object) is not dreambox.jenkins.core.Jenkins:
             raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
         jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
-        for job in object.jobs:
+        for job in object._get_jobs():
             jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
             jobinfo._name       = job
-            jobinfo._url        = object.jobs[job].url
-            parameters          = object.jobs[job].parameters
+            jobinfo._url        = object._get_jobs()[job].url
+            parameters          = object._get_jobs()[job].parameters
             jobinfo._parameters = parameters
             setattr(jobinfomap, jobinfo.name, jobinfo)
 
@@ -141,14 +140,14 @@ if __name__ == '__main__':
     print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
     print('jenkins server user: %s' % devops_jenkins.user)
-    if 'environment_create' in devops_jenkins.jobs:
-        print('job url: %s' % devops_jenkins.jobs['build_terraform'].url)
+    if 'environment_create' in devops_jenkins._get_jobs():
+        print('job url: %s' % devops_jenkins._get_jobs()['build_terraform'].url)
         print('')
         print('--- job parameters ---')
         dreambox.utils.print_structure(devops_jenkins._get_job_parameters('build_terraform'))
         print('')
         print('--- job info ---')
-        dreambox.utils.print_structure(devops_jenkins.jobs['environment_create'])
+        dreambox.utils.print_structure(devops_jenkins._get_jobs()['environment_create'])
         print('')
     print('--- testing Jenkins.create_jobinfos class method ---')
     jobinfos = Jenkins.create_jobinfos(devops_jenkins)
