@@ -143,11 +143,6 @@ if __name__ == '__main__':
     print('jenkins server user: %s' % devops_jenkins.user)
     if 'environment_create' in devops_jenkins.jobs:
         print('job url: %s' % devops_jenkins.jobs['build_terraform'].url)
-        print('---- job info ---')
-        build_terraform_info = devops_jenkins._get_job_info('build_terraform')
-        dreambox.utils.print_structure(build_terraform_info)
-        print('')
-        dreambox.utils.print_structure(build_terraform_info['actions'][0]['parameterDefinitions'])
         print('')
         print('--- job parameters ---')
         dreambox.utils.print_structure(devops_jenkins._get_job_parameters('build_terraform'))
