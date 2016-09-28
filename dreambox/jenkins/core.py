@@ -140,15 +140,6 @@ if __name__ == '__main__':
     print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
     print('jenkins server user: %s' % devops_jenkins.user)
-    if 'environment_create' in devops_jenkins._get_jobs():
-        print('job url: %s' % devops_jenkins._get_jobs()['build_terraform'].url)
-        print('')
-        print('--- job parameters ---')
-        dreambox.utils.print_structure(devops_jenkins._get_job_parameters('build_terraform'))
-        print('')
-        print('--- job info ---')
-        dreambox.utils.print_structure(devops_jenkins._get_jobs()['environment_create'])
-        print('')
     print('--- testing Jenkins.create_jobinfos class method ---')
     jobinfos = Jenkins.create_jobinfos(devops_jenkins)
     jobs = [job for job in jobinfos if job.name == 'environment_create']
