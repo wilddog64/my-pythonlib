@@ -109,16 +109,19 @@ class JobInfos(Sequence):
     def __getitem__(self, index):
         # if index is of invalid type or value,
         # the list values will raise the error
+        elements = None
         if isinstance(index, slice):
-            return [self[idx] for idx in xrange(*index.indices(len(self)))]
+            elements = [self[idx] for idx in xrange(*index.indices(len(self)))]
         elif isinstance(index, int):
             if index < 0:
                 index += len(self)
             if index < 0 or index >= len(self):
                 raise IndexError('index %s is out of range' % index)
-            return self._jobinfos[index]
+            elements = self._jobinfos[index]
         else:
             raise TypeError, 'Invalid argument type'
+
+        return elements
     
     def __setitem__(self, index, value):
         '''
