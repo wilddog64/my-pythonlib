@@ -5,6 +5,8 @@ import jenkins
 from xmljson import BadgerFish
 from xml.etree.ElementTree import fromstring
 import json
+import dreambox.jenkins
+import dreambox.jenkins.JobInfo
 
 class Jenkins(object):
 
@@ -132,8 +134,6 @@ class Jenkins(object):
         return jobinfomap
 
 if __name__ == '__main__':
-    import dreambox.jenkins
-    import dreambox.jenkins.JobInfo
     import dreambox.utils
     devops_jenkins = dreambox.jenkins.core.Jenkins('jenkins.ini', 'stage-devops-jenkins')
     print('object type for devops_jenkins is %s' % type(devops_jenkins))

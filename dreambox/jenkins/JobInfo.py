@@ -11,7 +11,7 @@ class JobInfo(object):
         self._name       = ''
         self._url        = ''
         self._parameters = {}
-        self._dry_run    = False
+        self._dry_run    = True
 
     @property
     def name(self):
