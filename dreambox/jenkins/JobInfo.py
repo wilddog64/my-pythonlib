@@ -1,4 +1,5 @@
 from __future__ import print_function
+import collections
 from collections import Sequence
 import dreambox.jenkins.core
 
@@ -186,3 +187,38 @@ class JobInfos(Sequence):
     @property
     def length(self):
         return len(self)
+
+class JobInfoMap(dict):
+    def __setitem__(self, key, item):
+        self.__dict__[key] = item
+
+    def __getitem__(self, key):
+        if not key in self.__dict__:
+            raise KeyError('unable to find %s in container' % key)
+        return self.__dict__[key]
+
+    def __len__(self):
+        return len(self.__dict__)
+
+    def items(self):
+        return self.__dict__.items()
+
+    def __iter__(self):
+        return iter(self.__dict__)
+
+    def __contains__(self, item):
+        return item in self.__dict__
+
+    def __cmp__(self, dict):
+        return cmp(self.__dict__, dict)
+
+    @property
+    def keys(self):
+        return self.__dict__.keys()
+
+    @property
+    def values(self):
+        return self.__dict__.values()
+
+    def clear(self):
+        self._dict__.clear()

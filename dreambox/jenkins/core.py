@@ -114,6 +114,26 @@ class Jenkins(object):
 
         return jobinfos
 
+    @classmethod
+    def create_jobinfomap(self, object):
+        '''
+        will create a JobInfoMap container object. The method takes one parameter
+
+        * object which is a type of JobInfo
+        '''
+        if type(object) is not dreambox.jenkins.core.Jenkins:
+            raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
+        jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
+        for job in object.jobs:
+            jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
+            jobinfo._name       = job
+            jobinfo._url        = object.jobs[job].url
+            parameters          = object.jobs[job].parameters
+            jobinfo._parameters = parameters
+            setattr(jobinfomap, jobinfo.name, jobinfo)
+
+        return jobinfomap
+
 if __name__ == '__main__':
     import dreambox.utils
     devops_jenkins = dreambox.jenkins.core.Jenkins('jenkins.ini', 'stage-devops-jenkins')
