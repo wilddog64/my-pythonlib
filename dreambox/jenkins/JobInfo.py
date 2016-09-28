@@ -99,11 +99,13 @@ class JobInfo(object):
         else:
             self._jenkins.delete_job(self.name)
 
-    def get_job_config(self):
+    @property
+    def job_config(self):
         job_config = self._jenkins.get_job_config(self.name)
         return self._parent._load_xml(job_config)
 
-    def get_job_info(self):
+    @property
+    def job_info(self):
         return self._jenkins.get_job_info(self.name)
 
 class JobInfos(Sequence):
