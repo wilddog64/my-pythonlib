@@ -1,5 +1,4 @@
 from __future__ import print_function
-import collections
 from collections import Sequence
 import dreambox.jenkins.core
 
@@ -59,31 +58,46 @@ class JobInfo(object):
         '''
         if not params:
             params = self.parameters
-        self._jenkins.build_job(self.name, params)
+        if self.dry_run:
+            print('trigger job %s' % self.name)
+        else:
+            self._jenkins.build_job(self.name, params)
 
     def disable_job(self):
         '''
         disable a jenkins job
         '''
-        self._jenkins.disable_job(self.name)
+        if self.dry_run:
+            print('will disable job %s: ' % self.name)
+        else:
+            self._jenkins.disable_job(self.name)
 
     def enable_job(self):
         '''
         enable a jenkins job
         '''
-        self._jenkins.enable_job(self.name)
+        if self.dry_run:
+            print('will disable job %s: ' % self.name)
+        else:
+            self._jenkins.enable_job(self.name)
 
     def copy_job(self, new_job_name):
         '''
         copy a given job with different name
         '''
-        self._jenkins.copy_job(self.name, new_job_name)
+        if self.dry_run:
+            print('copy job %s as %s' % (self.name, new_job_name))
+        else:
+            self._jenkins.copy_job(self.name, new_job_name)
 
     def delete_job(self):
         '''
         delete a jenkins job
         '''
-        self._jenkins.delete_job(self.name)
+        if self.dry_run:
+            print('deleting job %s' % self.name)
+        else:
+            self._jenkins.delete_job(self.name)
 
     def get_job_config(self):
         job_config = self._jenkins.get_job_config(self.name)
