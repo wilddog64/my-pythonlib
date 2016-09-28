@@ -142,10 +142,6 @@ if __name__ == '__main__':
     print('jenkins server user: %s' % devops_jenkins.user)
     print('--- testing Jenkins.create_jobinfos class method ---')
     jobinfos = Jenkins.create_jobinfos(devops_jenkins)
-    jobs = [job for job in jobinfos if job.name == 'environment_create']
-    for job in jobs:
-        print('job name %s' % job.name)
-        dreambox.utils.print_structure(job.parameters)
     print('--- testing Jenkins.create_jobinfos class method ---')
     print('')
     print('--- testing Jenkins.create_jobinfomap class method ---')
@@ -161,4 +157,7 @@ if __name__ == '__main__':
     print('')
     print('environment_create job info')
     dreambox.utils.print_structure(jobinfomap['environment_create'].get_job_info())
+    print('')
+    print('environment_create job parameters')
+    dreambox.utils.print_structure(jobinfomap['environment_create'].parameters)
     print('--- testing Jenkins.create_jobinfomap class method ---')
