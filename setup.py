@@ -13,7 +13,7 @@ setup(name='dreambox',
       author='Chengkai Liang',
       author_email='chengkai.liang@dreambox.com',
       url='https://bitbucket.org/chengkai/dreambox-pythonlib',
-      install_requires=['funcy', 'awscli', 'pyyaml', 'sh', 'python-jenkins'],
+      install_requires=['funcy', 'awscli', 'pyyaml', 'sh', 'python-jenkins', 'xmljson'],
       packages=find_packages(),
       classifiers=[
            "Programming Language :: Python",
