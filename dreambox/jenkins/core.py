@@ -135,7 +135,8 @@ class Jenkins(object):
 
 if __name__ == '__main__':
     import dreambox.utils
-    devops_jenkins = dreambox.jenkins.core.Jenkins('jenkins.ini', '', 'stage-devops-jenkins')
+    jenkins_config_path = '~/src/gitrepo/dreambox/python/dreambox-pythonlib/dreambox/etc'
+    devops_jenkins = dreambox.jenkins.core.Jenkins('jenkins.ini', jenkins_config_path, 'stage-devops-jenkins')
     print('object type for devops_jenkins is %s' % type(devops_jenkins))
     print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
