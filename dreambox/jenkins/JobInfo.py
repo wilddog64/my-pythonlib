@@ -50,7 +50,7 @@ class JobInfo(object):
     def next_build_number(self, value):
         self._jenkins.set_next_build_number(self.name, value)
 
-    def build_job(self, **params):
+    def build(self, **params):
         '''
         trigger a jenkins job to build. The method
         takes a keyword parameters that should match
@@ -63,7 +63,7 @@ class JobInfo(object):
         else:
             self._jenkins.build_job(self.name, params)
 
-    def disable_job(self):
+    def disable(self):
         '''
         disable a jenkins job
         '''
@@ -72,16 +72,16 @@ class JobInfo(object):
         else:
             self._jenkins.disable_job(self.name)
 
-    def enable_job(self):
+    def enable(self):
         '''
         enable a jenkins job
         '''
         if self.dry_run:
-            print('will disable job %s: ' % self.name)
+            print('will enable job %s: ' % self.name)
         else:
             self._jenkins.enable_job(self.name)
 
-    def copy_job(self, new_job_name):
+    def copy(self, new_job_name):
         '''
         copy a given job with different name
         '''
@@ -90,7 +90,7 @@ class JobInfo(object):
         else:
             self._jenkins.copy_job(self.name, new_job_name)
 
-    def delete_job(self):
+    def delete(self):
         '''
         delete a jenkins job
         '''
