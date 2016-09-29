@@ -10,15 +10,15 @@ import dreambox.jenkins.JobInfo
 
 class Jenkins(object):
 
-    def __init__(self, jenkins_config_file='', section=''):
+    def __init__(self, config_file='', config_file_path='', section=''):
         self._config = None
-        if jenkins_config_file == '':
+        if config_file == '':
             self._jenkins_config_file = 'jenkins.ini'
         else:
-            self._jenkins_config_file = jenkins_config_file
+            self._jenkins_config_file = config_file
         self._section        = section
         self._name           = self._section
-        self._config         = inifile.config_section_map(self._jenkins_config_file, section)
+        self._config         = inifile.config_section_map(self._jenkins_config_file, config_file_path, section)
         self._user           = self._config['user']
         self._passwd         = self._config['password']
         self._url            = self._config['url']
@@ -135,7 +135,7 @@ class Jenkins(object):
 
 if __name__ == '__main__':
     import dreambox.utils
-    devops_jenkins = dreambox.jenkins.core.Jenkins('jenkins.ini', 'stage-devops-jenkins')
+    devops_jenkins = dreambox.jenkins.core.Jenkins('jenkins.ini', '', 'stage-devops-jenkins')
     print('object type for devops_jenkins is %s' % type(devops_jenkins))
     print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
