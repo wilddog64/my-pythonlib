@@ -50,3 +50,8 @@ if __name__ == '__main__':
    print('jenkins url %s: ' %config_section_map(config_file='jenkins.ini',
                                                 section_name='stage-devops-jenkins')['url'])
    print('--- testing config_section_map ---')
+   print('')
+   jenkins_config_path = '~/src/gitrepo/dreambox/python/dreambox-pythonlib/dreambox/etc'
+   print('jenkins user %s' % config_section_map(config_file='jenkins.ini',
+                                                config_file_path=jenkins_config_path,
+                                                section_name='stage-devops-jenkins')['user'])
