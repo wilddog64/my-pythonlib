@@ -165,3 +165,8 @@ if __name__ == '__main__':
     print('environment_create job next build number %s' % jobinfomap['environment_create'].next_build_number)
     print('')
     print('--- testing Jenkins.create_jobinfomap class method ---')
+    print('')
+    print('--- print out sorted job names ---')
+    for job in sorted(jobinfomap.keys):
+        print(job)
+    print('--- print out sorted job names ---')
