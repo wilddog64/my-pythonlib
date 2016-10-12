@@ -21,15 +21,28 @@ def jenkins():
     cmd_parser.parse_args()
 
 def build_cmdline_options(jobinfos=None):
+    '''
+    is a function that builds out command line options. This function takes only one
+    parameter,
+
+    * jobinfos is a type of JobInfos
+    '''
+    # create a command line parser object
     optionparser = argparse.ArgumentParser(prog='jenkins',
                                            description='jenkins jobs')
+
+    # create sub parser objects and declare some variables
     subparsers    = optionparser.add_subparsers()
     opt_name     = ''
     opt_default  = ''
     opt_help     = ''
     opt_choinces = None
+
+    # now iterates through a jobinfos container
     for jobinfo in jobinfos:
-        subparser = subparsers.add_parser(jobinfo)
+        subparser = subparsers.add_parser(jobinfo) # create a parser for subcommand
+
+        # get job parameters and iterate through them to build subcommand options
         job_parameters = jobinfos[jobinfo].job_info['property'][0]['parameterDefinitions']
         for job_parameter in job_parameters:
             opt_type = job_parameter['type']
