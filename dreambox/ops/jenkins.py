@@ -18,7 +18,8 @@ def jenkins():
                                                                 jenkins_config_section))
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(jobinfomap)
-    cmd_parser.parse_args()
+    args = cmd_parser.parse_args()
+    args.func(args)
 
 def build_cmdline_options(jobinfos=None):
     '''
