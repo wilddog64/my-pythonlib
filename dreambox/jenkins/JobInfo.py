@@ -1,6 +1,7 @@
 from __future__ import print_function
 from collections import Sequence
 import dreambox.jenkins.core
+import dreambox.utils
 
 class JobInfo(object):
     def __init__(self, object):
@@ -50,12 +51,15 @@ class JobInfo(object):
     def next_build_number(self, value):
         self._jenkins.set_next_build_number(self.name, value)
 
-    def build(self, **params):
+    def build(self, args=None, **params):
         '''
         trigger a jenkins job to build. The method
         takes a keyword parameters that should match
         what's defined in a given jenkins server.
         '''
+        if args:
+            dreambox.utils.print_structure(args)
+
         if not params:
             params = self.parameters
         if self.dry_run:
