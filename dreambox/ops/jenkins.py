@@ -1,7 +1,6 @@
 from __future__ import print_function
 from dreambox.jenkins.core import Jenkins
 import argparse
-import dreambox.utils
 
 def jenkins():
     jenkins_config_filename = 'jenkins.ini'
