@@ -3,12 +3,20 @@ from dreambox.jenkins.core import Jenkins
 import argparse
 
 def jenkins():
+    '''
+    is a function to construct a jenkins object, and build a proper command line options
+    This function does not take any parameters.
+    '''
+
+    # find out where's jenkins configuration file, jenkins.ini, and build a container
+    # object from it
     jenkins_config_filename = 'jenkins.ini'
     jenkins_config_filepath = '~/src/gitrepo/python/dreambox-pythonlib/dreambox/etc'
     jenkins_config_section  = 'stage-devops-jenkins'
     jobinfomap              = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
                                                                 jenkins_config_filepath,
                                                                 jenkins_config_section))
+    # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(jobinfomap)
     cmd_parser.parse_args()
 
