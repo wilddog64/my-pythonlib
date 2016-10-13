@@ -1,5 +1,4 @@
 from __future__ import print_function
-from collections import namedtuple
 import dreambox.config.core as inifile
 import jenkins
 from xmljson import BadgerFish
@@ -26,7 +25,6 @@ class Jenkins(object):
         self._url            = self._config['url']
         self._jobs           = None
         self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
-        self._job_parameters = namedtuple('Parameters', ['name', 'value'])
         self._bf             = BadgerFish()
 
     @property
