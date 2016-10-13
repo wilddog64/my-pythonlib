@@ -18,7 +18,9 @@ class Jenkins(object):
             self._jenkins_config_file = config_file
         self._section        = section
         self._name           = self._section
-        self._config         = inifile.config_section_map(self._jenkins_config_file, config_file_path, section)
+        self._config         = inifile.config_section_map(self._jenkins_config_file,
+                                                          config_file_path,
+                                                          section)
         self._user           = self._config['user']
         self._passwd         = self._config['password']
         self._url            = self._config['url']
@@ -66,7 +68,9 @@ class Jenkins(object):
 
     def _get_jobs(self):
         if self._jobs is None:
-            self._jobs = {job['name']: (self._job(job['name'], job['url'], self._get_job_parameters(job['name'])))
+            self._jobs = {job['name']: (self._job(job['name'], 
+                                        job['url'],
+                                        self._get_job_parameters(job['name'])))
                     for job in self._server.get_all_jobs()}
         return self._jobs
 
@@ -79,7 +83,8 @@ class Jenkins(object):
     
     def _get_job_parameters(self, job_name=''):
         params = {}
-        for p in self._server.get_job_info(job_name)['property'][0]['parameterDefinitions']:
+        parameter_definitions = self._server.get_job_info(job_name)['property'][0]['parameterDefinitions']
+        for p in parameter_definitions:
             params['name'] = p['name']
             if 'defaultParameterValue' in p and 'value' in p['defaultParameterValue']:
                 params[p['name']] = p['defaultParameterValue']['value']
