@@ -11,6 +11,20 @@ import sys
 import os
 import pwd
 import collections
+import logging
+
+def initialize_logging():
+    # Set this environment variable to add the logger name to messages,
+    # this is sometimes needed for identifying the source of log messages.
+    if os.getenv("show_logger_name", "").lower() == "true":
+        log_format = '%(asctime)s %(name)s %(levelname)s: %(message)s'
+    else:
+        log_format = '%(asctime)s %(levelname)s: %(message)s'
+
+    logging.basicConfig(
+        format=log_format,
+        level=logging.INFO
+    )
 
 # make_hash_of_hashes will make an array of hashes from a given list by these
 # steps,
