@@ -26,7 +26,6 @@ class Jenkins(object):
         self._url            = self._config['url']
         self._jobs           = None
         self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
-        self._job            = namedtuple('Job', ['name', 'url', 'parameters'])
         self._job_parameters = namedtuple('Parameters', ['name', 'value'])
         self._bf             = BadgerFish()
 
@@ -68,9 +67,9 @@ class Jenkins(object):
 
     def _get_jobs(self):
         if self._jobs is None:
-            self._jobs = {job['name']: (self._job(job['name'], 
-                                        job['url'],
-                                        self._get_job_parameters(job['name'])))
+            self._jobs = {job['name']: dreambox.jenkins.JobInfo.Job(job['name'],
+                                                                    job['url'],
+                                                                    self._get_job_parameters(job['name']))
                     for job in self._server.get_all_jobs()}
         return self._jobs
 
@@ -80,7 +79,7 @@ class Jenkins(object):
         an alias for the self.section property
         '''
         return self._name
-    
+
     def _get_job_parameters(self, job_name=''):
         params = {}
         parameter_definitions = self._server.get_job_info(job_name)['property'][0]['parameterDefinitions']

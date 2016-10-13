@@ -3,6 +3,25 @@ from collections import Sequence
 import dreambox.jenkins.core
 import dreambox.utils
 
+
+class Job(object):
+    def __init__(self, name, url, parameters):
+        self._name = name
+        self._url  = url
+        self._parameters = parameters
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def url(self):
+        return self._url
+
+    @property
+    def parameters(self):
+        return self._parameters
+
 class JobInfo(object):
     def __init__(self, object):
         if not type(object) is dreambox.jenkins.core.Jenkins:
