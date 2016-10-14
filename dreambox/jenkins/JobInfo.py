@@ -259,3 +259,7 @@ class JobInfoMap(dict):
 
     def clear(self):
         self._dict__.clear()
+
+    def establish_object_connections(self, connection):
+        for jobinfo in self:
+            self[jobinfo]._jenkins = connection._server
