@@ -7,6 +7,17 @@ import json
 import dreambox.jenkins
 import dreambox.jenkins.JobInfo
 
+import os
+import datetime
+import tempfile
+
+# if cPickle is available the include it; otherwise
+# use pure Python implementation
+try:
+    import cPickle as pickle
+except:
+    import pickle
+
 class Jenkins(object):
 
     def __init__(self, config_file='', config_file_path='', section=''):
@@ -122,18 +133,57 @@ class Jenkins(object):
 
         * object which is a type of JobInfo
         '''
+        def _create_jobinfomap():
+            jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
+            for job in object._get_jobs():
+                jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
+                jobinfo._name       = job
+                jobinfo._url        = object._get_jobs()[job].url
+                parameters          = object._get_jobs()[job].parameters
+                jobinfo._parameters = parameters
+                setattr(jobinfomap, jobinfo.name, jobinfo)
+            return jobinfomap
+
+        current_dir = os.path.curdir
+        workspace = os.path.join(current_dir, 'tmp')
+        if not os.path.exists(workspace):
+            os.mkdir(workspace)
+        pickle_file = os.path.join(workspace, 'obj.pickle')
+        pickle_filehandle = None
+        load_from_pickle = False
+        if not os.path.exists(pickle_file):
+            pickle_filehandle = open(pickle_file, 'w+b')
+        elif os.path.exists(pickle_file) and \
+            Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file), datetime.datetime.now()) > (5 * 60):
+            os.unlink(pickle_file)
+            pickle_filehandle = open(pickle_file, 'w+b')
+        else:
+            pickle_filehandle = open(pickle_file, 'r+b')
+            load_from_pickle = True
+
         if type(object) is not dreambox.jenkins.core.Jenkins:
             raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
-        jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
-        for job in object._get_jobs():
-            jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
-            jobinfo._name       = job
-            jobinfo._url        = object._get_jobs()[job].url
-            parameters          = object._get_jobs()[job].parameters
-            jobinfo._parameters = parameters
-            setattr(jobinfomap, jobinfo.name, jobinfo)
+
+        jobinfomap = None
+        if load_from_pickle:
+            print('reloading object')
+            jobinfomap = pickle.load(pickle_filehandle)
+            jobinfomap.establish_object_connections(object)
+        else:
+            jobinfomap = _create_jobinfomap()
+            pickle.dump(jobinfomap, pickle_filehandle)
 
         return jobinfomap
+
+    @staticmethod
+    def mdate(filename):
+        mtime = os.path.getmtime(filename)
+        return datetime.datetime.fromtimestamp(mtime)
+                                                      
+    @staticmethod
+    def timediff_in_secs(t1, t2):
+        return (t2 - t1).seconds
+
 
 if __name__ == '__main__':
     import dreambox.utils
