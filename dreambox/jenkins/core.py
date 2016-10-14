@@ -178,6 +178,8 @@ class Jenkins(object):
             else:
                 jobinfomap = _create_jobinfomap()
                 pickle.dump(jobinfomap, pickle_filehandle)
+        except Exception as e:
+            raise(e)
         finally:
             pickle_filehandle.close()
 
