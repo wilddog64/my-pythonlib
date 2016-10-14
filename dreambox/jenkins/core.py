@@ -132,6 +132,9 @@ class Jenkins(object):
         will create a JobInfoMap container object. The method takes one parameter
 
         * object which is a type of JobInfo
+
+        the class method will cache the JobInfoMap object via cPickle. it will also
+        invalidate the cache file in 5 minutes.
         '''
         def _create_jobinfomap():
             jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
