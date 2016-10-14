@@ -37,7 +37,7 @@ def build_cmdline_options(jobinfos=None):
     opt_name     = ''
     opt_default  = ''
     opt_help     = ''
-    opt_choinces = None
+    opt_choices = None
 
     # now iterates through a jobinfos container
     for jobinfo in jobinfos:
@@ -52,12 +52,13 @@ def build_cmdline_options(jobinfos=None):
                 opt_default  = job_parameter['defaultParameterValue']['value'] \
                     if job_parameter['defaultParameterValue']['value'] else ''
                 opt_help     = job_parameter['description']
-                opt_choinces = job_parameter['choices'] if 'Choice' in opt_type else None
-                if opt_choinces:
-                    if 'Required' in opt_choinces:
-                        subparser.add_argument(opt_name, choices=opt_choinces, required=True)
+                opt_choices = job_parameter['choices'] if 'Choice' in opt_type else None
+                if opt_choices:
+                    if 'Required' in opt_help:
+                        print('required')
+                        subparser.add_argument(opt_name, choices=opt_choices, required=True)
                     else:
-                        subparser.add_argument(opt_name, choices=opt_choinces)
+                        subparser.add_argument(opt_name, choices=opt_choices)
                 else:
                     subparser.add_argument(opt_name, help=opt_help, default=opt_default)
                 subparser.set_defaults(func=jobinfos[jobinfo].build)
