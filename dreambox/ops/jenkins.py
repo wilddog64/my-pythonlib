@@ -33,7 +33,7 @@ def build_cmdline_options(jobinfos=None):
                                            description='jenkins jobs')
 
     # create sub parser objects and declare some variables
-    subparsers    = optionparser.add_subparsers()
+    subparsers   = optionparser.add_subparsers()
     opt_name     = ''
     opt_default  = ''
     opt_help     = ''
