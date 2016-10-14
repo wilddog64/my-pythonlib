@@ -49,7 +49,8 @@ def build_cmdline_options(jobinfos=None):
             opt_type = job_parameter['type']
             if not 'Separator' in opt_type:
                 opt_name     = '--%s' % job_parameter['name']
-                opt_default  = job_parameter['defaultParameterValue']['value'] if job_parameter['defaultParameterValue']['value'] else ''
+                opt_default  = job_parameter['defaultParameterValue']['value'] \
+                    if job_parameter['defaultParameterValue']['value'] else ''
                 opt_help     = job_parameter['description']
                 opt_choinces = job_parameter['choices'] if 'Choice' in opt_type else None
                 if opt_choinces:
