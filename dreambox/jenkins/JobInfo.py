@@ -76,8 +76,6 @@ class JobInfo(object):
         takes a keyword parameters that should match
         what's defined in a given jenkins server.
         '''
-        if args:
-            dreambox.utils.print_structure(args)
 
         if not params:
             params = self.parameters
