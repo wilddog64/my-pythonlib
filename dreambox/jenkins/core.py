@@ -148,10 +148,10 @@ class Jenkins(object):
         workspace = os.path.join(current_dir, 'tmp')
         if not os.path.exists(workspace):
             os.mkdir(workspace)
-        pickle_file = os.path.join(workspace, 'obj.pickle')
+        pickle_file       = os.path.join(workspace, 'obj.pickle')
         pickle_filehandle = None
-        load_from_pickle = False
-        jobinfomap = None
+        load_from_pickle  = False
+        jobinfomap        = None
         pickle_filehandle = None
         try:
             if not os.path.exists(pickle_file):
