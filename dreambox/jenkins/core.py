@@ -174,10 +174,6 @@ class Jenkins(object):
             else:
                 pickle_filehandle = open(pickle_file, 'r+b')
                 load_from_pickle = True
-
-            # if type(object) is not dreambox.jenkins.core.Jenkins:
-            #     raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
-
             jobinfomap = None
             if load_from_pickle:
                 print('reloading object')
