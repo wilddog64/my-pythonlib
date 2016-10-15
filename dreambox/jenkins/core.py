@@ -6,6 +6,7 @@ from xml.etree.ElementTree import fromstring
 import json
 import dreambox.jenkins
 import dreambox.jenkins.JobInfo
+from dreambox.jenkins.parameter import Parameter, ParameterMap
 
 import os
 import datetime
@@ -89,16 +90,29 @@ class Jenkins(object):
         return self._name
 
     def _get_job_parameters(self, job_name=''):
+        print('job name %s' % job_name)
         params = {}
+        parameters = ParameterMap()
         parameter_definitions = self._server.get_job_info(job_name)['property'][0]['parameterDefinitions']
+        print('number of parameters %s' % len(parameter_definitions))
         for p in parameter_definitions:
+            p_name = p['name']
+            p_type = p['type']
+            p_default = ''
+            p_value = ''
             params['name'] = p['name']
-            if 'defaultParameterValue' in p and 'value' in p['defaultParameterValue']:
-                params[p['name']] = p['defaultParameterValue']['value']
+            if 'defaultParameterValue' in p and \
+               'value' in p['defaultParameterValue']:
+                p_default = p['defaultParameterValue']['value']
+            if 'Choice' in p_type:
+                p_value = p['choices']
             else:
-                params[p['name']] = ''
+                p_value = p['value'] if 'value' in p else ''
+            p_description = p['description']
+            p = Parameter(p_name, p_value, p_default, p_type, p_description)
+            setattr(parameters, p_name, p)
 
-        return params
+        return parameters
 
     def _load_xml(self, xmlstring=''):
        return json.loads(json.dumps(self._bf.data(fromstring(xmlstring))))
@@ -217,8 +231,8 @@ if __name__ == '__main__':
     dreambox.utils.print_structure(jobinfomap['environment_create'].job_info)
     print('')
     print('environment_create job parameters')
-    dreambox.utils.print_structure(jobinfomap['environment_create'].parameters)
-    print('')
+    print(type(jobinfomap.environment_create.parameters))
+
     print('environment_create job next build number %s' % jobinfomap['environment_create'].next_build_number)
     print('')
     print('--- testing Jenkins.create_jobinfomap class method ---')
@@ -227,3 +241,6 @@ if __name__ == '__main__':
     for job in sorted(jobinfomap.keys):
         print(job)
     print('--- print out sorted job names ---')
+    print('')
+    environment_create_parameters = jobinfomap.environment_create.job_info['property'][0]['parameterDefinitions']
+    dreambox.utils.print_structure(environment_create_parameters)
