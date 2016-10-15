@@ -268,8 +268,10 @@ class JobInfoMap(dict):
             _jenkins = jenkins.Jenkins(first.url,
                                        first.user,
                                        first.passwd) 
+            print('connect to jenkins server')
         else:
             _jenkins = object._server
 
         for jobinfo in self:
             self[jobinfo]._jenkins = _jenkins
+        print('all jobs connect to jenkins server')

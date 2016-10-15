@@ -126,7 +126,7 @@ class Jenkins(object):
         return jobinfos
 
     @classmethod
-    def create_jobinfomap(self, object=None):
+    def create_jobinfomap(self, object=None, load_from_pickle=False):
         '''
         will create a JobInfoMap container object. The method takes one parameter
 
@@ -152,16 +152,10 @@ class Jenkins(object):
             os.mkdir(workspace)
         pickle_file       = os.path.join(workspace, 'obj.pickle')
         pickle_filehandle = None
-        load_from_pickle  = False
         jobinfomap        = None
         pickle_filehandle = None
         try:
             if not os.path.exists(pickle_file):
-                pickle_filehandle = open(pickle_file, 'w+b')
-            elif os.path.exists(pickle_file) and \
-                Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file), datetime.datetime.now()) > (5 * 60):
-                print('pickle expired, regenerate it now')
-                os.unlink(pickle_file)
                 pickle_filehandle = open(pickle_file, 'w+b')
             else:
                 pickle_filehandle = open(pickle_file, 'r+b')
