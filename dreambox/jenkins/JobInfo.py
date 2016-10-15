@@ -134,7 +134,7 @@ class JobInfos(Sequence):
     '''A container class wrapping a list with some extra functional magic, like head,
     tail, init, last, drop, and take. This allow us to handle JobInfos more
     easily'''
-    
+
     def __init__(self, jobinfo=None):
         self._jobinfos = []
 
@@ -144,7 +144,7 @@ class JobInfos(Sequence):
         do len(JobInfos), where row is a type of Row
         '''
         return len(self._jobinfos)
-    
+
     def __getitem__(self, index):
         # if index is of invalid type or value,
         # the list values will raise the error
@@ -161,7 +161,7 @@ class JobInfos(Sequence):
             raise TypeError, 'Invalid argument type'
 
         return elements
-    
+
     def __setitem__(self, index, value):
         '''
         overwrite element for a given index. It will raise an TypeError
@@ -171,14 +171,14 @@ class JobInfos(Sequence):
             self._jobinfos[index] = value
         else:
             raise TypeError('invalid type. it has to be a type of JobInfo')
-    
+
     def __delitem__(self, index):
         '''
         delete a element for a given index. The allow us to do
         del jobinfo[0], where jobinfo is a type of JobInfo
         '''
         del self._jobinfos[index]
-    
+
     def __iter__(self):
         '''
         return an iterable object back. This allow us to do
@@ -186,10 +186,10 @@ class JobInfos(Sequence):
           ...
         '''
         return iter(self._jobinfos)
-   
+
     def __iadd__(self, other):
         '''
-        allow us to do JobInfos += cell. 
+        allow us to do JobInfos += cell.
 
         * other is a instance of JobInfo object
         '''
@@ -264,14 +264,12 @@ class JobInfoMap(dict):
     def establish_object_connections(self, object=None):
         _jenkins = None
         if object is None:
-            first = self.values[0]._parent
-            _jenkins = jenkins.Jenkins(first.url,
+            first     = self.values[0]._parent
+            _jenkins  = jenkins.Jenkins(first.url,
                                        first.user,
-                                       first.passwd) 
-            print('connect to jenkins server')
+                                       first.passwd)
         else:
             _jenkins = object._server
 
         for jobinfo in self:
             self[jobinfo]._jenkins = _jenkins
-        print('all jobs connect to jenkins server')

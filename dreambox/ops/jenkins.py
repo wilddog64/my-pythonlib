@@ -6,14 +6,14 @@ import datetime
 
 def jenkins():
     '''
-    is a function to construct a jenkins object, and build a proper command line options
-    This function does not take any parameters.
+    is a function to construct a jenkins object, and build a proper 
+    command line options. This function does not take any parameters.
     '''
 
-    tmpdir = os.path.join(os.curdir, 'tmp') 
+    tmpdir      = os.path.join(os.curdir, 'tmp')
     pickle_file = os.path.join(tmpdir, 'obj.pickle')
-    # find out where's jenkins configuration file, jenkins.ini, and build a container
-    # object from it
+    # find out where's jenkins configuration file,
+    # jenkins.ini, and build a container object from it
     jenkins_config_filename = 'jenkins.ini'
     jenkins_config_filepath = '~/src/gitrepo/python/dreambox-pythonlib/dreambox/etc'
     jenkins_config_section  = 'stage-devops-jenkins'
@@ -22,7 +22,9 @@ def jenkins():
         jobinfomap = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
                                                        jenkins_config_filepath,
                                                        jenkins_config_section))
-    elif os.path.exists(pickle_file) and Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file), datetime.datetime.now()) > (5 * 60):
+    elif os.path.exists(pickle_file) and \
+            Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
+                    datetime.datetime.now()) > (5 * 60):
         print('pickle file exipred, regenerate')
         os.unlink(pickle_file)
         jobinfomap = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
@@ -33,13 +35,13 @@ def jenkins():
         jobinfomap = Jenkins.create_jobinfomap()
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(jobinfomap)
-    args = cmd_parser.parse_args()
+    args       = cmd_parser.parse_args()
     args.func(args)
 
 def build_cmdline_options(jobinfos=None):
     '''
-    is a function that builds out command line options. This function takes only one
-    parameter,
+    is a function that builds out command line options.
+    This function takes only one parameter,
 
     * jobinfos is a type of JobInfos
     '''
@@ -48,10 +50,10 @@ def build_cmdline_options(jobinfos=None):
                                            description='jenkins jobs')
 
     # create sub parser objects and declare some variables
-    subparsers   = optionparser.add_subparsers()
-    opt_name     = ''
-    opt_default  = ''
-    opt_help     = ''
+    subparsers  = optionparser.add_subparsers()
+    opt_name    = ''
+    opt_default = ''
+    opt_help    = ''
     opt_choices = None
 
     # now iterates through a jobinfos container
@@ -63,10 +65,10 @@ def build_cmdline_options(jobinfos=None):
         for job_parameter in job_parameters:
             opt_type = job_parameters[job_parameter].type
             if not 'Separator' in opt_type:
-                opt_name     = '--%s' % job_parameter
-                opt_default  = job_parameters[job_parameter].default
-                opt_help     = job_parameters[job_parameter].description
-                opt_choices  = job_parameters[job_parameter].value if 'Choice' in opt_type else None
+                opt_name    = '--%s' % job_parameter
+                opt_default = job_parameters[job_parameter].default
+                opt_help    = job_parameters[job_parameter].description
+                opt_choices = job_parameters[job_parameter].value if 'Choice' in opt_type else None
                 if opt_choices:
                     if 'Required' in opt_default:
                         subparser.add_argument(opt_name, choices=opt_choices, required=True)
