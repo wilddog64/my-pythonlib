@@ -67,7 +67,7 @@ def build_cmdline_options(jobinfos=None):
                 opt_default  = job_parameter['defaultParameterValue']['value'] \
                     if job_parameter['defaultParameterValue']['value'] else ''
                 opt_help     = job_parameter['description']
-                opt_choices = job_parameter['choices'] if 'Choice' in opt_type else None
+                opt_choices  = job_parameter['choices'] if 'Choice' in opt_type else None
                 if opt_choices:
                     if 'Required' in opt_help:
                         print('required')
