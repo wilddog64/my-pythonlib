@@ -126,7 +126,7 @@ class Jenkins(object):
         return jobinfos
 
     @classmethod
-    def create_jobinfomap(self, object):
+    def create_jobinfomap(self, object=None):
         '''
         will create a JobInfoMap container object. The method takes one parameter
 
@@ -160,14 +160,15 @@ class Jenkins(object):
                 pickle_filehandle = open(pickle_file, 'w+b')
             elif os.path.exists(pickle_file) and \
                 Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file), datetime.datetime.now()) > (5 * 60):
+                print('pickle expired, regenerate it now')
                 os.unlink(pickle_file)
                 pickle_filehandle = open(pickle_file, 'w+b')
             else:
                 pickle_filehandle = open(pickle_file, 'r+b')
                 load_from_pickle = True
 
-            if type(object) is not dreambox.jenkins.core.Jenkins:
-                raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
+            # if type(object) is not dreambox.jenkins.core.Jenkins:
+            #     raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
 
             jobinfomap = None
             if load_from_pickle:
