@@ -2,6 +2,7 @@ from __future__ import print_function
 from collections import Sequence
 import dreambox.jenkins.core
 import dreambox.utils
+import jenkins
 
 
 class Job(object):
@@ -260,6 +261,10 @@ class JobInfoMap(dict):
     def clear(self):
         self._dict__.clear()
 
-    def establish_object_connections(self, connection):
+    def establish_object_connections(self):
+        first = self.values[0]._parent
+        _jenkins = jenkins.Jenkins(first.url,
+                                   first.user,
+                                   first.passwd) 
         for jobinfo in self:
-            self[jobinfo]._jenkins = connection._server
+            self[jobinfo]._jenkins = _jenkins

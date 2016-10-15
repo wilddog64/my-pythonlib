@@ -9,7 +9,6 @@ import dreambox.jenkins.JobInfo
 
 import os
 import datetime
-import tempfile
 
 # if cPickle is available the include it; otherwise
 # use pure Python implementation
@@ -174,7 +173,7 @@ class Jenkins(object):
             if load_from_pickle:
                 print('reloading object')
                 jobinfomap = pickle.load(pickle_filehandle)
-                jobinfomap.establish_object_connections(object)
+                jobinfomap.establish_object_connections()
             else:
                 jobinfomap = _create_jobinfomap()
                 pickle.dump(jobinfomap, pickle_filehandle)
