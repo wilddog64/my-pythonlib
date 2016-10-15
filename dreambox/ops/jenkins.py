@@ -59,18 +59,16 @@ def build_cmdline_options(jobinfos=None):
         subparser = subparsers.add_parser(jobinfo) # create a parser for subcommand
 
         # get job parameters and iterate through them to build subcommand options
-        job_parameters = jobinfos[jobinfo].job_info['property'][0]['parameterDefinitions']
+        job_parameters = jobinfos[jobinfo].parameters
         for job_parameter in job_parameters:
-            opt_type = job_parameter['type']
+            opt_type = job_parameters[job_parameter].type
             if not 'Separator' in opt_type:
-                opt_name     = '--%s' % job_parameter['name']
-                opt_default  = job_parameter['defaultParameterValue']['value'] \
-                    if job_parameter['defaultParameterValue']['value'] else ''
-                opt_help     = job_parameter['description']
-                opt_choices  = job_parameter['choices'] if 'Choice' in opt_type else None
+                opt_name     = '--%s' % job_parameter
+                opt_default  = job_parameters[job_parameter].default
+                opt_help     = job_parameters[job_parameter].description
+                opt_choices  = job_parameters[job_parameter].value if 'Choice' in opt_type else None
                 if opt_choices:
-                    if 'Required' in opt_help:
-                        print('required')
+                    if 'Required' in opt_default:
                         subparser.add_argument(opt_name, choices=opt_choices, required=True)
                     else:
                         subparser.add_argument(opt_name, choices=opt_choices)
