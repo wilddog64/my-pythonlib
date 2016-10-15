@@ -90,17 +90,15 @@ class Jenkins(object):
         return self._name
 
     def _get_job_parameters(self, job_name=''):
-        print('job name %s' % job_name)
-        params = {}
-        parameters = ParameterMap()
+        params                = {}
+        parameters            = ParameterMap()
         parameter_definitions = self._server.get_job_info(job_name)['property'][0]['parameterDefinitions']
-        print('number of parameters %s' % len(parameter_definitions))
         for p in parameter_definitions:
-            p_name = p['name']
-            p_type = p['type']
-            p_default = ''
-            p_value = ''
-            params['name'] = p['name']
+            p_name          = p['name']
+            p_type          = p['type']
+            p_default       = ''
+            p_value         = ''
+            params['name']  = p['name']
             if 'defaultParameterValue' in p and \
                'value' in p['defaultParameterValue']:
                 p_default = p['defaultParameterValue']['value']
@@ -109,7 +107,11 @@ class Jenkins(object):
             else:
                 p_value = p['value'] if 'value' in p else ''
             p_description = p['description']
-            p = Parameter(p_name, p_value, p_default, p_type, p_description)
+            p             = Parameter(p_name,
+                                      p_value,
+                                      p_default,
+                                      p_type,
+                                      p_description)
             setattr(parameters, p_name, p)
 
         return parameters
@@ -161,7 +163,7 @@ class Jenkins(object):
             return jobinfomap
 
         current_dir = os.path.curdir
-        workspace = os.path.join(current_dir, 'tmp')
+        workspace   = os.path.join(current_dir, 'tmp')
         if not os.path.exists(workspace):
             os.mkdir(workspace)
         pickle_file       = os.path.join(workspace, 'obj.pickle')
@@ -173,7 +175,7 @@ class Jenkins(object):
                 pickle_filehandle = open(pickle_file, 'w+b')
             else:
                 pickle_filehandle = open(pickle_file, 'r+b')
-                load_from_pickle = True
+                load_from_pickle  = True
             jobinfomap = None
             if load_from_pickle:
                 print('reloading object')
@@ -186,7 +188,6 @@ class Jenkins(object):
             raise(e)
         finally:
             pickle_filehandle.close()
-
 
         return jobinfomap
 
