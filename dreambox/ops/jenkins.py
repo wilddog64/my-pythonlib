@@ -11,6 +11,10 @@ def jenkins():
     This function does not take any parameters.
     '''
 
+    # create a command line parser object
+    optionparser = argparse.ArgumentParser(prog='jenkins',
+                                           description='jenkins jobs')
+
     # mark jobinfomap global makes command line function hook much more easy
     # to access JobInfoMap object
     global jobinfomap 
@@ -40,11 +44,11 @@ def jenkins():
         jobinfomap = Jenkins.create_jobinfomap()
 
     # build command line options based on our container object, and activate it
-    cmd_parser = build_cmdline_options(jobinfomap)
+    cmd_parser = build_cmdline_options(optionparser, jobinfomap)
     args       = cmd_parser.parse_args()
     args.func(args)
 
-def build_cmdline_options(jobinfos=None):
+def build_cmdline_options(optionparser, jobinfos=None):
     '''
     is a function that builds out jenkins command and command
     line options base on what's available from jenkins server.
@@ -52,10 +56,6 @@ def build_cmdline_options(jobinfos=None):
 
     * jobinfos is a type of JobInfos
     '''
-    # create a command line parser object
-    optionparser = argparse.ArgumentParser(prog='jenkins',
-                                           description='jenkins jobs')
-
     # create sub parser objects and declare some variables
     subparsers  = optionparser.add_subparsers()
     opt_name    = ''
