@@ -11,19 +11,26 @@ def jenkins():
     This function does not take any parameters.
     '''
 
-    global jobinfomap
+    # mark jobinfomap global makes command line function hook much more easy
+    # to access JobInfoMap object
+    global jobinfomap 
     tmpdir      = os.path.join(os.curdir, 'tmp')
     pickle_file = os.path.join(tmpdir, 'obj.pickle')
+
     # find out where's jenkins configuration file,
     # jenkins.ini, and build a container object from it
     jenkins_config_filename = 'jenkins.ini'
     jenkins_config_filepath = '~/src/gitrepo/python/dreambox-pythonlib/dreambox/etc'
     jenkins_config_section  = 'stage-devops-jenkins'
+
+    # delete pickle file if it is older than 5 minutes
     if os.path.exists(pickle_file) and \
                Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
                                         datetime.datetime.now()) > (5 * 60):
         print('pickle file expired, regenerating it')
         os.unlink(pickle_file)
+
+    # create object and cache it if the pickle file does not exist
     if not os.path.exists(pickle_file):
         jobinfomap = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
                                                        jenkins_config_filepath,
@@ -31,6 +38,7 @@ def jenkins():
     else:
         print('no parent object pass in')
         jobinfomap = Jenkins.create_jobinfomap()
+
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(jobinfomap)
     args       = cmd_parser.parse_args()
@@ -48,7 +56,6 @@ def build_cmdline_options(jobinfos=None):
     optionparser = argparse.ArgumentParser(prog='jenkins',
                                            description='jenkins jobs',
                                            add_help=False)
-
 
     # create sub parser objects and declare some variables
     subparsers  = optionparser.add_subparsers()
