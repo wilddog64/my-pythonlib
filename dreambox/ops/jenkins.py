@@ -18,15 +18,12 @@ def jenkins():
     jenkins_config_filepath = '~/src/gitrepo/python/dreambox-pythonlib/dreambox/etc'
     jenkins_config_section  = 'stage-devops-jenkins'
     jobinfomap              = None
-    if not os.path.exists(pickle_file):
-        jobinfomap = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
-                                                       jenkins_config_filepath,
-                                                       jenkins_config_section))
-    elif os.path.exists(pickle_file) and \
-            Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
-                    datetime.datetime.now()) > (5 * 60):
-        print('pickle file exipred, regenerate')
+    if os.path.exists(pickle_file) and \
+               Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
+                                        datetime.datetime.now()) > (5 * 60):
+        print('pickle file expired, regenerating it')
         os.unlink(pickle_file)
+    if not os.path.exists(pickle_file):
         jobinfomap = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
                                                        jenkins_config_filepath,
                                                        jenkins_config_section))
