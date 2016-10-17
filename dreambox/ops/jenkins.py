@@ -90,24 +90,24 @@ def build_cmdline_options(jobinfos=None):
     subparser = subparsers.add_parser('copy-job')
     subparser.add_argument('--job-name',
                            required=True,
-                           help='create a copy of current jenkins job',
+                           help='existing jenkins job name',
                            dest='jobname')
-    subparser.add_argument('new_name')
+    subparser.add_argument('new_name', help='new job name')
     subparser.set_defaults(func=copy_job)
 
     # setup command line option for delete-job
     subparser = subparsers.add_parser('delete-job')
-    subparser.add_argument('job_name', help='delete a jenkins job')
+    subparser.add_argument('job_name', help='jenkins job to be deleted')
     subparser.set_defaults(func=delete_job)
 
     # setup command line option for enable-job
     subparser = subparsers.add_parser('enable-job')
-    subparser.add_argument('job_name', help='enable a jenkin job')
+    subparser.add_argument('job_name', help='jenkins job to be enable')
     subparser.set_defaults(func=enable_job)
 
     # setup command line option for disable-job
     subparser = subparsers.add_parser('disable-job')
-    subparser.add_argument('job_name', help='disable a jenkins job')
+    subparser.add_argument('job_name', help='jenkins job to be disable')
     subparser.set_defaults(func=disable_job)
 
     return optionparser
