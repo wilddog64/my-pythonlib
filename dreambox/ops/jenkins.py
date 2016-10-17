@@ -17,7 +17,7 @@ def jenkins():
 
     # mark jobinfomap global makes command line function hook much more easy
     # to access JobInfoMap object
-    global jobinfomap 
+    global jobinfomap
     tmpdir      = os.path.join(os.curdir, 'tmp')
     pickle_file = os.path.join(tmpdir, 'obj.pickle')
 
@@ -79,7 +79,8 @@ def build_cmdline_options(optionparser, jobinfos=None):
 
     # now iterates through a jobinfos container
     for jobinfo in jobinfos:
-        subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' ')) # create a parser for subcommand
+        # create a parser for subcommand
+        subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '))
 
         # get job parameters and iterate through them to build subcommand options
         params = jobinfos[jobinfo].parameters
