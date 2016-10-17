@@ -54,8 +54,7 @@ def build_cmdline_options(jobinfos=None):
     '''
     # create a command line parser object
     optionparser = argparse.ArgumentParser(prog='jenkins',
-                                           description='jenkins jobs',
-                                           add_help=False)
+                                           description='jenkins jobs')
 
     # create sub parser objects and declare some variables
     subparsers  = optionparser.add_subparsers()
@@ -66,7 +65,7 @@ def build_cmdline_options(jobinfos=None):
 
     # now iterates through a jobinfos container
     for jobinfo in jobinfos:
-        subparser = subparsers.add_parser(jobinfo, parents=[optionparser]) # create a parser for subcommand
+        subparser = subparsers.add_parser(jobinfo) # create a parser for subcommand
 
         # get job parameters and iterate through them to build subcommand options
         params = jobinfos[jobinfo].parameters
