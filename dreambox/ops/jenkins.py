@@ -6,8 +6,9 @@ import datetime
 
 def jenkins():
     '''
-    is a function to construct a jenkins object, and build a proper
-    command line options. This function does not take any parameters.
+    is a main entry function to construct a jenkins object,
+    and build a proper command line options.
+    This function does not take any parameters.
     '''
 
     global jobinfomap
@@ -37,7 +38,8 @@ def jenkins():
 
 def build_cmdline_options(jobinfos=None):
     '''
-    is a function that builds out command line options.
+    is a function that builds out jenkins command and command
+    line options base on what's available from jenkins server.
     This function takes only one parameter,
 
     * jobinfos is a type of JobInfos
