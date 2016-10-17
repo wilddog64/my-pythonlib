@@ -27,6 +27,20 @@ def jenkins():
     jenkins_config_filepath = '~/src/gitrepo/python/dreambox-pythonlib/dreambox/etc'
     jenkins_config_section  = 'stage-devops-jenkins'
 
+    optionparser.add_argument('--config-path', '-c',
+                              help='a full path to the jenkins configuration file',
+                              default=jenkins_config_filepath)
+    optionparser.add_argument('--config-filename', '-n',
+                              help='a base name of the configuration file',
+                              default=jenkins_config_filename)
+    optionparser.add_argument('--jenkins-config-section', '-j',
+                              help='a section name define in jenkins configuration file',
+                              default=jenkins_config_section)
+    optionparser.add_argument('--user', '-u',
+                              help='a user that can connect to jenkins server')
+    optionparser.add_argument('--password', '-p',
+                              help='a password assoicate with jenkins user')
+
     # delete pickle file if it is older than 5 minutes
     if os.path.exists(pickle_file) and \
                Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
@@ -65,7 +79,7 @@ def build_cmdline_options(optionparser, jobinfos=None):
 
     # now iterates through a jobinfos container
     for jobinfo in jobinfos:
-        subparser = subparsers.add_parser(jobinfo) # create a parser for subcommand
+        subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' ')) # create a parser for subcommand
 
         # get job parameters and iterate through them to build subcommand options
         params = jobinfos[jobinfo].parameters
