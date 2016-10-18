@@ -40,7 +40,8 @@ def jenkins():
                               help='pickle file timeout in minutes',
                               default=5)
     optionparser.add_argument('--user', '-u',
-                              help='a user that can connect to jenkins server')
+                              help='a user that can connect to jenkins server',
+                              default=5)
     optionparser.add_argument('--password', '-p',
                               help='a password assoicate with jenkins user')
 
