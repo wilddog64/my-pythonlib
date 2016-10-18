@@ -36,12 +36,12 @@ def jenkins():
                               help='pickle file timeout in minutes',
                               default=5)
     optionparser.add_argument('--user', '-u',
-                              help='a user that can connect to jenkins server',
-                              default=5)
+                              help='a user that can connect to jenkins server')
     optionparser.add_argument('--password', '-p',
                               help='a password assoicate with jenkins user')
 
     # create object and cache it if the pickle file does not exist
+    global jenkins
     jenkins = Jenkins(jenkins_config_filename,
                       jenkins_config_filepath,
                       jenkins_config_section)
@@ -114,6 +114,10 @@ def build_cmdline_options(optionparser, jobinfos=None):
     subparser.add_argument('job_name', help='jenkins job to be disable')
     subparser.set_defaults(func=disable_job)
 
+    # setup command line option for list-jobs
+    subparser = subparsers.add_parser('list-all-jobs', help='list all jenkins jobs')
+    subparser.set_defaults(func=list_all_jobs)
+
     return optionparser
 
 def __get_object_method(jobinfomap, jobname, method):
@@ -149,6 +153,11 @@ def disable_job(args):
     jobname  = args.job_name
     func     = __get_object_method(jobinfomap, jobname, 'disable')
     func(args)
+
+def list_all_jobs(args):
+    print('----')
+    for job in jenkins._server.get_all_jobs():
+        print(job['fullname'])
 
 if __name__ == '__main__':
     jenkins()
