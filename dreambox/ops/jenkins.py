@@ -118,6 +118,10 @@ def build_cmdline_options(optionparser, jobinfos=None):
     subparser = subparsers.add_parser('list-all-jobs', help='list all jenkins jobs')
     subparser.set_defaults(func=list_all_jobs)
 
+    # setup command line option for list-disable-jobs
+    subparser = subparsers.add_parser('list-disable-jobs', help='list all jenkins jobs that are disable')
+    subparser.set_defaults(func=list_disable_jobs)
+
     return optionparser
 
 def __get_object_method(jobinfomap, jobname, method):
@@ -158,6 +162,13 @@ def list_all_jobs(args):
     print('----')
     for job in jenkins._server.get_all_jobs():
         print(job['fullname'])
+
+def list_disable_jobs(args):
+    print('---')
+    for job in jenkins._server.get_all_jobs():
+        jobname = job['fullname']
+        if not 'parameterDefinitions' in jenkins._server.get_job_info(jobname)['property'][0]:
+            print(jobname)
 
 if __name__ == '__main__':
     jenkins()
