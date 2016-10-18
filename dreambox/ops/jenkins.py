@@ -46,9 +46,10 @@ def jenkins():
                               help='a password assoicate with jenkins user')
 
     # create object and cache it if the pickle file does not exist
-    jobinfomap = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
-                                                   jenkins_config_filepath,
-                                                   jenkins_config_section))
+    jenkins = Jenkins(jenkins_config_filename,
+                      jenkins_config_filepath,
+                      jenkins_config_section)
+    jobinfomap = Jenkins.create_jobinfomap(jenkins)
 
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(optionparser, jobinfomap)
