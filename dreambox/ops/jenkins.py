@@ -1,8 +1,6 @@
 from __future__ import print_function
 from dreambox.jenkins.core import Jenkins
 import argparse
-import os
-import datetime
 
 def jenkins():
     '''
@@ -18,8 +16,6 @@ def jenkins():
     # mark jobinfomap global makes command line function hook much more easy
     # to access JobInfoMap object
     global jobinfomap
-    tmpdir      = os.path.join(os.curdir, 'tmp')
-    pickle_file = os.path.join(tmpdir, 'obj.pickle')
 
     # find out where's jenkins configuration file,
     # jenkins.ini, and build a container object from it
