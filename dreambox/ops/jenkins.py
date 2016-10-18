@@ -45,21 +45,10 @@ def jenkins():
     optionparser.add_argument('--password', '-p',
                               help='a password assoicate with jenkins user')
 
-    # delete pickle file if it is older than 5 minutes
-    if os.path.exists(pickle_file) and \
-               Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
-                                        datetime.datetime.now()) > (5 * 60):
-        print('pickle file expired, regenerating it')
-        os.unlink(pickle_file)
-
     # create object and cache it if the pickle file does not exist
-    if not os.path.exists(pickle_file):
-        jobinfomap = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
-                                                       jenkins_config_filepath,
-                                                       jenkins_config_section))
-    else:
-        print('no parent object pass in')
-        jobinfomap = Jenkins.create_jobinfomap()
+    jobinfomap = Jenkins.create_jobinfomap(Jenkins(jenkins_config_filename,
+                                                   jenkins_config_filepath,
+                                                   jenkins_config_section))
 
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(optionparser, jobinfomap)

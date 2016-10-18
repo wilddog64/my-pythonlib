@@ -174,6 +174,12 @@ class Jenkins(object):
         pickle_filehandle = None
         jobinfomap        = None
         pickle_filehandle = None
+        if os.path.exists(pickle_file) and \
+                Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
+                        datetime.datetime.now()) > (5 * 60):
+            os.unlink(pickle_file)
+            print('pickle file expired, regenerating it')
+
         try:
             if not os.path.exists(pickle_file):
                 pickle_filehandle = open(pickle_file, 'w+b')
