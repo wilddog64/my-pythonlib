@@ -92,27 +92,30 @@ class Jenkins(object):
     def _get_job_parameters(self, job_name=''):
         params                = {}
         parameters            = ParameterMap()
-        parameter_definitions = self._server.get_job_info(job_name)['property'][0]['parameterDefinitions']
-        for p in parameter_definitions:
-            p_name          = p['name']
-            p_type          = p['type']
-            p_default       = ''
-            p_value         = ''
-            params['name']  = p['name']
-            if 'defaultParameterValue' in p and \
-               'value' in p['defaultParameterValue']:
-                p_default = p['defaultParameterValue']['value']
-            if 'Choice' in p_type:
-                p_value = p['choices']
-            else:
-                p_value = p['value'] if 'value' in p else ''
-            p_description = p['description']
-            p             = Parameter(p_name,
-                                      p_value,
-                                      p_default,
-                                      p_type,
-                                      p_description)
-            setattr(parameters, p_name, p)
+        job_property = self._server.get_job_info(job_name)['property']
+        parameter_definitions = None
+        if 'parameterDefinitions' in job_property[0]:
+            parameter_definitions =job_property[0]['parameterDefinitions']
+            for p in parameter_definitions:
+                p_name          = p['name']
+                p_type          = p['type']
+                p_default       = ''
+                p_value         = ''
+                params['name']  = p['name']
+                if 'defaultParameterValue' in p and \
+                   'value' in p['defaultParameterValue']:
+                    p_default = p['defaultParameterValue']['value']
+                if 'Choice' in p_type:
+                    p_value = p['choices']
+                else:
+                    p_value = p['value'] if 'value' in p else ''
+                p_description = p['description']
+                p             = Parameter(p_name,
+                                          p_value,
+                                          p_default,
+                                          p_type,
+                                          p_description)
+                setattr(parameters, p_name, p)
 
         return parameters
 
@@ -165,6 +168,7 @@ class Jenkins(object):
         current_dir = os.path.curdir
         workspace   = os.path.join(current_dir, 'tmp')
         if not os.path.exists(workspace):
+            print('create directory %s' % workspace)
             os.mkdir(workspace)
         pickle_file       = os.path.join(workspace, 'obj.pickle')
         pickle_filehandle = None
