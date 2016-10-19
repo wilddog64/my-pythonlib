@@ -68,7 +68,6 @@ def build_cmdline_options(optionparser, jobinfos=None):
     # now iterates through a jobinfos container
     for jobinfo in jobinfos:
         # create a parser for subcommand
-        print('create a sub parser for %s' % jobinfo)
         subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '))
         subparser.add_argument('--dry-run',
                                help='see what job do without executing it, True by default',
