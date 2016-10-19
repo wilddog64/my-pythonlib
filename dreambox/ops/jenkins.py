@@ -1,6 +1,6 @@
 from __future__ import print_function
 from dreambox.jenkins.core import Jenkins
-import argparse
+import argparse, argcomplete
 
 def jenkins():
     '''
@@ -12,6 +12,9 @@ def jenkins():
     # create a command line parser object
     optionparser = argparse.ArgumentParser(prog='jenkins',
                                            description='jenkins jobs')
+
+    # setup argcomplete
+    argcomplete.autocomplete(optionparser)
 
     # mark jobinfomap global makes command line function hook much more easy
     # to access JobInfoMap object
