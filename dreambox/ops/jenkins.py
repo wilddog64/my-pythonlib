@@ -37,13 +37,6 @@ def jenkins():
     optionparser.add_argument('--jenkins-config-section', '-j',
                               help='a section name define in jenkins configuration file',
                               default=jenkins_config_section)
-    optionparser.add_argument('--cache-timeout', '-t',
-                              help='pickle file timeout in minutes',
-                              default=5)
-    optionparser.add_argument('--user', '-u',
-                              help='a user that can connect to jenkins server')
-    optionparser.add_argument('--password', '-p',
-                              help='a password assoicate with jenkins user')
 
     # create object and cache it if the pickle file does not exist
     global jenkins

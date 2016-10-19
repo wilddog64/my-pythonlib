@@ -81,8 +81,6 @@ class JobInfo(object):
         # clean up pass in arguments
         params = vars(args)
         del params['func']
-        del params['user']
-        del params['password']
         self.dry_run = params['dry_run']
         del params['dry_run']
         if self.dry_run:
