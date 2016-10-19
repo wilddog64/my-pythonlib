@@ -68,6 +68,7 @@ def build_cmdline_options(optionparser, jobinfos=None):
     # now iterates through a jobinfos container
     for jobinfo in jobinfos:
         # create a parser for subcommand
+        print('create a sub parser for %s' % jobinfo)
         subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '))
         subparser.add_argument('--dry-run',
                                help='see what job do without executing it, True by default',
@@ -85,11 +86,12 @@ def build_cmdline_options(optionparser, jobinfos=None):
                 opt_choices = params[param].value if 'Choice' in opt_type else None
                 if opt_choices:
                     if 'Required' in opt_default:
-                        subparser.add_argument(opt_name, choices=opt_choices, required=True)
+                        subparser.add_argument(opt_name, choices=opt_choices, required=True, default=opt_default)
                     else:
-                        subparser.add_argument(opt_name, choices=opt_choices)
+                        subparser.add_argument(opt_name, choices=opt_choices, default=opt_default)
                 else:
                     subparser.add_argument(opt_name, help=opt_help, default=opt_default)
+                print('option name %s: default value %s' % (opt_name, opt_default))
                 subparser.set_defaults(func=jobinfos[jobinfo].build)
 
     # setup command line options for copy-job
