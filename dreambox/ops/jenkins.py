@@ -1,6 +1,10 @@
 from __future__ import print_function
 from dreambox.jenkins.core import Jenkins
+<<<<<<< HEAD
 import argparse
+=======
+import argparse, argcomplete
+>>>>>>> master
 
 def jenkins():
     '''
@@ -11,7 +15,16 @@ def jenkins():
 
     # create a command line parser object
     optionparser = argparse.ArgumentParser(prog='jenkins',
+<<<<<<< HEAD
                                            description='jenkins jobs')
+=======
+                                           description='jenkins jobs',
+                                           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+
+    # setup argcomplete
+    argcomplete.autocomplete(optionparser)
+>>>>>>> master
 
     # mark jobinfomap global makes command line function hook much more easy
     # to access JobInfoMap object
@@ -23,6 +36,7 @@ def jenkins():
     jenkins_config_filepath = '~/src/gitrepo/python/dreambox-pythonlib/dreambox/etc'
     jenkins_config_section  = 'stage-devops-jenkins'
 
+<<<<<<< HEAD
     optionparser.add_argument('--config-path', '-c',
                               help='a full path to the jenkins configuration file',
                               default=jenkins_config_filepath)
@@ -40,6 +54,8 @@ def jenkins():
     optionparser.add_argument('--password', '-p',
                               help='a password assoicate with jenkins user')
 
+=======
+>>>>>>> master
     # create object and cache it if the pickle file does not exist
     global jenkins
     jenkins = Jenkins(jenkins_config_filename,
@@ -71,6 +87,13 @@ def build_cmdline_options(optionparser, jobinfos=None):
     for jobinfo in jobinfos:
         # create a parser for subcommand
         subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '))
+<<<<<<< HEAD
+=======
+        subparser.add_argument('--dry-run',
+                               help='see what job do without executing it, True by default',
+                               action='store_true',
+                               default=True)
+>>>>>>> master
 
         # get job parameters and iterate through them to build subcommand options
         params = jobinfos[jobinfo].parameters
@@ -83,11 +106,26 @@ def build_cmdline_options(optionparser, jobinfos=None):
                 opt_choices = params[param].value if 'Choice' in opt_type else None
                 if opt_choices:
                     if 'Required' in opt_default:
+<<<<<<< HEAD
                         subparser.add_argument(opt_name, choices=opt_choices, required=True)
                     else:
                         subparser.add_argument(opt_name, choices=opt_choices)
                 else:
                     subparser.add_argument(opt_name, help=opt_help, default=opt_default)
+=======
+                        subparser.add_argument(opt_name,
+                                               choices=opt_choices,
+                                               required=True,
+                                               default=opt_default)
+                    else:
+                        subparser.add_argument(opt_name,
+                                               choices=opt_choices,
+                                               default=opt_default)
+                else:
+                    subparser.add_argument(opt_name,
+                                           help=opt_help,
+                                           default=opt_default)
+>>>>>>> master
                 subparser.set_defaults(func=jobinfos[jobinfo].build)
 
     # setup command line options for copy-job
@@ -124,6 +162,7 @@ def build_cmdline_options(optionparser, jobinfos=None):
 
     return optionparser
 
+<<<<<<< HEAD
 def __get_object_method(jobinfomap, jobname, method):
     meth = None
     if jobname in jobinfomap:
@@ -133,12 +172,15 @@ def __get_object_method(jobinfomap, jobname, method):
 
     return meth
 
+=======
+>>>>>>> master
 def copy_job(args):
     '''
     create a copy of a given jenkins job
     '''
     jobname   = args.jobname
     new_name  = args.new_name
+<<<<<<< HEAD
     func      = __get_object_method(jobinfomap, jobname, 'copy')
     func(new_name)
 
@@ -157,6 +199,21 @@ def disable_job(args):
     jobname  = args.job_name
     func     = __get_object_method(jobinfomap, jobname, 'disable')
     func(args)
+=======
+    jobinfomap[jobname].copy(new_name)
+
+def delete_job(args):
+    jobname  = args.job_name
+    jobinfomap[jobname].delete()
+
+def enable_job(args):
+    jobname  = args.job_name
+    jobinfomap[jobname].enable()
+
+def disable_job(args):
+    jobname  = args.job_name
+    jobinfomap[jobname].diable()
+>>>>>>> master
 
 def list_all_jobs(args):
     print('----')
