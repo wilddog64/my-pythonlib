@@ -98,7 +98,6 @@ def build_cmdline_options(optionparser, jobinfos=None):
                     subparser.add_argument(opt_name,
                                            help=opt_help,
                                            default=opt_default)
-                print('option name %s: default value %s' % (opt_name, opt_default))
                 subparser.set_defaults(func=jobinfos[jobinfo].build)
 
     # setup command line options for copy-job
