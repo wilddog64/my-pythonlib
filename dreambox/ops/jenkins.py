@@ -11,7 +11,9 @@ def jenkins():
 
     # create a command line parser object
     optionparser = argparse.ArgumentParser(prog='jenkins',
-                                           description='jenkins jobs')
+                                           description='jenkins jobs',
+                                           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
 
     # setup argcomplete
     argcomplete.autocomplete(optionparser)
@@ -74,6 +76,10 @@ def build_cmdline_options(optionparser, jobinfos=None):
     for jobinfo in jobinfos:
         # create a parser for subcommand
         subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '))
+        subparser.add_argument('--dry-run',
+                               help='see what job do without executing it, True by default',
+                               action='store_true',
+                               default=True)
 
         # get job parameters and iterate through them to build subcommand options
         params = jobinfos[jobinfo].parameters
