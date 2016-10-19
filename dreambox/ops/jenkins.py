@@ -28,16 +28,6 @@ def jenkins():
     jenkins_config_filepath = '~/src/gitrepo/python/dreambox-pythonlib/dreambox/etc'
     jenkins_config_section  = 'stage-devops-jenkins'
 
-    optionparser.add_argument('--config-path', '-c',
-                              help='a full path to the jenkins configuration file',
-                              default=jenkins_config_filepath)
-    optionparser.add_argument('--config-filename', '-n',
-                              help='a base name of the configuration file',
-                              default=jenkins_config_filename)
-    optionparser.add_argument('--jenkins-config-section', '-j',
-                              help='a section name define in jenkins configuration file',
-                              default=jenkins_config_section)
-
     # create object and cache it if the pickle file does not exist
     global jenkins
     jenkins = Jenkins(jenkins_config_filename,
