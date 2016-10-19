@@ -127,39 +127,25 @@ def build_cmdline_options(optionparser, jobinfos=None):
 
     return optionparser
 
-def __get_object_method(jobinfomap, jobname, method):
-    meth = None
-    if jobname in jobinfomap:
-        meth = getattr(jobinfomap[jobname], method)
-    else:
-        raise IndexError('unable to find jenkins job %s' % jobname)
-
-    return meth
-
 def copy_job(args):
     '''
     create a copy of a given jenkins job
     '''
     jobname   = args.jobname
     new_name  = args.new_name
-    func      = __get_object_method(jobinfomap, jobname, 'copy')
-    func(new_name)
+    jobinfomap[jobname].copy(new_name)
 
 def delete_job(args):
     jobname  = args.job_name
-    func     = __get_object_method(jobinfomap, jobname, 'delete')
-    func()
+    jobinfomap[jobname].delete()
 
 def enable_job(args):
     jobname  = args.job_name
-    func     = __get_object_method(jobinfomap, jobname, 'enable')
-    func()
-
+    jobinfomap[jobname].enable()
 
 def disable_job(args):
     jobname  = args.job_name
-    func     = __get_object_method(jobinfomap, jobname, 'disable')
-    func(args)
+    jobinfomap[jobname].diable()
 
 def list_all_jobs(args):
     print('----')
