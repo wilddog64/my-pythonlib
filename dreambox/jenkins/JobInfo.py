@@ -71,17 +71,24 @@ class JobInfo(object):
     def next_build_number(self, value):
         self._jenkins.set_next_build_number(self.name, value)
 
-    def build(self, args=None, **params):
+    def build(self, args=None):
         '''
         trigger a jenkins job to build. The method
         takes a keyword parameters that should match
         what's defined in a given jenkins server.
         '''
 
-        if not params:
-            params = self.parameters
+        # clean up pass in arguments
+        params = vars(args)
+        del params['func']
+        del params['user']
+        del params['password']
+        self.dry_run = params['dry_run']
+        del params['dry_run']
         if self.dry_run:
             print('trigger job %s' % self.name)
+            print('with these arguments:')
+            dreambox.utils.print_structure(params)
         else:
             self._jenkins.build_job(self.name, params)
 
