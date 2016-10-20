@@ -157,11 +157,11 @@ class Jenkins(object):
         def _create_jobinfomap():
             jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
             for job in object._get_jobs():
-                jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
-                jobinfo._name       = job
-                jobinfo._url        = object._get_jobs()[job].url
-                parameters          = object._get_jobs()[job].parameters
-                jobinfo._parameters = parameters
+                jobinfo                  = dreambox.jenkins.JobInfo.JobInfo(object)
+                jobinfo._name            = job
+                jobinfo._url             = object._get_jobs()[job].url
+                parameters               = object._get_jobs()[job].parameters
+                jobinfo._parameters      = parameters
                 jobinfomap[jobinfo.name] = jobinfo
             return jobinfomap
 
