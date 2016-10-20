@@ -90,12 +90,12 @@ class Jenkins(object):
         return self._name
 
     def _get_job_parameters(self, job_name=''):
-        params                = {}
-        parameters            = ParameterMap()
-        job_property = self._server.get_job_info(job_name)['property']
-        parameter_definitions = None
+        params                 = {}
+        parameters             = ParameterMap()
+        job_property           = self._server.get_job_info(job_name)['property']
+        parameter_definitions  = None
         if 'parameterDefinitions' in job_property[0]:
-            parameter_definitions =job_property[0]['parameterDefinitions']
+            parameter_definitions = job_property[0]['parameterDefinitions']
             for p in parameter_definitions:
                 p_name          = p['name']
                 p_type          = p['type']
