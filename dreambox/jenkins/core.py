@@ -90,12 +90,12 @@ class Jenkins(object):
         return self._name
 
     def _get_job_parameters(self, job_name=''):
-        params                = {}
-        parameters            = ParameterMap()
-        job_property = self._server.get_job_info(job_name)['property']
-        parameter_definitions = None
+        params                 = {}
+        parameters             = ParameterMap()
+        job_property           = self._server.get_job_info(job_name)['property']
+        parameter_definitions  = None
         if 'parameterDefinitions' in job_property[0]:
-            parameter_definitions =job_property[0]['parameterDefinitions']
+            parameter_definitions = job_property[0]['parameterDefinitions']
             for p in parameter_definitions:
                 p_name          = p['name']
                 p_type          = p['type']
@@ -115,7 +115,7 @@ class Jenkins(object):
                                           p_default,
                                           p_type,
                                           p_description)
-                setattr(parameters, p_name, p)
+                parameters[p_name] = p
 
         return parameters
 
@@ -157,12 +157,12 @@ class Jenkins(object):
         def _create_jobinfomap():
             jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
             for job in object._get_jobs():
-                jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
-                jobinfo._name       = job
-                jobinfo._url        = object._get_jobs()[job].url
-                parameters          = object._get_jobs()[job].parameters
-                jobinfo._parameters = parameters
-                setattr(jobinfomap, jobinfo.name, jobinfo)
+                jobinfo                  = dreambox.jenkins.JobInfo.JobInfo(object)
+                jobinfo._name            = job
+                jobinfo._url             = object._get_jobs()[job].url
+                parameters               = object._get_jobs()[job].parameters
+                jobinfo._parameters      = parameters
+                jobinfomap[jobinfo.name] = jobinfo
             return jobinfomap
 
         current_dir = os.path.curdir
