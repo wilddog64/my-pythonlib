@@ -115,7 +115,7 @@ class Jenkins(object):
                                           p_default,
                                           p_type,
                                           p_description)
-                setattr(parameters, p_name, p)
+                parameters[p_name] = p
 
         return parameters
 
