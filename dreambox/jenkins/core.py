@@ -162,7 +162,7 @@ class Jenkins(object):
                 jobinfo._url        = object._get_jobs()[job].url
                 parameters          = object._get_jobs()[job].parameters
                 jobinfo._parameters = parameters
-                setattr(jobinfomap, jobinfo.name, jobinfo)
+                jobinfomap[jobinfo.name] = jobinfo
             return jobinfomap
 
         current_dir = os.path.curdir
