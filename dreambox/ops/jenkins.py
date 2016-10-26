@@ -13,7 +13,8 @@ def jenkins():
     # create a command line parser object
     optionparser = argparse.ArgumentParser(prog='jenkins',
                                            description='jenkins jobs',
-                                           formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                                           formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+                                           argument_default=argparse.SUPPRESS)
 
 
     # setup argcomplete
@@ -37,6 +38,7 @@ def jenkins():
     optionparser.add_argument('--jenkins-cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType, dest='cache_timeout')
 
     args = optionparser.parse_known_args()
+    print(vars(args[0]))
 
     # create object and cache it if the pickle file does not exist
     global jenkins
