@@ -169,6 +169,8 @@ class Jenkins(object):
                 parameters               = object._get_jobs()[job].parameters
                 jobinfo._parameters      = parameters
                 jobinfomap[jobinfo.name] = jobinfo
+                if 'dry_run' in parameters:
+                    jobinfo._has_dryrun = True
             return jobinfomap
 
         current_dir = os.path.curdir
@@ -220,7 +222,7 @@ class Jenkins(object):
 if __name__ == '__main__':
     import dreambox.utils
     jenkins_config_path = '~/src/gitrepo/dreambox/python/dreambox-pythonlib/dreambox/etc'
-    devops_jenkins = dreambox.jenkins.core.Jenkins('jenkins.ini', jenkins_config_path, 'stage-devops-jenkins')
+    devops_jenkins = dreambox.jenkins.core.Jenkins(config_file='jenkins.ini', config_file_path=jenkins_config_path, section='stage-devops-jenkins')
     print('object type for devops_jenkins is %s' % type(devops_jenkins))
     print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
@@ -257,3 +259,6 @@ if __name__ == '__main__':
     print('')
     environment_create_parameters = jobinfomap.environment_create.job_info['property'][0]['parameterDefinitions']
     dreambox.utils.print_structure(environment_create_parameters)
+    for jobinfo in jobinfomap:
+        if jobinfomap[jobinfo].has_dryrun:
+            print('%s has dry_run property' % jobinfo)

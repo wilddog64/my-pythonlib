@@ -75,10 +75,11 @@ def build_cmdline_options(optionparser, jobinfos=None):
     for jobinfo in jobinfos:
         # create a parser for subcommand
         subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '), formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-        subparser.add_argument('--dry-run',
-                               help='see what job do without executing it, True by default',
-                               action='store_true',
-                               default=True)
+        if not jobinfos[jobinfo].has_dryrun:
+            subparser.add_argument('--dry_run',
+                                   help='see what job do without executing it, True by default',
+                                   action='store_true',
+                                   default=True)
 
         # get job parameters and iterate through them to build subcommand options
         params = jobinfos[jobinfo].parameters
