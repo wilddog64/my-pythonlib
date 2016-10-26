@@ -1,6 +1,7 @@
 from __future__ import print_function
 from dreambox.jenkins.core import Jenkins
 import argparse, argcomplete
+import types
 
 def jenkins():
     '''
@@ -27,17 +28,26 @@ def jenkins():
     jenkins_config_filename = 'jenkins.ini'
     jenkins_config_filepath = '~/src/gitrepo/python/dreambox-pythonlib/dreambox/etc'
     jenkins_config_section  = 'stage-devops-jenkins'
+    optionparser.add_argument('--jenkins-user', '-u', help='a valid jenkins user')
+    optionparser.add_argument('--jenkins-user-pass', '-p', help='a password associates with a given jenkins user')
+    optionparser.add_argument('--jenkins-config-filepath', help='a path points to a jenkins configuration file', default=jenkins_config_filepath)
+    optionparser.add_argument('--jenkins-config-filename', help='a filename of the jenkins configuration file', default=jenkins_config_filename)
+    optionparser.add_argument('--jenkins-config-section', help='jenkins section in a give configuration file', default=jenkins_config_section)
+    optionparser.add_argument('--cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType)
+
+    args = optionparser.parse_known_args()
 
     # create object and cache it if the pickle file does not exist
     global jenkins
-    jenkins = Jenkins(jenkins_config_filename,
-                      jenkins_config_filepath,
-                      jenkins_config_section)
-    jobinfomap = Jenkins.create_jobinfomap(jenkins)
+    jenkins = Jenkins(args[0].jenkins_config_filename,
+                      args[0].jenkins_config_filepath,
+                      args[0].jenkins_config_section)
+    jobinfomap = Jenkins.create_jobinfomap(jenkins, args[0].cache_timeout)
 
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(optionparser, jobinfomap)
     args       = cmd_parser.parse_args()
+    print(args)
     args.func(args)
 
 def build_cmdline_options(optionparser, jobinfos=None):
