@@ -21,6 +21,8 @@ except:
 class Jenkins(object):
 
     def __init__(self, jenkins_url='',
+                       jenkins_user='',
+                       jenkins_pass='',
                        config_file='',
                        config_file_path='',
                        section=''):
@@ -34,8 +36,8 @@ class Jenkins(object):
         self._config         = inifile.config_section_map(self._jenkins_config_file,
                                                           config_file_path,
                                                           section)
-        self._user           = self._config['user']
-        self._passwd         = self._config['password']
+        self._user           = jenkins_user if jenkins_user else self._config['user']
+        self._passwd         = jenkins_pass if jenkins_pass else self._config['password']
         self._url            = jenkins_url if jenkins_url else self._config['url']
         self._jobs           = None
         self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
