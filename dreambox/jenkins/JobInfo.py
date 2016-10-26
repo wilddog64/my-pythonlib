@@ -87,7 +87,6 @@ class JobInfo(object):
         del params['jenkins_user_pass']
         del params['jenkins_config_filepath']
         del params['jenkins_config_filename']
-        del params['jenkins_config_filename']
         del params['jenkins_url']
         del params['cache_timeout']
         if self.dry_run:
