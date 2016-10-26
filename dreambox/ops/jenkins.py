@@ -30,6 +30,7 @@ def jenkins():
     jenkins_config_section  = 'stage-devops-jenkins'
     optionparser.add_argument('--jenkins-user', '-u', help='a valid jenkins user')
     optionparser.add_argument('--jenkins-user-pass', '-p', help='a password associates with a given jenkins user')
+    optionparser.add_argument('--jenkins-url', '-U', help='a valid jenkins url', default='')
     optionparser.add_argument('--jenkins-config-filepath', '-f', help='a path points to a jenkins configuration file', default=jenkins_config_filepath)
     optionparser.add_argument('--jenkins-config-filename', '-n', help='a filename of the jenkins configuration file', default=jenkins_config_filename)
     optionparser.add_argument('--jenkins-config-section', '-s', help='jenkins section in a give configuration file', default=jenkins_config_section)
@@ -39,7 +40,8 @@ def jenkins():
 
     # create object and cache it if the pickle file does not exist
     global jenkins
-    jenkins = Jenkins(args[0].jenkins_config_filename,
+    jenkins = Jenkins(args[0].jenkins_url,
+                      args[0].jenkins_config_filename,
                       args[0].jenkins_config_filepath,
                       args[0].jenkins_config_section)
     jobinfomap = Jenkins.create_jobinfomap(jenkins, args[0].cache_timeout)
@@ -68,7 +70,7 @@ def build_cmdline_options(optionparser, jobinfos=None):
     # now iterates through a jobinfos container
     for jobinfo in jobinfos:
         # create a parser for subcommand
-        subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '))
+        subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '), formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         subparser.add_argument('--dry-run',
                                help='see what job do without executing it, True by default',
                                action='store_true',

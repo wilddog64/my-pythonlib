@@ -20,7 +20,7 @@ except:
 
 class Jenkins(object):
 
-    def __init__(self, config_file='', config_file_path='', section=''):
+    def __init__(self, jenkins_url='', config_file='', config_file_path='', section=''):
         self._config = None
         if config_file == '':
             self._jenkins_config_file = 'jenkins.ini'
@@ -33,7 +33,7 @@ class Jenkins(object):
                                                           section)
         self._user           = self._config['user']
         self._passwd         = self._config['password']
-        self._url            = self._config['url']
+        self._url            = jenkins_url if jenkins_url else self._config['url']
         self._jobs           = None
         self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
         self._bf             = BadgerFish()
