@@ -83,6 +83,12 @@ class JobInfo(object):
         del params['func']
         self.dry_run = params['dry_run']
         del params['dry_run']
+        del params['jenkins_user']
+        del params['jenkins_user_pass']
+        del params['jenkins_config_filepath']
+        del params['jenkins_config_filename']
+        del params['jenkins_url']
+        del params['cache_timeout']
         if self.dry_run:
             print('trigger job %s' % self.name)
             print('with these arguments:')

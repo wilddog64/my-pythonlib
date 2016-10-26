@@ -20,7 +20,12 @@ except:
 
 class Jenkins(object):
 
-    def __init__(self, config_file='', config_file_path='', section=''):
+    def __init__(self, jenkins_url='',
+                       jenkins_user='',
+                       jenkins_pass='',
+                       config_file='',
+                       config_file_path='',
+                       section=''):
         self._config = None
         if config_file == '':
             self._jenkins_config_file = 'jenkins.ini'
@@ -31,9 +36,9 @@ class Jenkins(object):
         self._config         = inifile.config_section_map(self._jenkins_config_file,
                                                           config_file_path,
                                                           section)
-        self._user           = self._config['user']
-        self._passwd         = self._config['password']
-        self._url            = self._config['url']
+        self._user           = jenkins_user if jenkins_user else self._config['user']
+        self._passwd         = jenkins_pass if jenkins_pass else self._config['password']
+        self._url            = jenkins_url if jenkins_url else self._config['url']
         self._jobs           = None
         self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
         self._bf             = BadgerFish()
@@ -145,7 +150,7 @@ class Jenkins(object):
         return jobinfos
 
     @classmethod
-    def create_jobinfomap(self, object=None, load_from_pickle=False):
+    def create_jobinfomap(self, object=None, cache_timeout=5):
         '''
         will create a JobInfoMap container object. The method takes one parameter
 
@@ -154,6 +159,7 @@ class Jenkins(object):
         the class method will cache the JobInfoMap object via cPickle. it will also
         invalidate the cache file in 5 minutes.
         '''
+        load_from_pickle = False
         def _create_jobinfomap():
             jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
             for job in object._get_jobs():
@@ -176,9 +182,9 @@ class Jenkins(object):
         pickle_filehandle = None
         if os.path.exists(pickle_file) and \
                 Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
-                        datetime.datetime.now()) > (5 * 60):
-            os.unlink(pickle_file)
+                        datetime.datetime.now()) > (cache_timeout * 60):
             print('pickle file expired, regenerating it')
+            os.unlink(pickle_file)
 
         try:
             if not os.path.exists(pickle_file):
