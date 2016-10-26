@@ -33,6 +33,7 @@ class JobInfo(object):
         self._url        = ''
         self._parameters = {}
         self._dry_run    = True
+        self._has_dryrun = False
 
     @property
     def name(self):
@@ -81,8 +82,9 @@ class JobInfo(object):
         # clean up pass in arguments
         params = vars(args)
         del params['func']
-        self.dry_run = params['dry_run']
-        del params['dry_run']
+        if not self.has_dryrun:
+            self.dry_run = params['dry_run']
+            del params['dry_run']
         del params['jenkins_user']
         del params['jenkins_user_pass']
         del params['jenkins_config_filepath']
@@ -140,6 +142,10 @@ class JobInfo(object):
     @property
     def job_info(self):
         return self._jenkins.get_job_info(self.name)
+
+    @property
+    def has_dryrun(self):
+        return self._has_dryrun
 
 class JobInfos(Sequence):
     '''A container class wrapping a list with some extra functional magic, like head,

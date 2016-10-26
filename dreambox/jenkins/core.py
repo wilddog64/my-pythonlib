@@ -169,6 +169,8 @@ class Jenkins(object):
                 parameters               = object._get_jobs()[job].parameters
                 jobinfo._parameters      = parameters
                 jobinfomap[jobinfo.name] = jobinfo
+                if 'dry_run' in parameters:
+                    jobinfo._has_dryrun = True
             return jobinfomap
 
         current_dir = os.path.curdir
@@ -257,3 +259,6 @@ if __name__ == '__main__':
     print('')
     environment_create_parameters = jobinfomap.environment_create.job_info['property'][0]['parameterDefinitions']
     dreambox.utils.print_structure(environment_create_parameters)
+    for jobinfo in jobinfomap:
+        if jobinfomap[jobinfo].has_dryrun:
+            print('%s has dry_run property' % jobinfo)
