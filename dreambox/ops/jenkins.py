@@ -33,7 +33,7 @@ def jenkins():
     optionparser.add_argument('--jenkins-config-filepath', help='a path points to a jenkins configuration file', default=jenkins_config_filepath)
     optionparser.add_argument('--jenkins-config-filename', help='a filename of the jenkins configuration file', default=jenkins_config_filename)
     optionparser.add_argument('--jenkins-config-section', help='jenkins section in a give configuration file', default=jenkins_config_section)
-    optionparser.add_argument('--cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType)
+    optionparser.add_argument('--jenkins-cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType, dest='cache_timeout')
 
     args = optionparser.parse_known_args()
 
