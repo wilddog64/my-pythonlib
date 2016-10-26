@@ -20,7 +20,10 @@ except:
 
 class Jenkins(object):
 
-    def __init__(self, jenkins_url='', config_file='', config_file_path='', section=''):
+    def __init__(self, jenkins_url='',
+                       config_file='',
+                       config_file_path='',
+                       section=''):
         self._config = None
         if config_file == '':
             self._jenkins_config_file = 'jenkins.ini'
