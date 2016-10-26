@@ -145,7 +145,7 @@ class Jenkins(object):
         return jobinfos
 
     @classmethod
-    def create_jobinfomap(self, object=None, load_from_pickle=False):
+    def create_jobinfomap(self, object=None, cache_timeout=5):
         '''
         will create a JobInfoMap container object. The method takes one parameter
 
@@ -154,6 +154,7 @@ class Jenkins(object):
         the class method will cache the JobInfoMap object via cPickle. it will also
         invalidate the cache file in 5 minutes.
         '''
+        load_from_pickle = False
         def _create_jobinfomap():
             jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
             for job in object._get_jobs():
@@ -176,9 +177,9 @@ class Jenkins(object):
         pickle_filehandle = None
         if os.path.exists(pickle_file) and \
                 Jenkins.timediff_in_secs(Jenkins.mdate(pickle_file),
-                        datetime.datetime.now()) > (5 * 60):
-            os.unlink(pickle_file)
+                        datetime.datetime.now()) > (cache_timeout * 60):
             print('pickle file expired, regenerating it')
+            os.unlink(pickle_file)
 
         try:
             if not os.path.exists(pickle_file):
