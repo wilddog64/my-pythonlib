@@ -18,6 +18,10 @@ try:
 except:
     import pickle
 
+class JenkinsParameterError(Exception):
+    def __init__(self, message):
+        super(Exception, self).__init__(message)
+
 class Jenkins(object):
 
     def __init__(self, jenkins_url='',
@@ -39,7 +43,7 @@ class Jenkins(object):
         self._user           = jenkins_user if jenkins_user else self._config['user']
         self._passwd         = jenkins_pass if jenkins_pass else self._config['password']
         self._url            = jenkins_url if jenkins_url else self._config['url']
-        self._jobs           = None
+        self._jobs           = dict()
         self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
         self._bf             = BadgerFish()
 
@@ -80,11 +84,12 @@ class Jenkins(object):
         return self._server.server
 
     def _get_jobs(self):
-        if self._jobs is None:
-            self._jobs = {job['name']: dreambox.jenkins.JobInfo.Job(job['name'],
-                                                                    job['url'],
-                                                                    self._get_job_parameters(job['name']))
-                    for job in self._server.get_all_jobs()}
+        if len(self._jobs) == 0:
+            for job in self._server.get_all_jobs():
+                job_name             = job['name']
+                job_url              = job['url']
+                job_parameters       = self._get_job_parameters(job_name)
+                self._jobs[job_name] = dreambox.jenkins.JobInfo.Job(job_name, job_url, job_parameters)
         return self._jobs
 
     @property
@@ -99,7 +104,7 @@ class Jenkins(object):
         parameters             = ParameterMap()
         job_property           = self._server.get_job_info(job_name)['property']
         parameter_definitions  = None
-        if 'parameterDefinitions' in job_property[0]:
+        if job_property and 'parameterDefinitions' in job_property[0]:
             parameter_definitions = job_property[0]['parameterDefinitions']
             for p in parameter_definitions:
                 p_name          = p['name']
@@ -115,12 +120,16 @@ class Jenkins(object):
                 else:
                     p_value = p['value'] if 'value' in p else ''
                 p_description = p['description']
-                p             = Parameter(p_name,
-                                          p_value,
-                                          p_default,
-                                          p_type,
-                                          p_description)
+                p = Parameter(p_name,
+                              p_value,
+                              p_default,
+                              p_type,
+                              p_description)
                 parameters[p_name] = p
+
+        else:
+            print('job name %s' % job_name)
+            pass
 
         return parameters
 
@@ -202,8 +211,6 @@ class Jenkins(object):
             else:
                 jobinfomap = _create_jobinfomap()
                 pickle.dump(jobinfomap, pickle_filehandle)
-        except Exception as e:
-            raise(e)
         finally:
             pickle_filehandle.close()
 
