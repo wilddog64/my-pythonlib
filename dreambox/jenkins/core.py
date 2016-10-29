@@ -126,9 +126,7 @@ class Jenkins(object):
                               p_type,
                               p_description)
                 parameters[p_name] = p
-
-        else:
-            print('job name %s' % job_name)
+        else: # skip parameters creation if a job does not have them
             pass
 
         return parameters
