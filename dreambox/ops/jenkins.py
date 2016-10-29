@@ -38,7 +38,6 @@ def jenkins():
     optionparser.add_argument('--jenkins-cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType, dest='cache_timeout')
 
     args = optionparser.parse_known_args()
-    print(vars(args[0]))
 
     # create object and cache it if the pickle file does not exist
     global jenkins
@@ -53,7 +52,6 @@ def jenkins():
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(optionparser, jobinfomap)
     args       = cmd_parser.parse_args()
-    print(args)
     args.func(args)
 
 def build_cmdline_options(optionparser, jobinfos=None):
