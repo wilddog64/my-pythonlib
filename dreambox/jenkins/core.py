@@ -185,7 +185,7 @@ class Jenkins(object):
         if not os.path.exists(workspace):
             print('create directory %s' % workspace)
             os.mkdir(workspace)
-        pickle_file       = os.path.join(workspace, 'obj.pickle')
+        pickle_file       = os.path.join(workspace, '%s.pickle' % object.name)
         pickle_filehandle = None
         jobinfomap        = None
         pickle_filehandle = None
