@@ -92,8 +92,8 @@ class JobInfo(object):
         del params['jenkins_url']
         del params['cache_timeout']
         if self.dry_run:
-            print('trigger job %s' % self.name)
-            print('with these arguments:')
+            print('triggering job %s' % self.name)
+            print('with these arguments: (this is not sending to jenkins)')
             dreambox.utils.print_structure(params)
         else:
             self._jenkins.build_job(self.name, params)
