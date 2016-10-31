@@ -162,15 +162,14 @@ def disable_job(args):
 
 def list_all_jobs(args):
     print('----')
-    for job in jenkins._server.get_all_jobs():
-        print(job['fullname'])
+    for job in sorted(jobinfomap):
+        print(job)
 
 def list_disable_jobs(args):
     print('---')
-    for job in jenkins._server.get_all_jobs():
-        jobname = job['fullname']
-        if not 'parameterDefinitions' in jenkins._server.get_job_info(jobname)['property'][0]:
-            print(jobname)
+    for job in jobinfomap:
+        if not 'parameterDefinitions' in jenkins._server.get_job_info(job)['property'][0]:
+            print(job)
 
 if __name__ == '__main__':
     jenkins()
