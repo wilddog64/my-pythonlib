@@ -34,6 +34,7 @@ class JobInfo(object):
         self._parameters = {}
         self._dry_run    = True
         self._has_dryrun = False
+        self._workspace   = '/tmp'
 
     @property
     def name(self):
@@ -71,6 +72,18 @@ class JobInfo(object):
     @next_build_number.setter
     def next_build_number(self, value):
         self._jenkins.set_next_build_number(self.name, value)
+
+    @property
+    def workspace(self):
+        '''
+        this property returns a current workspace for current
+        object. It is mainly used for saving job
+        '''
+        return self._workspace
+
+    @workspace.setter
+    def workspace(self, value):
+        self._workspace = value
 
     def build(self, args=None):
         '''
