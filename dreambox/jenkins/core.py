@@ -5,7 +5,7 @@ from xmljson import BadgerFish
 from xml.etree.ElementTree import fromstring
 import json
 import dreambox.jenkins
-import dreambox.jenkins.JobInfo
+import dreambox.jenkins.jobinfo
 from dreambox.jenkins.parameter import Parameter, ParameterMap
 
 import os
@@ -89,7 +89,7 @@ class Jenkins(object):
                 job_name             = job['name']
                 job_url              = job['url']
                 job_parameters       = self._get_job_parameters(job_name)
-                self._jobs[job_name] = dreambox.jenkins.JobInfo.Job(job_name, job_url, job_parameters)
+                self._jobs[job_name] = dreambox.jenkins.jobinfo.Job(job_name, job_url, job_parameters)
         return self._jobs
 
     @property
@@ -137,7 +137,7 @@ class Jenkins(object):
     @classmethod
     def create_jobinfos(self, object):
         '''
-        is a static method that create a JobInfos collection. This
+        is a static method that create a jobinfos collection. This
         method takes one parameter
 
         object is an object of type dreambox.jenkins.core.Jenkins
@@ -145,9 +145,9 @@ class Jenkins(object):
         if type(object) is not dreambox.jenkins.core.Jenkins:
             raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
 
-        jobinfos = dreambox.jenkins.JobInfo.JobInfos()
+        jobinfos = dreambox.jenkins.jobinfo.JobInfos()
         for job in object._get_jobs():
-            jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
+            jobinfo             = dreambox.jenkins.jobinfo.JobInfo(object)
             jobinfo._name       = job
             jobinfo._url        = object._get_jobs()[job].url
             parameters          = object._get_jobs()[job].parameters
@@ -168,9 +168,9 @@ class Jenkins(object):
         '''
         load_from_pickle = False
         def _create_jobinfomap():
-            jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
+            jobinfomap = dreambox.jenkins.jobinfo.JobInfoMap()
             for job in object._get_jobs():
-                jobinfo                  = dreambox.jenkins.JobInfo.JobInfo(object)
+                jobinfo                  = dreambox.jenkins.jobinfo.JobInfo(object)
                 jobinfo._name            = job
                 jobinfo._url             = object._get_jobs()[job].url
                 parameters               = object._get_jobs()[job].parameters
