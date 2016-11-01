@@ -35,6 +35,7 @@ class JobInfo(object):
         self._dry_run    = True
         self._has_dryrun = False
         self._workspace   = '/tmp'
+        self._return_xml_python_struct = False
 
     @property
     def name(self):
@@ -84,6 +85,14 @@ class JobInfo(object):
     @workspace.setter
     def workspace(self, value):
         self._workspace = value
+
+    @property
+    def return_xml_python_struct(self):
+        return self._return_xml_python_struct
+
+    @return_xml_python_struct.setter
+    def return_xml_python_struct(self, value):
+        self._return_xml_python_struct = value
 
     def build(self, args=None):
         '''
@@ -151,6 +160,11 @@ class JobInfo(object):
     @property
     def job_config(self):
         job_config = self._jenkins.get_job_config(self.name)
+
+        if self.return_xml_python_struct:
+            print('return python object')
+            job_config = self._parent._load_xml(job_config)
+
         return self._parent._load_xml(job_config)
 
     @property

@@ -249,9 +249,12 @@ if __name__ == '__main__':
     print('environment_create job config')
     dreambox.utils.print_structure(jobinfomap['environment_create'].job_config)
     print('')
-    print('environment_create job info')
-    dreambox.utils.print_structure(jobinfomap['environment_create'].job_info)
+    print('environment_create job info in xml')
+    jobinfomap.environment_create.return_xml_python_struct = True
+    print(jobinfomap['environment_create'].job_info)
     print('')
+    jobinfomap['environment_create'].return_xml_python_struct = False
+    dreambox.utils.print_structure(jobinfomap['environment_create'].job_info)
     print('environment_create job parameters')
     print(type(jobinfomap.environment_create.parameters))
 
