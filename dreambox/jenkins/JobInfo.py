@@ -89,6 +89,7 @@ class JobInfo(object):
         del params['jenkins_user_pass']
         del params['jenkins_config_filepath']
         del params['jenkins_config_filename']
+        del params['jenkins_config_section']
         del params['jenkins_url']
         del params['cache_timeout']
         if self.dry_run:
@@ -249,7 +250,7 @@ class JobInfoMap(dict):
 
     def __getitem__(self, key):
         if not key in self.__dict__:
-            raise KeyError('unable to find %s in container' % key)
+            raise KeyError('unable to find %s in jenkins server' % key)
         return self.__dict__[key]
 
     def __len__(self):
