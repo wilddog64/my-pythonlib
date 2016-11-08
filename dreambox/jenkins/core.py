@@ -242,33 +242,37 @@ if __name__ == '__main__':
     jobinfomap = Jenkins.create_jobinfomap(devops_jenkins)
     print('a list of job:')
     print('-------------')
-    for job in jobinfomap:
-        print(job)
-    print('-------------')
-    print('')
-    print('environment_create job config')
-    dreambox.utils.print_structure(jobinfomap['environment_create'].job_config)
-    print('')
-    print('environment_create job info in xml')
-    jobinfomap.environment_create.return_xml_python_struct = True
-    print(jobinfomap['environment_create'].job_info)
-    print('')
-    jobinfomap['environment_create'].return_xml_python_struct = False
-    dreambox.utils.print_structure(jobinfomap['environment_create'].job_info)
+    # for job in jobinfomap:
+    #     print(job)
+    # print('-------------')
+    # print('')
+    # print('environment_create job config')
+    # dreambox.utils.print_structure(jobinfomap['environment_create'].job_config)
+    # print('')
+    # print('environment_create job info in xml')
+    # jobinfomap.environment_create.return_xml_python_struct = True
+    # print(jobinfomap['environment_create'].job_info)
+    # print('')
+    # jobinfomap['environment_create'].return_xml_python_struct = False
+    # dreambox.utils.print_structure(jobinfomap['environment_create'].job_info)
     print('environment_create job parameters')
     print(type(jobinfomap.environment_create.parameters))
 
-    print('environment_create job next build number %s' % jobinfomap['environment_create'].next_build_number)
-    print('')
-    print('--- testing Jenkins.create_jobinfomap class method ---')
-    print('')
-    print('--- print out sorted job names ---')
-    for job in sorted(jobinfomap.keys):
-        print(job)
-    print('--- print out sorted job names ---')
-    print('')
-    environment_create_parameters = jobinfomap.environment_create.job_info['property'][0]['parameterDefinitions']
-    dreambox.utils.print_structure(environment_create_parameters)
+    # print('environment_create job next build number %s' % jobinfomap['environment_create'].next_build_number)
+    # print('')
+    # print('--- testing Jenkins.create_jobinfomap class method ---')
+    # print('')
+    # print('--- print out sorted job names ---')
+    # for job in sorted(jobinfomap.keys):
+    #     print(job)
+    # print('--- print out sorted job names ---')
+    # print('')
+    # environment_create_parameters = jobinfomap.environment_create.job_info['property'][0]['parameterDefinitions']
+    # dreambox.utils.print_structure(environment_create_parameters)
+    # for jobinfo in jobinfomap:
+    #     if jobinfomap[jobinfo].has_dryrun:
+    #         print('%s has dry_run property' % jobinfo)
+
     for jobinfo in jobinfomap:
-        if jobinfomap[jobinfo].has_dryrun:
-            print('%s has dry_run property' % jobinfo)
+        jobinfomap[jobinfo].workspace = os.path.join('/tmp', devops_jenkins.name)
+        jobinfomap[jobinfo].save_job_config()
