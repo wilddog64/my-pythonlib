@@ -37,6 +37,7 @@ class JobInfo(object):
         self._has_dryrun = False
         self._workspace   = '/tmp'
         self._return_xml_python_struct = False
+        self._section = self._parent.name
 
     @property
     def name(self):
@@ -171,9 +172,15 @@ class JobInfo(object):
     def has_dryrun(self):
         return self._has_dryrun
 
+    @property
+    def section(self):
+        '''return the section name of configuration for this object'''
+        return self._section
+
     def save_job_config(self):
-        if not os.path.exists(self.workspace):
-            os.mkdir(self.workspace)
+        # if not os.path.exists(self.workspace):
+        #     os.mkdir(self.workspace)
+        dreambox.jenkins.core.Jenkins.mkdir_p(self.workspace)
         filename = '%s.config.xml' % self.name
         fullpath = os.path.join(self.workspace, filename)
         print('write xml to %s' % fullpath)

@@ -2,6 +2,7 @@ from __future__ import print_function
 from dreambox.jenkins.core import Jenkins
 import argparse, argcomplete
 import types
+import os
 
 def jenkins():
     '''
@@ -138,6 +139,9 @@ def build_cmdline_options(optionparser, jobinfos=None):
     subparser = subparsers.add_parser('list-disable-jobs', help='list all jenkins jobs that are disable')
     subparser.set_defaults(func=list_disable_jobs)
 
+    # setup command line option for list-disable-jobs
+    subparser = subparsers.add_parser('save-all-job-configs', help='export all job configurations for a jenkins server')
+    subparser.set_defaults(func=save_all_job_configs)
     return optionparser
 
 def copy_job(args):
@@ -170,6 +174,11 @@ def list_disable_jobs(args):
     for job in jobinfomap:
         if not 'parameterDefinitions' in jenkins._server.get_job_info(job)['property'][0]:
             print(job)
+
+def save_all_job_configs(args):
+    for jobinfo in jobinfomap:
+        jobinfomap[jobinfo].workspace = os.path.join('tmp', jobinfomap[jobinfo].section)
+        jobinfomap[jobinfo].save_job_config()
 
 if __name__ == '__main__':
     jenkins()

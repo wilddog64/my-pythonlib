@@ -9,6 +9,7 @@ import dreambox.jenkins.jobinfo
 from dreambox.jenkins.parameter import Parameter, ParameterMap
 
 import os
+import errno
 import datetime
 
 # if cPickle is available the include it; otherwise
@@ -222,6 +223,17 @@ class Jenkins(object):
     @staticmethod
     def timediff_in_secs(t1, t2):
         return (t2 - t1).seconds
+
+    @staticmethod
+    def mkdir_p(path):
+        '''make a parent directory and subdirectories'''
+        try:
+           os.makedirs(path)
+        except OSError as error:
+            if error.errno == errno.EEXIST and os.path.isdir(path):
+                pass
+            else:
+                raise
 
 
 if __name__ == '__main__':
