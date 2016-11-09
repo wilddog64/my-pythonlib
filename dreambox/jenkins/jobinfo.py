@@ -3,6 +3,7 @@ from collections import Sequence
 import dreambox.jenkins.core
 import dreambox.utils
 import jenkins
+import os
 
 
 class Job(object):
@@ -162,10 +163,9 @@ class JobInfo(object):
         job_config = self._jenkins.get_job_config(self.name)
 
         if self.return_xml_python_struct:
-            print('return python object')
             job_config = self._parent._load_xml(job_config)
 
-        return self._parent._load_xml(job_config)
+        return job_config
 
     @property
     def job_info(self):
@@ -174,6 +174,15 @@ class JobInfo(object):
     @property
     def has_dryrun(self):
         return self._has_dryrun
+
+    def save_job_config(self):
+        if not os.path.exists(self.workspace):
+            os.mkdir(self.workspace)
+        filename = '%s.config.xml' % self.name
+        fullpath = os.path.join(self.workspace, filename)
+        print('write xml to %s' % fullpath)
+        with open(fullpath, 'w') as configh:
+            configh.write(self.job_config)
 
 class JobInfos(Sequence):
     '''A container class wrapping a list with some extra functional magic, like head,
