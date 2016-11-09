@@ -114,7 +114,7 @@ class JobInfo(object):
         del params['jenkins_config_filename']
         del params['jenkins_config_section']
         del params['jenkins_url']
-        del params['cache_timeout']
+        del params['jenkins_cache_timeout']
         if self.dry_run:
             print('triggering job %s' % self.name)
             print('with these arguments: (this is not sending to jenkins)')

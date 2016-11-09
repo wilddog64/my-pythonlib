@@ -35,7 +35,7 @@ def jenkins():
     optionparser.add_argument('--jenkins-config-filepath', '-f', help='a path points to a jenkins configuration file', default=jenkins_config_filepath)
     optionparser.add_argument('--jenkins-config-filename', '-n', help='a filename of the jenkins configuration file', default=jenkins_config_filename)
     optionparser.add_argument('--jenkins-config-section', '-s', help='jenkins section in a give configuration file', default=jenkins_config_section)
-    optionparser.add_argument('--jenkins-cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType, dest='cache_timeout')
+    optionparser.add_argument('--jenkins-cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType, dest='jenkins_cache_timeout')
 
     args = optionparser.parse_known_args()
 
@@ -47,7 +47,7 @@ def jenkins():
                       args[0].jenkins_config_filename,
                       args[0].jenkins_config_filepath,
                       args[0].jenkins_config_section)
-    jobinfomap = Jenkins.create_jobinfomap(jenkins, args[0].cache_timeout)
+    jobinfomap = Jenkins.create_jobinfomap(jenkins, args[0].jenkins_cache_timeout)
 
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(optionparser, jobinfomap)
