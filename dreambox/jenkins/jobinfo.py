@@ -108,13 +108,9 @@ class JobInfo(object):
         if not self.has_dryrun:
             self.dry_run = params['dry_run']
             del params['dry_run']
-        del params['jenkins_user']
-        del params['jenkins_user_pass']
-        del params['jenkins_config_filepath']
-        del params['jenkins_config_filename']
-        del params['jenkins_config_section']
-        del params['jenkins_url']
-        del params['jenkins_cache_timeout']
+        for param in params:
+            if 'jenkins' in param:
+                del param
         if self.dry_run:
             print('triggering job %s' % self.name)
             print('with these arguments: (this is not sending to jenkins)')
