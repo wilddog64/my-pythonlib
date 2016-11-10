@@ -3,6 +3,7 @@ from collections import Sequence
 import dreambox.jenkins.core
 import dreambox.utils
 import jenkins
+import os
 
 
 class Job(object):
@@ -34,6 +35,9 @@ class JobInfo(object):
         self._parameters = {}
         self._dry_run    = True
         self._has_dryrun = False
+        self._workspace   = '/tmp'
+        self._return_xml_python_struct = False
+        self._section = self._parent.name
 
     @property
     def name(self):
@@ -72,6 +76,26 @@ class JobInfo(object):
     def next_build_number(self, value):
         self._jenkins.set_next_build_number(self.name, value)
 
+    @property
+    def workspace(self):
+        '''
+        this property returns a current workspace for current
+        object. It is mainly used for saving job
+        '''
+        return self._workspace
+
+    @workspace.setter
+    def workspace(self, value):
+        self._workspace = value
+
+    @property
+    def return_xml_python_struct(self):
+        return self._return_xml_python_struct
+
+    @return_xml_python_struct.setter
+    def return_xml_python_struct(self, value):
+        self._return_xml_python_struct = value
+
     def build(self, args=None):
         '''
         trigger a jenkins job to build. The method
@@ -85,15 +109,15 @@ class JobInfo(object):
         if not self.has_dryrun:
             self.dry_run = params['dry_run']
             del params['dry_run']
-        del params['jenkins_user']
-        del params['jenkins_user_pass']
-        del params['jenkins_config_filepath']
-        del params['jenkins_config_filename']
-        del params['jenkins_url']
-        del params['cache_timeout']
+        p = {}
+        # grab all the keys that do not have jenkins in it
+        for key, value in params.items():
+            if 'jenkins' not in key:
+                p[key] = value
+        params = p
         if self.dry_run:
-            print('trigger job %s' % self.name)
-            print('with these arguments:')
+            print('triggering job %s' % self.name)
+            print('with these arguments: (this is not sending to jenkins)')
             dreambox.utils.print_structure(params)
         else:
             self._jenkins.build_job(self.name, params)
@@ -137,7 +161,11 @@ class JobInfo(object):
     @property
     def job_config(self):
         job_config = self._jenkins.get_job_config(self.name)
-        return self._parent._load_xml(job_config)
+
+        if self.return_xml_python_struct:
+            job_config = self._parent._load_xml(job_config)
+
+        return job_config
 
     @property
     def job_info(self):
@@ -146,6 +174,21 @@ class JobInfo(object):
     @property
     def has_dryrun(self):
         return self._has_dryrun
+
+    @property
+    def section(self):
+        '''return the section name of configuration for this object'''
+        return self._section
+
+    def save_job_config(self):
+        # if not os.path.exists(self.workspace):
+        #     os.mkdir(self.workspace)
+        dreambox.jenkins.core.Jenkins.mkdir_p(self.workspace)
+        filename = '%s.config.xml' % self.name
+        fullpath = os.path.join(self.workspace, filename)
+        print('write xml to %s' % fullpath)
+        with open(fullpath, 'w') as configh:
+            configh.write(self.job_config)
 
 class JobInfos(Sequence):
     '''A container class wrapping a list with some extra functional magic, like head,
@@ -249,7 +292,7 @@ class JobInfoMap(dict):
 
     def __getitem__(self, key):
         if not key in self.__dict__:
-            raise KeyError('unable to find %s in container' % key)
+            raise KeyError('unable to find %s in jenkins server' % key)
         return self.__dict__[key]
 
     def __len__(self):

@@ -2,6 +2,7 @@ from __future__ import print_function
 from dreambox.jenkins.core import Jenkins
 import argparse, argcomplete
 import types
+import os
 
 def jenkins():
     '''
@@ -35,10 +36,9 @@ def jenkins():
     optionparser.add_argument('--jenkins-config-filepath', '-f', help='a path points to a jenkins configuration file', default=jenkins_config_filepath)
     optionparser.add_argument('--jenkins-config-filename', '-n', help='a filename of the jenkins configuration file', default=jenkins_config_filename)
     optionparser.add_argument('--jenkins-config-section', '-s', help='jenkins section in a give configuration file', default=jenkins_config_section)
-    optionparser.add_argument('--jenkins-cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType, dest='cache_timeout')
+    optionparser.add_argument('--jenkins-cache-timeout', '-t', help='a timeout value for object cache file in minutes', default=5, type=types.IntType, dest='jenkins_cache_timeout')
 
     args = optionparser.parse_known_args()
-    print(vars(args[0]))
 
     # create object and cache it if the pickle file does not exist
     global jenkins
@@ -48,12 +48,11 @@ def jenkins():
                       args[0].jenkins_config_filename,
                       args[0].jenkins_config_filepath,
                       args[0].jenkins_config_section)
-    jobinfomap = Jenkins.create_jobinfomap(jenkins, args[0].cache_timeout)
+    jobinfomap = Jenkins.create_jobinfomap(jenkins, args[0].jenkins_cache_timeout)
 
     # build command line options based on our container object, and activate it
     cmd_parser = build_cmdline_options(optionparser, jobinfomap)
     args       = cmd_parser.parse_args()
-    print(args)
     args.func(args)
 
 def build_cmdline_options(optionparser, jobinfos=None):
@@ -74,7 +73,9 @@ def build_cmdline_options(optionparser, jobinfos=None):
     # now iterates through a jobinfos container
     for jobinfo in jobinfos:
         # create a parser for subcommand
-        subparser = subparsers.add_parser(jobinfo, help=jobinfo.replace('_', ' '), formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        subparser = subparsers.add_parser(jobinfo,
+                                          help=jobinfo.replace('_', ' '),
+                                          formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         if not jobinfos[jobinfo].has_dryrun:
             subparser.add_argument('--dry_run',
                                    help='see what job do without executing it, True by default',
@@ -138,6 +139,9 @@ def build_cmdline_options(optionparser, jobinfos=None):
     subparser = subparsers.add_parser('list-disable-jobs', help='list all jenkins jobs that are disable')
     subparser.set_defaults(func=list_disable_jobs)
 
+    # setup command line option for list-disable-jobs
+    subparser = subparsers.add_parser('save-all-job-configs', help='export all job configurations for a jenkins server')
+    subparser.set_defaults(func=save_all_job_configs)
     return optionparser
 
 def copy_job(args):
@@ -162,15 +166,19 @@ def disable_job(args):
 
 def list_all_jobs(args):
     print('----')
-    for job in jenkins._server.get_all_jobs():
-        print(job['fullname'])
+    for job in sorted(jobinfomap):
+        print(job)
 
 def list_disable_jobs(args):
     print('---')
-    for job in jenkins._server.get_all_jobs():
-        jobname = job['fullname']
-        if not 'parameterDefinitions' in jenkins._server.get_job_info(jobname)['property'][0]:
-            print(jobname)
+    for job in jobinfomap:
+        if not 'parameterDefinitions' in jenkins._server.get_job_info(job)['property'][0]:
+            print(job)
+
+def save_all_job_configs(args):
+    for jobinfo in jobinfomap:
+        jobinfomap[jobinfo].workspace = os.path.join('tmp', jobinfomap[jobinfo].section)
+        jobinfomap[jobinfo].save_job_config()
 
 if __name__ == '__main__':
     jenkins()

@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 class Parameter(object):
-    def __init__(self, name, value, default, atype, description):
+    def __init__(self, name='', value='', default='', atype='', description=''):
         self.name        = name
         self.value       = value
         self.default     = default
