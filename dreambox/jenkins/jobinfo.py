@@ -109,9 +109,12 @@ class JobInfo(object):
         if not self.has_dryrun:
             self.dry_run = params['dry_run']
             del params['dry_run']
-        for param in params:
-            if 'jenkins' in param:
-                del param
+        p = {}
+        # grab all the keys that do not have jenkins in it
+        for key, value in params.items():
+            if 'jenkins' not in key:
+                p[key] = value
+        params = p
         if self.dry_run:
             print('triggering job %s' % self.name)
             print('with these arguments: (this is not sending to jenkins)')
