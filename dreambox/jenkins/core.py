@@ -5,10 +5,11 @@ from xmljson import BadgerFish
 from xml.etree.ElementTree import fromstring
 import json
 import dreambox.jenkins
-import dreambox.jenkins.JobInfo
+import dreambox.jenkins.jobinfo
 from dreambox.jenkins.parameter import Parameter, ParameterMap
 
 import os
+import errno
 import datetime
 
 # if cPickle is available the include it; otherwise
@@ -89,7 +90,7 @@ class Jenkins(object):
                 job_name             = job['name']
                 job_url              = job['url']
                 job_parameters       = self._get_job_parameters(job_name)
-                self._jobs[job_name] = dreambox.jenkins.JobInfo.Job(job_name, job_url, job_parameters)
+                self._jobs[job_name] = dreambox.jenkins.jobinfo.Job(job_name, job_url, job_parameters)
         return self._jobs
 
     @property
@@ -126,9 +127,7 @@ class Jenkins(object):
                               p_type,
                               p_description)
                 parameters[p_name] = p
-
-        else:
-            print('job name %s' % job_name)
+        else: # skip parameters creation if a job does not have them
             pass
 
         return parameters
@@ -139,7 +138,7 @@ class Jenkins(object):
     @classmethod
     def create_jobinfos(self, object):
         '''
-        is a static method that create a JobInfos collection. This
+        is a static method that create a jobinfos collection. This
         method takes one parameter
 
         object is an object of type dreambox.jenkins.core.Jenkins
@@ -147,9 +146,9 @@ class Jenkins(object):
         if type(object) is not dreambox.jenkins.core.Jenkins:
             raise TypeError('%s is not a type of core.Jenkins' % object.__class__)
 
-        jobinfos = dreambox.jenkins.JobInfo.JobInfos()
+        jobinfos = dreambox.jenkins.jobinfo.JobInfos()
         for job in object._get_jobs():
-            jobinfo             = dreambox.jenkins.JobInfo.JobInfo(object)
+            jobinfo             = dreambox.jenkins.jobinfo.JobInfo(object)
             jobinfo._name       = job
             jobinfo._url        = object._get_jobs()[job].url
             parameters          = object._get_jobs()[job].parameters
@@ -170,9 +169,9 @@ class Jenkins(object):
         '''
         load_from_pickle = False
         def _create_jobinfomap():
-            jobinfomap = dreambox.jenkins.JobInfo.JobInfoMap()
+            jobinfomap = dreambox.jenkins.jobinfo.JobInfoMap()
             for job in object._get_jobs():
-                jobinfo                  = dreambox.jenkins.JobInfo.JobInfo(object)
+                jobinfo                  = dreambox.jenkins.jobinfo.JobInfo(object)
                 jobinfo._name            = job
                 jobinfo._url             = object._get_jobs()[job].url
                 parameters               = object._get_jobs()[job].parameters
@@ -187,7 +186,7 @@ class Jenkins(object):
         if not os.path.exists(workspace):
             print('create directory %s' % workspace)
             os.mkdir(workspace)
-        pickle_file       = os.path.join(workspace, 'obj.pickle')
+        pickle_file       = os.path.join(workspace, '%s.pickle' % object.name)
         pickle_filehandle = None
         jobinfomap        = None
         pickle_filehandle = None
@@ -225,11 +224,24 @@ class Jenkins(object):
     def timediff_in_secs(t1, t2):
         return (t2 - t1).seconds
 
+    @staticmethod
+    def mkdir_p(path):
+        '''make a parent directory and subdirectories'''
+        try:
+           os.makedirs(path)
+        except OSError as error:
+            if error.errno == errno.EEXIST and os.path.isdir(path):
+                pass
+            else:
+                raise
+
 
 if __name__ == '__main__':
     import dreambox.utils
     jenkins_config_path = '~/src/gitrepo/dreambox/python/dreambox-pythonlib/dreambox/etc'
-    devops_jenkins = dreambox.jenkins.core.Jenkins(config_file='jenkins.ini', config_file_path=jenkins_config_path, section='stage-devops-jenkins')
+    devops_jenkins = dreambox.jenkins.core.Jenkins(config_file='jenkins.ini',
+                                                   config_file_path=jenkins_config_path,
+                                                   section='stage-devops-jenkins')
     print('object type for devops_jenkins is %s' % type(devops_jenkins))
     print('jenkins configuration file: %s and section %s' % (devops_jenkins.config_file, devops_jenkins.section))
     print('jenkins server url: %s' % devops_jenkins.server)
@@ -242,30 +254,37 @@ if __name__ == '__main__':
     jobinfomap = Jenkins.create_jobinfomap(devops_jenkins)
     print('a list of job:')
     print('-------------')
-    for job in jobinfomap:
-        print(job)
-    print('-------------')
-    print('')
-    print('environment_create job config')
-    dreambox.utils.print_structure(jobinfomap['environment_create'].job_config)
-    print('')
-    print('environment_create job info')
-    dreambox.utils.print_structure(jobinfomap['environment_create'].job_info)
-    print('')
+    # for job in jobinfomap:
+    #     print(job)
+    # print('-------------')
+    # print('')
+    # print('environment_create job config')
+    # dreambox.utils.print_structure(jobinfomap['environment_create'].job_config)
+    # print('')
+    # print('environment_create job info in xml')
+    # jobinfomap.environment_create.return_xml_python_struct = True
+    # print(jobinfomap['environment_create'].job_info)
+    # print('')
+    # jobinfomap['environment_create'].return_xml_python_struct = False
+    # dreambox.utils.print_structure(jobinfomap['environment_create'].job_info)
     print('environment_create job parameters')
     print(type(jobinfomap.environment_create.parameters))
 
-    print('environment_create job next build number %s' % jobinfomap['environment_create'].next_build_number)
-    print('')
-    print('--- testing Jenkins.create_jobinfomap class method ---')
-    print('')
-    print('--- print out sorted job names ---')
-    for job in sorted(jobinfomap.keys):
-        print(job)
-    print('--- print out sorted job names ---')
-    print('')
-    environment_create_parameters = jobinfomap.environment_create.job_info['property'][0]['parameterDefinitions']
-    dreambox.utils.print_structure(environment_create_parameters)
+    # print('environment_create job next build number %s' % jobinfomap['environment_create'].next_build_number)
+    # print('')
+    # print('--- testing Jenkins.create_jobinfomap class method ---')
+    # print('')
+    # print('--- print out sorted job names ---')
+    # for job in sorted(jobinfomap.keys):
+    #     print(job)
+    # print('--- print out sorted job names ---')
+    # print('')
+    # environment_create_parameters = jobinfomap.environment_create.job_info['property'][0]['parameterDefinitions']
+    # dreambox.utils.print_structure(environment_create_parameters)
+    # for jobinfo in jobinfomap:
+    #     if jobinfomap[jobinfo].has_dryrun:
+    #         print('%s has dry_run property' % jobinfo)
+
     for jobinfo in jobinfomap:
-        if jobinfomap[jobinfo].has_dryrun:
-            print('%s has dry_run property' % jobinfo)
+        jobinfomap[jobinfo].workspace = os.path.join('/tmp', devops_jenkins.name)
+        jobinfomap[jobinfo].save_job_config()
