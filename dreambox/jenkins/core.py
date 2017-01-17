@@ -36,17 +36,17 @@ class Jenkins(object):
             self._jenkins_config_file = 'jenkins.ini'
         else:
             self._jenkins_config_file = config_file
-        self._section        = section
-        self._name           = self._section
-        self._config         = inifile.config_section_map(self._jenkins_config_file,
-                                                          config_file_path,
-                                                          section)
-        self._user           = jenkins_user if jenkins_user else self._config['user']
-        self._passwd         = jenkins_pass if jenkins_pass else self._config['password']
-        self._url            = jenkins_url if jenkins_url else self._config['url']
-        self._jobs           = dict()
-        self._server         = jenkins.Jenkins(self.url, self.user, self._passwd)
-        self._bf             = BadgerFish()
+        self._section = section
+        self._name    = self._section
+        self._config  = inifile.config_section_map(self._jenkins_config_file,
+                                                   config_file_path,
+                                                   section)
+        self._user    = jenkins_user if jenkins_user else self._config['user']
+        self._passwd  = jenkins_pass if jenkins_pass else self._config['password']
+        self._url     = jenkins_url if jenkins_url else self._config['url']
+        self._jobs    = dict()
+        self._server  = jenkins.Jenkins(self.url, self.user, self._passwd)
+        self._bf      = BadgerFish()
 
     @property
     def config_file(self):
