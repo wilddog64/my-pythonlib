@@ -2,5 +2,5 @@ awscli
 rsa
 wheel
 moto
-git+ssh://git@github.com/dreamboxlearning/pychef.git@dev
+PyChef
 gnureadline
