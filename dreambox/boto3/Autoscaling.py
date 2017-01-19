@@ -1,6 +1,6 @@
 from __future__ import print_function
 import boto3
-import utils
+import dreambox.utils
 from Aws import Aws
 from Aws import Tag
 
@@ -189,25 +189,25 @@ if __name__ == '__main__':
     print('initialize autoscaling object')
     autoscaling = Autoscaling()
     print('=== get all autoscaling groups from AWS %s ===' % autoscaling.region_name())
-    utils.print_structure(autoscaling._get_all_autoscaling_groups())
+    dreambox.utils.print_structure(autoscaling._get_all_autoscaling_groups())
     print('')
     print('--- filter autoscaling group, looking for stage7 ---')
     print('')
-    utils.print_structure(autoscaling._get_all_autoscaling_groups(filter_by='stage7'))
+    dreambox.utils.print_structure(autoscaling._get_all_autoscaling_groups(filter_by='stage7'))
     print('')
     print('=== end get all autoscaling groups from AWS %s ===' % autoscaling.region_name())
     print('')
     print('=== get all autoscaling groups for a given stack from AWS %s ===' % autoscaling.region_name())
-    utils.print_structure(autoscaling._get_all_autoscaling_groups_for(stack='stage7-play'))
+    dreambox.utils.print_structure(autoscaling._get_all_autoscaling_groups_for(stack='stage7-play'))
     print('=== end get all autoscaling groups for a given stack from AWS %s ===' % autoscaling.region_name())
     print('')
     print('=== get all instance ids from autoscaling groups for a given stack from AWS %s ===' % autoscaling.region_name())
-    utils.print_structure(autoscaling._get_instance_ids_for(stack='stage7-play'))
+    dreambox.utils.print_structure(autoscaling._get_instance_ids_for(stack='stage7-play'))
     print('')
     print('=== now testing constructor with stack is set ===')
     autoscaling = Autoscaling(stack='stage7-play')
     print('--- initialize autoscaling object with stack set to stage7-play from AWS %s ---' % autoscaling.region_name())
-    utils.print_structure(autoscaling._get_all_autoscaling_groups())
+    dreambox.utils.print_structure(autoscaling._get_all_autoscaling_groups())
     print('=== end testing constructor with stack is set ===')
     print('')
     print('=== testing autoscaling.create_resource methods ===')
