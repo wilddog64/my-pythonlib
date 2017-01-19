@@ -33,14 +33,14 @@ class EC2(Aws):
 
 
 if __name__ == '__main__':
-    import utils
+    import dreambox.utils
     # instaniate ec2 object with these instance ids
-    ec2 = EC2(region='us-west-2', instance_ids=['i-f534f85a'])
+    ec2 = EC2(region='us-west-2', instance_ids=['i-05cc1a86f7cce2f36'])
     print('=== testing EC2 object with AWS region %s ===' % ec2.region_name())
     print('--- testing ec2.instances method ---')
     # obtains a list of ec2.Instance objects
     instances = ec2.instances()
-    utils.print_structure(instances)
+    dreambox.utils.print_structure(instances)
     # iterate through each object and print out its private
     # dns name and instance id
     for instance in instances:
