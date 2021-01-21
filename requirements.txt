@@ -2,7 +2,7 @@ colorama==0.3.3
 decorator==4.0.2
 funcy==1.5
 ordereddict==1.1
-PyYAML==5.3.1
+PyYAML==5.4
 sh==1.11
 boto3==1.2.3
 botocore==1.4.55
