@@ -3,7 +3,7 @@ decorator==4.0.2
 funcy==1.5
 ordereddict==1.1
 PyYAML==5.4
-sh==1.11
+sh==2.2.4
 boto3==1.4.5
 botocore==1.4.55
 python-jenkins==0.4.13
